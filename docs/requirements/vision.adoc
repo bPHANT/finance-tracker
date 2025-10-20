@@ -81,9 +81,6 @@ Durch intuitive Funktionen, moderne Visualisierungen und smarte Tipps unterstüt
 [%header, cols="1,3,3"]
 |===
 | Name | Beschreibung | Verantwortlichkeiten
-| Dozent / Coach
-| Der Dozent vermittelt die theoretischen und methodischen Grundlagen des Software Engineerings im Rahmen der Lehrveranstaltung. Der Coach begleitet das Team praxisnah bei der Projektarbeit, steht für Fragen zur Verfügung und gibt regelmäßig individuelles Feedback. Ziel ist es, sowohl das methodische Verständnis als auch die praktische Umsetzung im Projekt zu fördern.
-| Der Dozent stellt Anforderungen und Rahmenbedingungen für das Projekt bereit (z. B. Iterationsziele, Abgabekriterien) und bewertet die Projektarbeit im Kontext des Moduls. Der Coach unterstützt das Team bei methodischen Fragen, überwacht den Projektfortschritt aus fachlicher Sicht und gibt Rückmeldung zu Zwischenergebnissen. Beide Stakeholder tragen dazu bei, die Qualität der Arbeit sicherzustellen und das Lernziel des Moduls zu erreichen.
 | Universitäten und Hochschulen
 | Bildungseinrichtungen, die Studierende akademisch ausbilden und dabei auch deren persönliche Entwicklung unterstützen wollen. Sie haben ein Interesse daran, dass Studierende Kompetenzen wie Finanzmanagement frühzeitig aufbauen, um ihre Lebenssituation während des Studiums zu verbessern und Studienabbrüche aus finanziellen Gründen zu vermeiden.
 | Universitäten und Hochschulen könnten die App indirekt unterstützen oder empfehlen, z. B. über Studienberatungen oder Veranstaltungen zum Thema Finanzkompetenz. Ihr besonderes Interesse liegt darin, Studierende bei einem erfolgreichen und stabilen Studienverlauf zu fördern. Außerdem könnten sie Feedback zur Weiterentwicklung der App im Bereich Bildung und Nutzendenunterstützung geben.
@@ -125,7 +122,7 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 |===
 | Bedarf | Priorität | Features / Funktionen | Geplantes Release
 
-| Transaktionen
+| Transaktionssystem, dass die Daten der Eingaben speichert
 | sehr hoch
 a|
 * Scannen von Bildern womit Einnahmen und Ausgaben durch KI erfasst werden
@@ -135,7 +132,7 @@ a|
 * Wiederkehrende Transaktionen
 | MVP
 
-| Kategorisierung
+| Flexibles Kategoriensystem zur Organisation der Transaktionen
 | sehr hoch
 a|
 * Möglichkeit eine Kategorien zu erstellen, zu bearbeiten und zu löschen
@@ -144,14 +141,14 @@ a|
 * Möglichkeit Kategorien zu einer Transaktion zuzuordnen
 | MVP
 
-| Budget
+| Flexibels Budgetsystem für die Finanzen
 | hoch
 a|
 * Möglichkeit Budgets zu erstellen, zu bearbeiten und zu löschen
 * Möglichkeit Budgets Kategorien zuzuordnen
 | MVP
 
-| Konto
+| Flexibles Kontosystem, dass er ermöglicht mehrere Einnahmequellen/Ausgabequellen zu differenzieren
 | hoch
 a|
 * Möglichkeit Konten zu erstellen, zu bearbeiten und zu löschen
@@ -161,7 +158,7 @@ a|
 * Anzeigen des aktuellen Kontostands
 | MVP
 
-| Sparziele
+| Sparziele, dass dem Nutzer ermöglicht eigene Ausgabegrenzen festzulegen für die bessere Kontrolle über das Konsumverhalten
 | mittel
 a|
 * Möglichkeit Sparziele zu erstellen, zu bearbeiten und zu löschen
@@ -169,14 +166,14 @@ a|
 * Möglichkeit Sparziele visuell zu gestalten (Farben, Icons)
 | Release 2
 
-| Dashboard
+| Ein übersichtles Dashboard, dass dem Nutzer alle wichtigen Informationen auf einen Blick darstellt
 | mittel
 a|
 * Überblick über aktuelle Trends
 * Darstellung von übersichtlichen Statistiken
 | Release 2
 
-| Export/Import
+| Export/Import Funktionen, die dem Nutzer ermöglichen gesammelte Daten weiterzuverwenden
 | niedrig
 a|
 * Export aller Daten in einem geeigneten Format
@@ -184,7 +181,7 @@ a|
 * Import von Daten aus einem geeigneten Format
 | Release 3
 
-| Benachrichtigungen
+| Benachrichtigungen, die dem Nutzer über wichtige Informationen bezüglich der Finanzen alarmieren
 | niedrig
 a|
 * Benachrichtigung bei und vor dem Erreichen von Budgets
