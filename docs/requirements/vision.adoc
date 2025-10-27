@@ -81,9 +81,6 @@ Durch intuitive Funktionen, moderne Visualisierungen und smarte Tipps unterstüt
 [%header, cols="1,3,3"]
 |===
 | Name | Beschreibung | Verantwortlichkeiten
-| Dozent / Coach
-| Der Dozent vermittelt die theoretischen und methodischen Grundlagen des Software Engineerings im Rahmen der Lehrveranstaltung. Der Coach begleitet das Team praxisnah bei der Projektarbeit, steht für Fragen zur Verfügung und gibt regelmäßig individuelles Feedback. Ziel ist es, sowohl das methodische Verständnis als auch die praktische Umsetzung im Projekt zu fördern.
-| Der Dozent stellt Anforderungen und Rahmenbedingungen für das Projekt bereit (z. B. Iterationsziele, Abgabekriterien) und bewertet die Projektarbeit im Kontext des Moduls. Der Coach unterstützt das Team bei methodischen Fragen, überwacht den Projektfortschritt aus fachlicher Sicht und gibt Rückmeldung zu Zwischenergebnissen. Beide Stakeholder tragen dazu bei, die Qualität der Arbeit sicherzustellen und das Lernziel des Moduls zu erreichen.
 | Universitäten und Hochschulen
 | Bildungseinrichtungen, die Studierende akademisch ausbilden und dabei auch deren persönliche Entwicklung unterstützen wollen. Sie haben ein Interesse daran, dass Studierende Kompetenzen wie Finanzmanagement frühzeitig aufbauen, um ihre Lebenssituation während des Studiums zu verbessern und Studienabbrüche aus finanziellen Gründen zu vermeiden.
 | Universitäten und Hochschulen könnten die App indirekt unterstützen oder empfehlen, z. B. über Studienberatungen oder Veranstaltungen zum Thema Finanzkompetenz. Ihr besonderes Interesse liegt darin, Studierende bei einem erfolgreichen und stabilen Studienverlauf zu fördern. Außerdem könnten sie Feedback zur Weiterentwicklung der App im Bereich Bildung und Nutzendenunterstützung geben.

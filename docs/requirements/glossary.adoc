@@ -68,10 +68,6 @@ In diesem Dokument werden die wichtigsten Begriffe, Abkürzungen und Datendefini
 | Ein Code, der von der App gescannt werden kann, z.B. zum schnellen Hinzufügen von Daten oder für Export/Import von Informationen.
 |
 
-| Wireframe
-| Ein schematischer Entwurf, der die Struktur der App oder eines Screens zeigt.
-| Mockup, Prototyp
-
 |===
 
 == Abkürzungen und Akronyme
@@ -90,22 +86,6 @@ In diesem Dokument werden die wichtigsten Begriffe, Abkürzungen und Datendefini
 | ID
 | Identifikationsnummer
 | Eindeutige Kennung für Objekte (z.B. Transaktion, Konto)
-
-| API
-| Application Programming Interface
-| Schnittstelle zur Kommunikation zwischen verschiedenen Softwareteilen
-
-| PWA
-| Progressive Web App
-| Webanwendung mit App-ähnlicher Benutzererfahrung
-
-| UI
-| User Interface
-| Benutzeroberfläche
-
-| UX
-| User Experience
-| Nutzererlebnis
 
 |===
 
