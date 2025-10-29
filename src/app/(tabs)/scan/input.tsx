@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useRef } from "react"
-import { View, Text, ScrollView, Keyboard, Alert } from "react-native"
-import { useRoute } from "@react-navigation/native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { CustomColors } from "@/assets/colors"
+import Button from "@/components/buttons/Button"
+import FunctionalButton from "@/components/buttons/FunctionalButton"
+import TransactionContainer from "@/components/containers/TransactionContainer"
 import DateField from "@/components/input/DateField"
 import TextField from "@/components/input/TextField"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
-import Button from "@/components/buttons/Button"
-import TransactionContainer from "@/components/containers/TransactionContainer"
-import useTransactionGroup from "@/db/queries/transactionGroup"
 import useCategory from "@/db/queries/category"
-import { CustomColors } from "@/assets/colors"
-import FunctionalButton from "@/components/buttons/FunctionalButton"
-import { useRouter, useLocalSearchParams } from "expo-router"
+import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
+import { useRoute } from "@react-navigation/native"
+import { useLocalSearchParams, useRouter } from "expo-router"
+import React, { useEffect, useRef, useState } from "react"
+import { Alert, Keyboard, ScrollView, Text, View } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
 
 type TransactionResponse = {
   specific: string
@@ -82,70 +82,65 @@ export default function TransactionScreen() {
     }
   }, [params.updatedTransaction, router, t])
 
-  const processGeminiResponse = async () => {
-    console.log("Processing geminiResponse:", geminiResponse)
-    processedResponse.current = geminiResponse
-
-    if (geminiResponse && geminiResponse !== "") {
-      try {
-        const cleaned = geminiResponse.replace(/```|json/g, "").trim()
-        const parsed = JSON.parse(cleaned)
-
-        const categoryIds = parsed.map(
-          (transaction: TransactionResponse) => transaction.categoryId
-        )
-
-        if (!categoryIds || categoryIds.length === 0) {
-          Alert.alert(
-            t("common.error"),
-            t("screens.input.errors.noCategoryIds")
-          )
-          setTransactions([])
-          return
-        }
-
-        const categoryResult = await getCategories({
-          ids: categoryIds,
-        })
-
-        if (!categoryResult || categoryResult.length === 0) {
-          Alert.alert(
-            t("common.error"),
-            t("screens.input.errors.categoryNotFound")
-          )
-          return
-        }
-
-        setTransactions(
-          parsed.map((transaction: TransactionResponse) => {
-            const category = categoryResult.find(
-              (category: any) => category.id === transaction.categoryId
-            )
-            return {
-              name: transaction.term,
-              specific: transaction.specific || "",
-              amount: transaction.amount.toString(),
-              category: category,
-            }
-          })
-        )
-      } catch (error) {
-        console.error("Error while parsing: ", error)
-        Alert.alert(t("common.error"), t("screens.input.errors.parsingError"))
-      }
-    } else {
-      setTransactions([])
-    }
-  }
-
   useEffect(() => {
-    const initializeTransactions = async () => {
+    const processGeminiResponse = async () => {
+      console.log("Processing geminiResponse:", geminiResponse)
+      processedResponse.current = geminiResponse
+
       if (geminiResponse && geminiResponse !== "") {
-        await processGeminiResponse()
+        try {
+          const cleaned = geminiResponse.replace(/```|json/g, "").trim()
+          const parsed = JSON.parse(cleaned)
+
+          const categoryIds = parsed.map(
+            (transaction: TransactionResponse) => transaction.categoryId
+          )
+
+          if (!categoryIds || categoryIds.length === 0) {
+            Alert.alert(
+              t("common.error"),
+              t("screens.input.errors.noCategoryIds")
+            )
+            setTransactions([])
+            return
+          }
+
+          console.log(categoryIds)
+          const categories = await getCategories({
+            ids: categoryIds,
+          })
+
+          if (!categories || categories.length === 0) {
+            Alert.alert(
+              t("common.error"),
+              t("screens.input.errors.categoryNotFound")
+            )
+            return
+          }
+
+          setTransactions(
+            parsed.map((transaction: TransactionResponse) => {
+              const category = categories.find(
+                (category: any) => category.id === transaction.categoryId
+              )
+              return {
+                name: transaction.term,
+                specific: transaction.specific || "",
+                amount: transaction.amount.toString(),
+                category: category,
+              }
+            })
+          )
+        } catch (error) {
+          console.error("Error while parsing: ", error)
+          Alert.alert(t("common.error"), t("screens.input.errors.parsingError"))
+        }
+      } else {
+        setTransactions([])
       }
     }
 
-    initializeTransactions()
+    processGeminiResponse()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geminiResponse])
 

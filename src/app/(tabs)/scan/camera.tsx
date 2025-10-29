@@ -135,6 +135,8 @@ export default function CameraScreen() {
 
     changeState(true)
 
+    console.log(JSON.stringify(categories))
+
     try {
       const response = await fetch(endpoint, {
         method: "POST",

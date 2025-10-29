@@ -1,13 +1,14 @@
+import type { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite"
 import { drizzle } from "drizzle-orm/expo-sqlite"
 import { useSQLiteContext } from "expo-sqlite"
-import { transactionTable } from "./schemas/transactions"
 import { accountTable } from "./schemas/accounts"
 import { budgetTable } from "./schemas/budgets"
 import { categoryTable } from "./schemas/categories"
+import { categoryToBudgetTable } from "./schemas/categoriesToBudgets"
 import { categoryTermTable } from "./schemas/categoryTerms"
 import { currencyTable } from "./schemas/currencies"
 import { transactionGroupTable } from "./schemas/transactionGroups"
-import { categoryToBudgetTable } from "./schemas/categoriesToBudgets"
+import { transactionTable } from "./schemas/transactions"
 import { seedAccounts } from "./seed/accounts"
 import { seedCategories } from "./seed/categories"
 
@@ -25,7 +26,9 @@ export const schema = {
 let initializationPromise: Promise<void> | null = null
 let isInitialized = false
 
-export async function initializeDatabase() {
+export async function initializeDatabase(
+  db: ExpoSQLiteDatabase<typeof schema>
+) {
   if (isInitialized) return
 
   if (initializationPromise) {
@@ -34,8 +37,8 @@ export async function initializeDatabase() {
 
   initializationPromise = (async () => {
     try {
-      const accountsSeeded = await seedAccounts()
-      const categoriesSeeded = await seedCategories()
+      const accountsSeeded = await seedAccounts(db)
+      const categoriesSeeded = await seedCategories(db)
       if (!accountsSeeded || !categoriesSeeded) {
         console.log("Database already seeded")
       } else {
