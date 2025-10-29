@@ -74,7 +74,8 @@ export default function CategorySettingsScreen() {
             </View>
             <EmojiWithBackground size="s" emoji=" " color={bgColor} />
           </TouchableOpacity>
-
+          
+          {/* test */}
           {/* Icon */}
           <TouchableOpacity
             className={`flex-1 ${cardBg} rounded-2xl border ${borderCol} px-4 py-4`}
