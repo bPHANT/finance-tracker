@@ -39,7 +39,6 @@ export default function KitchensinkScreen() {
         <Text className='text-gray-900 dark:text-gray-100'>BalanceWidget</Text>
         <BalanceCard
           amount='3.161,45'
-          label='aktueller Kontostand'
           data={[3800, 3200, 10000, 2900, 3161]} // Beispielverlauf
         />
       </View>

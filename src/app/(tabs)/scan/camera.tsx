@@ -1,4 +1,4 @@
-import { API_KEY } from "@/api/API_KEY"
+import { GEMINI_API_KEY } from "@/api/GEMINI_API_KEY"
 
 import { colors } from "@/assets/colors"
 import useCategory from "@/db/queries/category"
@@ -87,8 +87,8 @@ export default function CameraScreen() {
   }, [])
 
   async function askGemini(photo: CameraCapturedPicture) {
-    const apiKey = API_KEY
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`
+    const apiKey = GEMINI_API_KEY
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`
 
     if (!categories) {
       console.error("Categories not loaded yet.")
@@ -196,7 +196,6 @@ export default function CameraScreen() {
             <CameraView facing={facing} style={{ flex: 1 }} ref={cameraRef} />
           </View>
         ) : null}
-
         <View
           style={{
             position: "absolute",
