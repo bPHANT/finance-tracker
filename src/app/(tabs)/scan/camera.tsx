@@ -1,25 +1,25 @@
-import { GEMINI_API_KEY } from "@/api/GEMINI_API_KEY"
+import { API_KEY } from "@/api/API_KEY"
 
+import { colors } from "@/assets/colors"
+import useCategory from "@/db/queries/category"
+import { useIsFocused } from "@react-navigation/native"
+import {
+  CameraCapturedPicture,
+  CameraType,
+  CameraView,
+  useCameraPermissions,
+} from "expo-camera"
+import { router } from "expo-router"
+import { useColorScheme } from "nativewind"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import {
-  TouchableOpacity,
-  Dimensions,
-  View,
-  Text,
   ActivityIndicator,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native"
-import { router } from "expo-router"
-import { useState, useRef, useEffect } from "react"
-import {
-  CameraType,
-  useCameraPermissions,
-  CameraView,
-  CameraCapturedPicture,
-} from "expo-camera"
-import { useIsFocused } from "@react-navigation/native"
-import useCategory from "@/db/queries/category"
-import { useColorScheme } from "nativewind"
-import { colors } from "@/assets/colors"
 
 export default function CameraScreen() {
   const { colorScheme } = useColorScheme()
@@ -87,7 +87,7 @@ export default function CameraScreen() {
   }, [])
 
   async function askGemini(photo: CameraCapturedPicture) {
-    const apiKey = GEMINI_API_KEY
+    const apiKey = API_KEY
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`
 
     if (!categories) {
