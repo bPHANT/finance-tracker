@@ -268,10 +268,47 @@
         "en": "English",
         "de": "Englisch"
       },
+      "categories": {
+        "en": "categories",
+        "de": "Kategorien"
+      },
+      "categoryName": {
+        "en": "Name of category",
+        "de": "Name der Kategorie"
+      },
+      "supercategory": {
+        "en": "Parent category",
+        "de": "Hauptkategorie"
+      },
+      "subcategory": {
+        "en": "Subcategoryy",
+        "de": "Unterkategorie"
+      },
+      "emoji": {
+        "en": "Emoji",
+        "de": "Emoji"
+      },
+      "color": {
+        "en": "color",
+        "de": "Farbe"
+      },
+      "configureCategories": {
+        "en": "Manage categories",
+        "de": "Kategorien verwalten"
+      },
+      "chooseSupercategory": {
+        "en": "Choose Parent category",
+        "de": "Hauptkategorie auswählen"
+      },
+      "chooseSubcategory": {
+        "en": "Choose subcategory",
+        "de": "Unterkategorie auswählen"
+      },
       "german": {
         "en": "German",
         "de": "Deutsch"
-      }
+      
     }
+  }
   }
 }

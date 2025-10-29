@@ -1,13 +1,15 @@
-import { Text, View } from "react-native"
+import { Text, View, TouchableOpacity } from "react-native"
 import { useColorScheme } from "nativewind"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Ionicons } from "@expo/vector-icons"
-import { useTypedTranslation } from "@/language/useTypedTranslation" //import { useTranslation } from "react-i18next"
+import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { colors } from "@/assets/colors"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import DuoSwitch from "@/components/buttons/DuoSwitch"
 import { ScrollView } from "react-native-gesture-handler"
 import { storage } from "@/utils/storage"
+import { useNavigation } from "@react-navigation/native"
+import { router } from "expo-router"
 
 export default function SettingsScreen() {
   const { colorScheme, toggleColorScheme } = useColorScheme()
@@ -24,22 +26,24 @@ export default function SettingsScreen() {
   }
 
   return (
-    <SafeAreaView className='flex-1 bg-background dark:bg-primary-950'>
-      <ScrollView className='mx-4'>
+    <SafeAreaView className="flex-1 bg-background dark:bg-primary-950">
+      <ScrollView className="mx-4">
+        {/* Titel */}
         <ScreenTitle
           title={t("screens.settings.title")}
           showBackButton={false}
         />
 
-        <View className='gap-6'>
-          {/* Appearance Section */}
-          <View className='bg-gray-100 dark:bg-primary-800 rounded-lg overflow-hidden p-4 gap-3'>
-            <Text className='text-lg font-semibold text-gray-900 dark:text-gray-100'>
+        <View className="gap-6">
+          {/* 🎨 Personalisierung */}
+          <View className="bg-gray-100 dark:bg-primary-800 rounded-lg overflow-hidden p-4 gap-3">
+            <Text className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               {t("screens.settings.personalization")}
             </Text>
 
-            <View className='flex-row justify-between items-center'>
-              <View className='flex-row items-center gap-3'>
+            {/* Dark/Light Mode */}
+            <View className="flex-row justify-between items-center">
+              <View className="flex-row items-center gap-3">
                 <Ionicons
                   name={colorScheme === "light" ? "sunny" : "moon"}
                   size={22}
@@ -49,7 +53,7 @@ export default function SettingsScreen() {
                       : colors.gray[50]
                   }
                 />
-                <Text className='text-gray-900 dark:text-gray-100'>
+                <Text className="text-gray-900 dark:text-gray-100">
                   {t("screens.settings.appearance")}
                 </Text>
               </View>
@@ -63,10 +67,12 @@ export default function SettingsScreen() {
                 ]}
               />
             </View>
-            <View className='flex-row justify-between items-center'>
-              <View className='flex-row items-center gap-3'>
+
+            {/* Sprachumschalter */}
+            <View className="flex-row justify-between items-center">
+              <View className="flex-row items-center gap-3">
                 <Ionicons
-                  name='globe-outline'
+                  name="globe-outline"
                   size={22}
                   color={
                     colorScheme === "light"
@@ -74,18 +80,47 @@ export default function SettingsScreen() {
                       : colors.gray[50]
                   }
                 />
-                <Text className='text-gray-900 dark:text-gray-100'>
+                <Text className="text-gray-900 dark:text-gray-100">
                   {t("screens.settings.language")}
                 </Text>
               </View>
 
               <DuoSwitch
                 value={i18n.language === "en"}
-                onChange={() => {
+                onChange={() =>
                   handleLanguageSwitch(i18n.language === "en" ? "de" : "en")
-                }}
+                }
                 options={["Deutsch", "English"]}
               />
+            </View>
+          </View>
+
+          {/* 🗂 Kategorien */}
+          <View>
+            <Text className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              {t("screens.settings.categories") || "Kategorien"}
+            </Text>
+
+            <View className="bg-gray-100 dark:bg-primary-800 rounded-xl overflow-hidden border border-gray-200 dark:border-primary-700">
+              {/* Kategorien konfigurieren */}
+              <TouchableOpacity
+                className="flex-row justify-between items-center px-4 py-3 border-b border-gray-200 dark:border-primary-700"
+                onPress={() => router.push("/settings/categorySettings")}
+              >
+                <Text className="text-gray-900 dark:text-gray-100 text-base">
+                  {t("screens.settings.configureCategories") ||
+                    "Kategorien konfigurieren"}
+                </Text>
+                <Ionicons
+                  name="chevron-forward"
+                  size={20}
+                  color={
+                    colorScheme === "light"
+                      ? colors.primary[600]
+                      : colors.gray[50]
+                  }
+                />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
