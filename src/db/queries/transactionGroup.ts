@@ -1,12 +1,12 @@
-import { useDb } from ".."
+import { eq, inArray, sql } from "drizzle-orm"
 import { useState } from "react"
-import { eq, sql, inArray } from "drizzle-orm"
+import { useDb } from ".."
 import {
-  categoryTable,
   accountTable,
+  categoryTable,
   categoryTermTable,
-  transactionTable,
   transactionGroupTable,
+  transactionTable,
 } from "../schemas"
 
 export default function useTransactionGroup() {
@@ -160,176 +160,178 @@ export default function useTransactionGroup() {
     }
   }
 
-  const getMany = async () => {
-    setLoading(true)
-    setError(null)
-
-    try {
-      const transactionGroupResult = await db
-        .select({
-          id: transactionGroupTable.id,
-          name: transactionGroupTable.name,
-          note: transactionGroupTable.note,
-          date: transactionGroupTable.date,
-          amount: transactionTable.amount,
-          categoryId: categoryTable.id,
-          topLevelCategoryId:
-            sql<number>`COALESCE(${categoryTable.parentCategoryId}, ${categoryTable.id})`.as(
-              "topLevelCategoryId"
-            ),
-        })
-        .from(transactionGroupTable)
-        .innerJoin(
-          transactionTable,
-          eq(transactionTable.transactionGroupId, transactionGroupTable.id)
-        )
-        .innerJoin(
-          categoryTermTable,
-          eq(transactionTable.categoryTermId, categoryTermTable.id)
-        )
-        .innerJoin(
-          categoryTable,
-          eq(categoryTermTable.categoryId, categoryTable.id)
-        )
-
-      const groupedResults = transactionGroupResult.reduce(
-        (acc, row) => {
-          const groupKey = row.id.toString()
-          const categoryKey = `${row.id}-${row.topLevelCategoryId}`
-
-          if (!acc.groups[groupKey]) {
-            acc.groups[groupKey] = {
-              id: row.id,
-              name: row.name,
-              note: row.note,
-              date: row.date,
-              totalAmount: 0,
-            }
-          }
-          acc.groups[groupKey].totalAmount += row.amount
-
-          // Track category amounts for finding the most used category
-          if (!acc.categories[categoryKey]) {
-            acc.categories[categoryKey] = {
-              groupId: row.id,
-              topLevelCategoryId: row.topLevelCategoryId,
-              categoryAmount: 0,
-            }
-          }
-          acc.categories[categoryKey].categoryAmount += row.amount
-
-          return acc
-        },
-        {
-          groups: {} as Record<
-            string,
-            {
-              id: number
-              name: string | null
-              note: string | null
-              date: Date
-              totalAmount: number
-            }
-          >,
-          categories: {} as Record<
-            string,
-            {
-              groupId: number
-              topLevelCategoryId: number
-              categoryAmount: number
-            }
-          >,
-        }
-      )
-      const dominantCategories = Object.values(
-        groupedResults.categories
-      ).reduce((acc, category) => {
-        const groupId = category.groupId
-        if (
-          !acc[groupId] ||
-          category.categoryAmount > acc[groupId].categoryAmount
-        ) {
-          acc[groupId] = category
-        }
-        return acc
-      }, {} as Record<number, (typeof groupedResults.categories)[string]>)
-
-      const transactionGroupsWithTopCategory = Object.values(
-        groupedResults.groups
-      ).map((group) => ({
-        ...group,
+  const getMany = () => {
+    return db
+      .select({
+        id: transactionGroupTable.id,
+        name: transactionGroupTable.name,
+        note: transactionGroupTable.note,
+        date: transactionGroupTable.date,
+        amount: transactionTable.amount,
+        categoryId: categoryTable.id,
         topLevelCategoryId:
-          dominantCategories[group.id]?.topLevelCategoryId ?? 0,
-      }))
-
-      const topLevelCategoryIds = [
-        ...new Set(
-          transactionGroupsWithTopCategory.map((g) => g.topLevelCategoryId)
-        ),
-      ].filter((id) => id > 0) // Filter out any invalid IDs
-
-      const topLevelCategories = await db
-        .select({
-          id: categoryTable.id,
-          name: categoryTable.name,
-          color: categoryTable.color,
-          emoji: categoryTable.emoji,
-        })
-        .from(categoryTable)
-        .where(inArray(categoryTable.id, topLevelCategoryIds))
-
-      const categoryLookup = topLevelCategories.reduce((acc, cat) => {
-        acc[cat.id] = cat
-        return acc
-      }, {} as Record<number, (typeof topLevelCategories)[0]>)
-
-      const finalResults = transactionGroupsWithTopCategory.map((group) => {
-        const category = categoryLookup[group.topLevelCategoryId]
-
-        if (!category) {
-          console.log(
-            `Category not found for ID ${group.topLevelCategoryId} in group ${group.id}`
-          )
-        }
-
-        return {
-          id: group.id,
-          name: group.name ?? category?.name ?? "Unknown",
-          note: group.note,
-          date: group.date,
-          totalAmount: group.totalAmount.toFixed(2),
-          categoryColor: category?.color ?? "gray",
-          categoryEmoji: category?.emoji ?? "❓",
-        }
-      })
-
-      const groupedByDay = finalResults.reduce((acc, group) => {
-        const dayKey = group.date.toISOString().split("T")[0]
-        if (!acc[dayKey]) {
-          acc[dayKey] = []
-        }
-        acc[dayKey].push(group)
-        return acc
-      }, {} as Record<string, typeof finalResults>)
-
-      const sortedResult = Object.entries(groupedByDay)
-        .map(([date, groups]) => ({
-          date,
-          groups: groups.sort(
-            (a, b) => Number(b.totalAmount) - Number(a.totalAmount)
+          sql<number>`COALESCE(${categoryTable.parentCategoryId}, ${categoryTable.id})`.as(
+            "topLevelCategoryId"
           ),
-        }))
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      })
+      .from(transactionGroupTable)
+      .innerJoin(
+        transactionTable,
+        eq(transactionTable.transactionGroupId, transactionGroupTable.id)
+      )
+      .innerJoin(
+        categoryTermTable,
+        eq(transactionTable.categoryTermId, categoryTermTable.id)
+      )
+      .innerJoin(
+        categoryTable,
+        eq(categoryTermTable.categoryId, categoryTable.id)
+      )
+      .then((transactionGroupResult) => {
+        const groupedResults = transactionGroupResult.reduce(
+          (acc, row) => {
+            const groupKey = row.id.toString()
+            const categoryKey = `${row.id}-${row.topLevelCategoryId}`
 
-      return Object.values(sortedResult)
-    } catch (err) {
-      const error =
-        err instanceof Error ? err : new Error("Unknown error occurred")
-      setError(error)
-      return []
-    } finally {
-      setLoading(false)
-    }
+            if (!acc.groups[groupKey]) {
+              acc.groups[groupKey] = {
+                id: row.id,
+                name: row.name,
+                note: row.note,
+                date: row.date,
+                totalAmount: 0,
+              }
+            }
+            acc.groups[groupKey].totalAmount += row.amount
+
+            if (!acc.categories[categoryKey]) {
+              acc.categories[categoryKey] = {
+                groupId: row.id,
+                topLevelCategoryId: row.topLevelCategoryId,
+                categoryAmount: 0,
+              }
+            }
+            acc.categories[categoryKey].categoryAmount += row.amount
+
+            return acc
+          },
+          {
+            groups: {} as Record<
+              string,
+              {
+                id: number
+                name: string | null
+                note: string | null
+                date: Date
+                totalAmount: number
+              }
+            >,
+            categories: {} as Record<
+              string,
+              {
+                groupId: number
+                topLevelCategoryId: number
+                categoryAmount: number
+              }
+            >,
+          }
+        )
+        const dominantCategories = Object.values(
+          groupedResults.categories
+        ).reduce((acc, category) => {
+          const groupId = category.groupId
+          if (
+            !acc[groupId] ||
+            category.categoryAmount > acc[groupId].categoryAmount
+          ) {
+            acc[groupId] = category
+          }
+          return acc
+        }, {} as Record<number, (typeof groupedResults.categories)[string]>)
+
+        const transactionGroupsWithTopCategory = Object.values(
+          groupedResults.groups
+        ).map((group) => ({
+          ...group,
+          topLevelCategoryId:
+            dominantCategories[group.id]?.topLevelCategoryId ?? 0,
+        }))
+
+        const topLevelCategoryIds = [
+          ...new Set(
+            transactionGroupsWithTopCategory.map((g) => g.topLevelCategoryId)
+          ),
+        ].filter((id) => id > 0) // Filter out any invalid IDs
+
+        return db
+          .select({
+            id: categoryTable.id,
+            name: categoryTable.name,
+            color: categoryTable.color,
+            emoji: categoryTable.emoji,
+          })
+          .from(categoryTable)
+          .where(inArray(categoryTable.id, topLevelCategoryIds))
+          .then((topLevelCategories) => {
+            const categoryLookup = topLevelCategories.reduce((acc, cat) => {
+              acc[cat.id] = cat
+              return acc
+            }, {} as Record<number, (typeof topLevelCategories)[0]>)
+
+            const finalResults = transactionGroupsWithTopCategory.map(
+              (group) => {
+                const category = categoryLookup[group.topLevelCategoryId]
+
+                if (!category) {
+                  console.log(
+                    `Category not found for ID ${group.topLevelCategoryId} in group ${group.id}`
+                  )
+                }
+
+                return {
+                  id: group.id,
+                  name: group.name ?? category?.name ?? "Unknown",
+                  note: group.note,
+                  date: group.date,
+                  totalAmount: group.totalAmount.toFixed(2),
+                  categoryColor: category?.color ?? "gray",
+                  categoryEmoji: category?.emoji ?? "❓",
+                }
+              }
+            )
+
+            const groupedByDay = finalResults.reduce((acc, group) => {
+              const dayKey = group.date.toISOString().split("T")[0]
+              if (!acc[dayKey]) {
+                acc[dayKey] = []
+              }
+              acc[dayKey].push(group)
+              return acc
+            }, {} as Record<string, typeof finalResults>)
+
+            const sortedResult = Object.entries(groupedByDay)
+              .map(([date, groups]) => ({
+                date,
+                groups: groups.sort(
+                  (a, b) => Number(b.totalAmount) - Number(a.totalAmount)
+                ),
+              }))
+              .sort(
+                (a, b) =>
+                  new Date(b.date).getTime() - new Date(a.date).getTime()
+              )
+
+            setLoading(false)
+            return Object.values(sortedResult)
+          })
+      })
+      .catch((err) => {
+        const error =
+          err instanceof Error ? err : new Error("Unknown error occurred")
+        setError(error)
+        setLoading(false)
+        return []
+      })
   }
 
   const remove = async ({ id }: { id: number }) => {
@@ -337,14 +339,11 @@ export default function useTransactionGroup() {
     setError(null)
 
     try {
-      // Use a transaction to ensure both deletions happen atomically
       await db.transaction(async (tx) => {
-        // First, explicitly delete all transactions in this group
         await tx
           .delete(transactionTable)
           .where(eq(transactionTable.transactionGroupId, id))
 
-        // Then delete the transaction group itself
         await tx
           .delete(transactionGroupTable)
           .where(eq(transactionGroupTable.id, id))
