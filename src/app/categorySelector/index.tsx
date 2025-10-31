@@ -105,7 +105,10 @@ export default function CategorySelectorScreen(
 
   const handleCategorySelect = (category: CategoryWithChildrenCheck) => {
     router.push({
-      pathname: "/scan/transactionForm",
+      pathname:
+        props.source === "settings"
+          ? "/(tabs)/settings/categorySettings"
+          : "/scan/transactionForm",
       params: {
         selectedCategory: JSON.stringify(category),
       },

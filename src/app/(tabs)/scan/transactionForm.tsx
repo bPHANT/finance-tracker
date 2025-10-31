@@ -157,7 +157,7 @@ export default function TransactionFormScreen() {
   const handleCategoryPress = () => {
     isNavigatingToCategoryRef.current = true
     router.push({
-      pathname: "/categorySelector",
+      pathname: "/scan/categorySelector",
       params: {
         currentCategoryId: formData.categoryId.toString(),
       },
