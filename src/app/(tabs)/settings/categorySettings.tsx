@@ -12,7 +12,7 @@ import { Ionicons } from "@expo/vector-icons"
 import { useColorScheme } from "nativewind"
 import { router } from "expo-router"
 import ColorModal from "@/components/modal/ColorModal"
-
+import EmojiModal from "@/components/modal/EmojiModal"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
 import type { CustomColors } from "@/assets/colors"
@@ -34,6 +34,7 @@ export default function CategorySettingsScreen() {
   const borderCol = isLight ? "border-gray-200" : "border-primary-700"
   const chevron = isLight ? colors.gray[500] : colors.gray[50]
   const [colorModalOpen, setColorModalOpen] = useState(false)
+  const [emojiModalOpen, setEmojiModalOpen] = useState(false)
 
   return (
     <SafeAreaView className='flex-1 bg-primary-50 dark:bg-primary-950'>
@@ -64,7 +65,6 @@ export default function CategorySettingsScreen() {
           />
         </View>
 
-        {/* Farbe & Icon Karten */}
         <View className='flex-row gap-4 mb-8'>
           {/* Farbe */}
           <TouchableOpacity
@@ -83,11 +83,10 @@ export default function CategorySettingsScreen() {
           </TouchableOpacity>
 
           {/* test */}
-          {/* Icon */}
           <TouchableOpacity
             className={`flex-1 ${cardBg} rounded-2xl border ${borderCol} px-4 py-4`}
             style={styles.shadowSm}
-            onPress={() => router.push("/settings/iconPicker")}
+            onPress={() => setEmojiModalOpen(true)}
             activeOpacity={0.75}
           >
             <View className='flex-row justify-between items-center mb-3'>
@@ -132,6 +131,15 @@ export default function CategorySettingsScreen() {
           onSelect={(c) => {
             setBgColor(c) // Vorschau ändert sich sofort
             setColorModalOpen(false) // Modal schließen
+          }}
+        />
+        <EmojiModal
+          visible={emojiModalOpen}
+          selected={emoji}
+          onClose={() => setEmojiModalOpen(false)}
+          onSelect={(e) => {
+            setEmoji(e)
+            setEmojiModalOpen(false)
           }}
         />
       </ScrollView>
