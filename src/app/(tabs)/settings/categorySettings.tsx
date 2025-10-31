@@ -1,10 +1,17 @@
 import React, { useState } from "react"
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native"
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { ScrollView } from "react-native-gesture-handler"
 import { Ionicons } from "@expo/vector-icons"
 import { useColorScheme } from "nativewind"
 import { router } from "expo-router"
+import ColorModal from "@/components/modal/ColorModal"
 
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
@@ -20,26 +27,26 @@ export default function CategorySettingsScreen() {
   const [name, setName] = useState("Freizeit")
   const [emoji, setEmoji] = useState("⚽️")
   const [bgColor, setBgColor] = useState<CustomColors>("orange")
- 
+
   const isLight = colorScheme === "light"
   const textOn = isLight ? "text-gray-900" : "text-gray-100"
   const cardBg = isLight ? "bg-white" : "bg-primary-800"
   const borderCol = isLight ? "border-gray-200" : "border-primary-700"
   const chevron = isLight ? colors.gray[500] : colors.gray[50]
+  const [colorModalOpen, setColorModalOpen] = useState(false)
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-50 dark:bg-primary-950">
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 28 }}>
+    <SafeAreaView className='flex-1 bg-primary-50 dark:bg-primary-950'>
+      <ScrollView
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 28 }}
+      >
         {/* Titel */}
-        <ScreenTitle
-          title={t("screens.settings.title")}
-          showBackButton
-        />
+        <ScreenTitle title={t("screens.settings.title")} showBackButton />
 
         {/* große Emoji-Vorschau */}
-        <View className="items-center mt-1 mb-5">
+        <View className='items-center mt-1 mb-5'>
           <View style={styles.shadowMd}>
-            <EmojiWithBackground size="l" emoji={emoji} color={bgColor} />
+            <EmojiWithBackground size='l' emoji={emoji} color={bgColor} />
           </View>
         </View>
 
@@ -51,30 +58,30 @@ export default function CategorySettingsScreen() {
           <TextInput
             value={name}
             onChangeText={setName}
-            placeholderTextColor="#9CA3AF"
-            className="px-4 py-3 text-base"
+            placeholderTextColor='#9CA3AF'
+            className='px-4 py-3 text-base'
             style={{ color: isLight ? "#111827" : "#F9FAFB" }}
           />
         </View>
 
         {/* Farbe & Icon Karten */}
-        <View className="flex-row gap-4 mb-8">
+        <View className='flex-row gap-4 mb-8'>
           {/* Farbe */}
           <TouchableOpacity
             className={`flex-1 ${cardBg} rounded-2xl border ${borderCol} px-4 py-4`}
             style={styles.shadowSm}
-            onPress={() => router.push("/settings/colorPicker")}
+            onPress={() => setColorModalOpen(true)}
             activeOpacity={0.75}
           >
-            <View className="flex-row justify-between items-center mb-3">
+            <View className='flex-row justify-between items-center mb-3'>
               <Text className={`font-medium ${textOn}`}>
                 {t("screens.settings.color")}
               </Text>
-              <Ionicons name="chevron-forward" size={18} color={chevron} />
+              <Ionicons name='chevron-forward' size={18} color={chevron} />
             </View>
-            <EmojiWithBackground size="s" emoji=" " color={bgColor} />
+            <EmojiWithBackground size='s' emoji=' ' color={bgColor} />
           </TouchableOpacity>
-          
+
           {/* test */}
           {/* Icon */}
           <TouchableOpacity
@@ -83,13 +90,13 @@ export default function CategorySettingsScreen() {
             onPress={() => router.push("/settings/iconPicker")}
             activeOpacity={0.75}
           >
-            <View className="flex-row justify-between items-center mb-3">
+            <View className='flex-row justify-between items-center mb-3'>
               <Text className={`font-medium ${textOn}`}>
                 {t("screens.settings.emoji")}
               </Text>
-              <Ionicons name="chevron-forward" size={18} color={chevron} />
+              <Ionicons name='chevron-forward' size={18} color={chevron} />
             </View>
-            <EmojiWithBackground size="s" emoji={emoji} color={bgColor} />
+            <EmojiWithBackground size='s' emoji={emoji} color={bgColor} />
           </TouchableOpacity>
         </View>
 
@@ -117,6 +124,15 @@ export default function CategorySettingsScreen() {
           borderCol={borderCol}
           chevronColor={chevron}
           textOn={textOn}
+        />
+        <ColorModal
+          visible={colorModalOpen}
+          selected={bgColor}
+          onClose={() => setColorModalOpen(false)}
+          onSelect={(c) => {
+            setBgColor(c) // Vorschau ändert sich sofort
+            setColorModalOpen(false) // Modal schließen
+          }}
         />
       </ScrollView>
     </SafeAreaView>
@@ -147,7 +163,7 @@ function ListItemButton({
       activeOpacity={0.75}
     >
       <Text className={`text-base ${textOn}`}>{label}</Text>
-      <Ionicons name="chevron-forward" size={20} color={chevronColor} />
+      <Ionicons name='chevron-forward' size={20} color={chevronColor} />
     </TouchableOpacity>
   )
 }
