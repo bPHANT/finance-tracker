@@ -62,12 +62,12 @@ export type TranslationKey =
   | "screens.settings.language"
   | "screens.settings.english"
   | "screens.settings.categories"
-  | "screens.settings.categoryName"
   | "screens.settings.supercategory"
   | "screens.settings.subcategory"
-  | "screens.settings.emoji"
-  | "screens.settings.color"
   | "screens.settings.configureCategories"
   | "screens.settings.chooseSupercategory"
   | "screens.settings.chooseSubcategory"
-  | "screens.settings.german";
+  | "screens.settings.german"
+  | "screens.categoryForm.name"
+  | "screens.categoryForm.color"
+  | "screens.categoryForm.emoji";

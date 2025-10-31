@@ -1,4 +1,4 @@
-import { colors, CustomColors } from "@/assets/colors"
+import { colors, CustomColorKeys } from "@/assets/colors"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useCategory from "@/db/queries/category"
@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 type Category = {
   id: number
   name: string
-  color: CustomColors
+  color: CustomColorKeys
   emoji: string
   parentCategoryId?: number | null
 }
@@ -38,17 +38,19 @@ export default function CategorySelectorScreen(
   const router = useRouter()
   const params = useLocalSearchParams()
 
-  const currentCategoryId = props.currentCategoryId
+  const source = (params.source as "scan" | "settings") || props.source
+
+  const currentCategoryId = params.currentCategoryId
     ? Number(params.currentCategoryId)
     : 0
 
-  const parentCategoryId = props.parentCategoryId
+  const parentCategoryId = params.parentCategoryId
     ? params.parentCategoryId === "null"
       ? null
       : Number(params.parentCategoryId)
     : null
 
-  const navigationPath = props.navigationPath
+  const navigationPath = params.navigationPath
     ? JSON.parse(params.navigationPath as string)
     : []
 
@@ -104,15 +106,21 @@ export default function CategorySelectorScreen(
   }, [parentCategoryId])
 
   const handleCategorySelect = (category: CategoryWithChildrenCheck) => {
-    router.push({
-      pathname:
-        props.source === "settings"
-          ? "/(tabs)/settings/categorySettings"
-          : "/scan/transactionForm",
-      params: {
-        selectedCategory: JSON.stringify(category),
-      },
-    })
+    if (source === "settings") {
+      router.push({
+        pathname: "/(tabs)/settings/[categoryId]",
+        params: {
+          categoryId: category.id.toString(),
+        },
+      })
+    } else {
+      router.push({
+        pathname: "/(tabs)/scan/transactionForm",
+        params: {
+          selectedCategory: JSON.stringify(category),
+        },
+      })
+    }
   }
 
   const handleCategoryNavigate = (category: CategoryWithChildrenCheck) => {
@@ -121,8 +129,13 @@ export default function CategorySelectorScreen(
       { id: category.id, name: category.name },
     ]
 
+    const pathname =
+      source === "settings"
+        ? "/(tabs)/settings/categorySelector"
+        : "/(tabs)/scan/categorySelector"
+
     router.push({
-      pathname: "/categorySelector",
+      pathname,
       params: {
         parentCategoryId: category.id.toString(),
         navigationPath: JSON.stringify(newNavigationPath),
@@ -143,9 +156,15 @@ export default function CategorySelectorScreen(
           ? newNavigationPath[newNavigationPath.length - 1].id
           : null
 
+      const pathname =
+        source === "settings"
+          ? "/(tabs)/settings/categorySelector"
+          : "/(tabs)/scan/categorySelector"
+
       router.push({
-        pathname: "/categorySelector",
+        pathname,
         params: {
+          source,
           parentCategoryId: newParentId ? newParentId.toString() : "null",
           navigationPath: JSON.stringify(newNavigationPath),
           currentCategoryId: params.currentCategoryId,

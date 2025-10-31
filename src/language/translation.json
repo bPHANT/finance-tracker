@@ -218,7 +218,6 @@
         "de": "Bitte wählen Sie eine gültige Kategorie"
       }
     },
-
     "budget": {
       "title": {
         "en": "Budget",
@@ -272,25 +271,9 @@
         "en": "categories",
         "de": "Kategorien"
       },
-      "categoryName": {
-        "en": "Name of category",
-        "de": "Name der Kategorie"
-      },
       "supercategory": {
         "en": "Parent category",
         "de": "Hauptkategorie"
-      },
-      "subcategory": {
-        "en": "Subcategoryy",
-        "de": "Unterkategorie"
-      },
-      "emoji": {
-        "en": "Emoji",
-        "de": "Emoji"
-      },
-      "color": {
-        "en": "color",
-        "de": "Farbe"
       },
       "configureCategories": {
         "en": "Manage categories",
@@ -300,15 +283,24 @@
         "en": "Choose Parent category",
         "de": "Hauptkategorie auswählen"
       },
-      "chooseSubcategory": {
-        "en": "Choose subcategory",
-        "de": "Unterkategorie auswählen"
-      },
       "german": {
         "en": "German",
         "de": "Deutsch"
-      
+      }
+    },
+    "categoryForm": {
+      "name": {
+        "en": "Name",
+        "de": "Name"
+      },
+      "color": {
+        "en": "Color",
+        "de": "Farbe"
+      },
+      "emoji": {
+        "en": "Emoji",
+        "de": "Emoji"
+      }
     }
-  }
   }
 }

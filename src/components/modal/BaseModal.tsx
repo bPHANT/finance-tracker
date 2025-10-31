@@ -1,13 +1,6 @@
-import React from "react"
-import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  TouchableOpacity,
-} from "react-native"
 import { useColorScheme } from "nativewind"
+import React from "react"
+import { Modal, Pressable, Text, TouchableOpacity, View } from "react-native"
 
 type BaseModalProps = {
   visible: boolean
@@ -16,10 +9,6 @@ type BaseModalProps = {
   children: React.ReactNode
 }
 
-/**
- * Universelles Bottom-Sheet-Modal mit einheitlichem Stil
- * → Du brauchst künftig nur noch den Inhalt (children) übergeben.
- */
 export default function BaseModal({
   visible,
   title = "",
@@ -32,57 +21,34 @@ export default function BaseModal({
   return (
     <Modal
       visible={visible}
-      animationType="slide"
+      animationType='slide'
       transparent
       onRequestClose={onClose}
     >
-      <Pressable style={styles.backdrop} onPress={onClose} />
+      <Pressable className='flex-1' onPress={onClose} />
 
-      <View style={[styles.sheet, { backgroundColor: isLight ? "#fff" : "#0B1220" }]}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={[styles.title, { color: isLight ? "#111827" : "#F9FAFB" }]}>
+      <View
+        className={`absolute left-0 right-0 bottom-0 max-h-3/4 rounded-lg px-4 pb-4 pt-5 ${
+          isLight ? "bg-gray-50" : "bg-primary-900"
+        }`}
+      >
+        <View className='flex-row justify-between items-center mb-3'>
+          <Text
+            className={`text-subtitle ${
+              isLight ? "text-gray-950" : "text-gray-50"
+            }`}
+          >
             {title}
           </Text>
           <TouchableOpacity onPress={onClose} hitSlop={12}>
-            <Text style={{ color: isLight ? "#111827" : "#F9FAFB", fontSize: 16 }}>
+            <Text className={`${isLight ? "text-gray-950" : "text-gray-50"}`}>
               Schließen
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Inhalt */}
         {children}
       </View>
     </Modal>
   )
 }
-
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.35)",
-  },
-  sheet: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    maxHeight: "70%",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 20,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "600",
-  },
-})

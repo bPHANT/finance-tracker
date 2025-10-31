@@ -1,47 +1,56 @@
-import React, { useMemo } from "react"
-import { View, Text, StyleSheet, FlatList, Pressable } from "react-native"
-import BaseModal from "./BaseModal"
-import { colors } from "@/assets/colors"
-import type { CustomColors } from "@/assets/colors"
+import type { CustomColorKeys } from "@/assets/colors"
+import { colors, customBgColors } from "@/assets/colors"
 import { useColorScheme } from "nativewind"
+import React, { useMemo } from "react"
+import { FlatList, Pressable, Text, View } from "react-native"
+import BaseModal from "./BaseModal"
 
 type Props = {
   visible: boolean
-  selected?: CustomColors
+  selected?: CustomColorKeys
   onClose: () => void
-  onSelect: (color: CustomColors) => void
+  onSelect: (color: CustomColorKeys) => void
 }
 
-export default function ColorModal({ visible, selected, onClose, onSelect }: Props) {
+export default function ColorModal({
+  visible,
+  selected,
+  onClose,
+  onSelect,
+}: Props) {
   const { colorScheme } = useColorScheme()
   const isLight = colorScheme === "light"
   const data = useMemo(
-    () => Object.entries(colors.custom) as [CustomColors, string][],
+    () => Object.entries(colors.custom) as [CustomColorKeys, string][],
     []
   )
 
   return (
-    <BaseModal visible={visible} title="Farbe wählen" onClose={onClose}>
+    <BaseModal visible={visible} title='Farbe wählen' onClose={onClose}>
       <FlatList
         data={data}
         keyExtractor={([key]) => key}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         contentContainerStyle={{ paddingBottom: 16 }}
-        renderItem={({ item: [key, hex] }) => {
+        renderItem={({ item: [key, _] }) => {
           const isSelected = key === selected
           return (
             <Pressable
               onPress={() => onSelect(key)}
-              style={[
-                styles.row,
-                {
-                  backgroundColor: isLight ? "#fff" : "#0F1A2B",
-                  borderColor: isSelected ? hex : isLight ? "#E5E7EB" : "#1F2A3B",
-                },
-              ]}
+              className={`flex-row items-center border-2 rounded-lg p-3 gap-3 bg-gray-50 border-gray-200 dark:bg-primary-950 dark:border-primary-800 ${
+                isSelected
+                  ? isLight
+                    ? "border-primary-600"
+                    : "border-primary-500"
+                  : ""
+              }`}
             >
-              <View style={[styles.swatch, { backgroundColor: hex }]} />
-              <Text style={[styles.label, { color: isLight ? "#111827" : "#F9FAFB" }]}>
+              <View className={`size-7 rounded-lg ${customBgColors[key]}`} />
+              <Text
+                className={`flex-1 capitalize ${
+                  isLight ? "text-gray-900" : "text-gray-50"
+                }`}
+              >
                 {key}
               </Text>
             </Pressable>
@@ -51,26 +60,3 @@ export default function ColorModal({ visible, selected, onClose, onSelect }: Pro
     </BaseModal>
   )
 }
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 2,
-    borderRadius: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-  },
-  swatch: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    marginRight: 12,
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.08)",
-  },
-  label: {
-    fontSize: 16,
-    textTransform: "capitalize",
-  },
-})

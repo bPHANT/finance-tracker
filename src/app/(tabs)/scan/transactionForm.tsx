@@ -1,4 +1,4 @@
-import { CustomColors } from "@/assets/colors"
+import { CustomColorKeys } from "@/assets/colors"
 import Button from "@/components/buttons/Button"
 import DuoSwitch from "@/components/buttons/DuoSwitch"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
@@ -22,7 +22,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 type Category = {
   id: number
   name: string
-  color: CustomColors
+  color: CustomColorKeys
   emoji: string
 }
 
