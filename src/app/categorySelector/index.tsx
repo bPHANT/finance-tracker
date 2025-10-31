@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react"
-import { View, Text, ScrollView, TouchableOpacity } from "react-native"
-import { useRouter, useLocalSearchParams } from "expo-router"
-import { SafeAreaView } from "react-native-safe-area-context"
-import ScreenTitle from "@/components/tabs/ScreenTitle"
-import { useTranslation } from "react-i18next"
-import useCategory from "@/db/queries/category"
 import { colors, CustomColors } from "@/assets/colors"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
+import ScreenTitle from "@/components/tabs/ScreenTitle"
+import useCategory from "@/db/queries/category"
 import { Ionicons } from "@expo/vector-icons"
+import { useLocalSearchParams, useRouter } from "expo-router"
 import { useColorScheme } from "nativewind"
+import React, { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
+import { ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
 
 type Category = {
   id: number
@@ -110,7 +110,7 @@ export default function CategorySelectorScreen() {
     ]
 
     router.push({
-      pathname: "/scan/categorySelector",
+      pathname: "/categorySelector",
       params: {
         parentCategoryId: category.id.toString(),
         navigationPath: JSON.stringify(newNavigationPath),
@@ -132,7 +132,7 @@ export default function CategorySelectorScreen() {
           : null
 
       router.push({
-        pathname: "/scan/categorySelector",
+        pathname: "/categorySelector",
         params: {
           parentCategoryId: newParentId ? newParentId.toString() : "null",
           navigationPath: JSON.stringify(newNavigationPath),
