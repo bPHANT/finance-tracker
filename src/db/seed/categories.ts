@@ -1,13 +1,8 @@
-import { DB_NAME } from "@/db/db_name"
+import type { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite"
 import { categoryTable } from "../schemas"
-import { openDatabaseSync } from "expo-sqlite"
-import { drizzle } from "drizzle-orm/expo-sqlite"
 import { Category } from "../schemas/categories"
 
-export async function seedCategories() {
-  const sqliteDb = openDatabaseSync(DB_NAME)
-  const db = drizzle(sqliteDb)
-
+export async function seedCategories(db: ExpoSQLiteDatabase<any>) {
   const existingCategories = await db.select().from(categoryTable).limit(1)
   if (existingCategories.length > 0) {
     return false

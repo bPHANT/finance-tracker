@@ -1,8 +1,8 @@
 import CircularButton from "@/components/buttons/CircularButton"
+import TransactionRow from "@/components/containers/TransactionGroupContainer"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import BalanceCard from "@/components/widgets/BalanceWidget"
-import TransactionRow from "@/components/containers/TransactionGroupContainer"
 import { useRouter } from "expo-router"
 import { Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -11,7 +11,7 @@ export default function KitchensinkScreen() {
   const router = useRouter()
 
   return (
-    <SafeAreaView className='bg-gray-50 dark:bg-primary-950 flex-1 gap-4'>
+    <SafeAreaView className='bg-gray-100 dark:bg-primary-950 flex-1 gap-4'>
       <ScreenTitle title='Kitchensink' />
 
       <View className='mx-6 flex-col gap-2 justify-start items-start'>

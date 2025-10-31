@@ -1,9 +1,9 @@
-import { useState } from "react"
-import { useDb, isDatabaseInitialized, initializeDatabase } from ".."
-import { categoryTable } from "../schemas/categories"
-import { inArray, isNull, eq } from "drizzle-orm"
-import { categoryTermTable } from "../schemas/categoryTerms"
 import { CustomColors } from "@/assets/colors"
+import { eq, inArray, isNull } from "drizzle-orm"
+import { useState } from "react"
+import { useDb } from ".."
+import { categoryTable } from "../schemas/categories"
+import { categoryTermTable } from "../schemas/categoryTerms"
 
 type CategoryWithChildren = {
   id: number
@@ -63,14 +63,6 @@ export default function useCategory() {
       if (!ids || ids.length === 0) {
         return []
       }
-      if (!db) {
-        throw new Error("Database connection not available")
-      }
-
-      if (!isDatabaseInitialized()) {
-        console.log("Database not initialized, waiting...")
-        await initializeDatabase()
-      }
 
       const categoryResult = await db
         .select({
@@ -87,14 +79,6 @@ export default function useCategory() {
         err instanceof Error ? err : new Error("Unknown error occurred")
       setError(error)
       console.error("Error fetching categories:", error)
-
-      // If it's a database connection error, return empty array instead of null
-      if (
-        error.message.includes("NativeDatabase") ||
-        error.message.includes("Database connection")
-      ) {
-        return []
-      }
       return []
     } finally {
       setLoading(false)
@@ -146,15 +130,6 @@ export default function useCategory() {
     setLoading(true)
     setError(null)
     try {
-      if (!db) {
-        throw new Error("Database connection not available")
-      }
-
-      if (!isDatabaseInitialized()) {
-        console.log("Database not initialized, waiting...")
-        await initializeDatabase()
-      }
-
       const categoryResult = await db
         .select({
           id: categoryTable.id,
@@ -186,15 +161,6 @@ export default function useCategory() {
     setLoading(true)
     setError(null)
     try {
-      if (!db) {
-        throw new Error("Database connection not available")
-      }
-
-      if (!isDatabaseInitialized()) {
-        console.log("Database not initialized, waiting...")
-        await initializeDatabase()
-      }
-
       const children = await db
         .select({ id: categoryTable.id })
         .from(categoryTable)

@@ -1,28 +1,28 @@
 import "../i18n"
 
+import { initializeDatabase, useDb } from "@/db"
+import { DB_NAME } from "@/db/db_name"
+import migrations from "@/db/migrations/migrations"
+import { useTypedTranslation } from "@/language/useTypedTranslation"
+import { storage } from "@/utils/storage"
+import { migrate } from "drizzle-orm/expo-sqlite/migrator"
 import { Stack } from "expo-router"
 import { SQLiteProvider } from "expo-sqlite"
+import { useColorScheme } from "nativewind"
 import { Suspense, useEffect } from "react"
 import { ActivityIndicator } from "react-native"
-import migrations from "@/db/migrations/migrations"
-import { migrate } from "drizzle-orm/expo-sqlite/migrator"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
-import { DB_NAME } from "@/db/db_name"
-import { useDb, initializeDatabase } from "@/db"
-import { useColorScheme } from "nativewind"
 import "../global.css"
-import { storage } from "@/utils/storage"
-import { useTypedTranslation } from "@/language/useTypedTranslation"
 
 function DatabaseInitializer() {
   const db = useDb()
   migrate(db, migrations)
 
   useEffect(() => {
-    initializeDatabase().catch((error) => {
+    initializeDatabase(db).catch((error) => {
       console.error("Failed to initialize database:", error)
     })
-  }, [])
+  }, [db])
 
   return null
 }
