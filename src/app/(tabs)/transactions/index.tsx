@@ -7,7 +7,7 @@ import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { useFocusEffect } from "expo-router"
 import { useCallback, useState } from "react"
-import { View, Text, ScrollView } from "react-native"
+import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 type TransactionGroups = {
@@ -24,46 +24,33 @@ export default function TransactionsScreen() {
     []
   )
 
+  const fetchTransactionGroups = useCallback(async () => {
+    const transactionGroupsResult = await getTransactionGroups()
+    setTransactionGroups(
+      transactionGroupsResult.map((grouped) => ({
+        date: new Date(grouped.date),
+        groups: grouped.groups.map((group) => ({
+          id: group.id,
+          name: group.name!,
+          amount: group.totalAmount!,
+          color: group.categoryColor as CustomColors,
+          emoji: group.categoryEmoji,
+        })),
+      }))
+    )
+  }, [getTransactionGroups])
+
   useFocusEffect(
     useCallback(() => {
-      const fetchTransactionGroups = async () => {
-        const transactionGroupsResult = await getTransactionGroups()
-        setTransactionGroups(
-          transactionGroupsResult.map((grouped) => ({
-            date: new Date(grouped.date),
-            groups: grouped.groups.map((group) => ({
-              id: group.id,
-              name: group.name!,
-              amount: group.totalAmount!,
-              color: group.categoryColor as CustomColors,
-              emoji: group.categoryEmoji,
-            })),
-          }))
-        )
-      }
-
       fetchTransactionGroups()
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [fetchTransactionGroups])
   )
 
   const handleDeleteTransactionGroup = async (id: number) => {
     try {
       await deleteTransactionGroup({ id })
       // Refresh the transaction groups after deletion
-      const transactionGroupsResult = await getTransactionGroups()
-      setTransactionGroups(
-        transactionGroupsResult.map((grouped) => ({
-          date: new Date(grouped.date),
-          groups: grouped.groups.map((group) => ({
-            id: group.id,
-            name: group.name!,
-            amount: group.totalAmount!,
-            color: group.categoryColor as CustomColors,
-            emoji: group.categoryEmoji,
-          })),
-        }))
-      )
+      await fetchTransactionGroups()
     } catch (error) {
       console.error("Failed to delete transaction group:", error)
     }
