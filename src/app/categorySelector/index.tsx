@@ -22,24 +22,33 @@ type CategoryWithChildrenCheck = Category & {
   hasChildren?: boolean
 }
 
-export default function CategorySelectorScreen() {
+type CategorySelectorScreenProps = {
+  source: "scan" | "settings"
+  currentCategoryId: string | string[]
+  parentCategoryId: string | string[]
+  navigationPath: string | string[]
+}
+
+export default function CategorySelectorScreen(
+  props: CategorySelectorScreenProps
+) {
   const { t } = useTranslation()
   const { colorScheme } = useColorScheme()
 
   const router = useRouter()
   const params = useLocalSearchParams()
 
-  const currentCategoryId = params.currentCategoryId
+  const currentCategoryId = props.currentCategoryId
     ? Number(params.currentCategoryId)
     : 0
 
-  const parentCategoryId = params.parentCategoryId
+  const parentCategoryId = props.parentCategoryId
     ? params.parentCategoryId === "null"
       ? null
       : Number(params.parentCategoryId)
     : null
 
-  const navigationPath = params.navigationPath
+  const navigationPath = props.navigationPath
     ? JSON.parse(params.navigationPath as string)
     : []
 

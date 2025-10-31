@@ -104,7 +104,7 @@ export default function SettingsScreen() {
               {/* Kategorien konfigurieren */}
               <TouchableOpacity
                 className='flex-row justify-between items-center px-4 py-3 border-b border-gray-200 dark:border-primary-700'
-                onPress={() => router.push("/categorySelector")}
+                onPress={() => router.push("/settings/categorySelector")}
               >
                 <Text className='text-gray-900 dark:text-gray-100 text-base'>
                   {t("screens.settings.configureCategories") ||
