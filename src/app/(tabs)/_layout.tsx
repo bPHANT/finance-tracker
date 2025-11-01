@@ -26,6 +26,7 @@ export default function TabLayout() {
           borderTopWidth: 0,
           height: 92,
           paddingTop: 16,
+          marginTop: -24,
         },
         tabBarItemStyle: {
           borderRadius: 0,
