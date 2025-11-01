@@ -267,15 +267,11 @@
         "en": "English",
         "de": "Englisch"
       },
-      "categories": {
-        "en": "categories",
-        "de": "Kategorien"
+      "manage": {
+        "en": "Manage",
+        "de": "Verwalten"
       },
-      "supercategory": {
-        "en": "Parent category",
-        "de": "Hauptkategorie"
-      },
-      "configureCategories": {
+      "manageCategories": {
         "en": "Manage categories",
         "de": "Kategorien verwalten"
       },

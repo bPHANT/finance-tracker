@@ -106,12 +106,12 @@ export default function CategoryFormScreen() {
               <Button
                 title={t("screens.categoryForm.color")}
                 onPress={() => setColorModalOpen(true)}
-                right
+                arrowRight
               />
               <Button
                 title={t("screens.categoryForm.emoji")}
                 onPress={() => setEmojiModalOpen(true)}
-                right
+                arrowRight
               />
             </View>
             <Button
