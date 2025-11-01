@@ -7,6 +7,7 @@ export type TranslationKey =
   | "common.deleteTransactionConfirmation"
   | "common.selectDate"
   | "common.done"
+  | "common.back"
   | "screens.home.title"
   | "screens.home.currentBalance"
   | "screens.home.lastTransactions"

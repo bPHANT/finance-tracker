@@ -1,26 +1,18 @@
-import { colors, CustomColorKeys } from "@/assets/colors"
-import EmojiWithBackground from "@/components/display/EmojiWithBackground"
+import BackButton from "@/components/buttons/BackButton"
+import NavigationContainer, {
+  CategoryWithChildrenCheck,
+} from "@/components/containers/NavigationContainer"
+import NavigationPath, {
+  NavigationPathItem,
+} from "@/components/display/NavigationPath"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useCategory from "@/db/queries/category"
-import { Ionicons } from "@expo/vector-icons"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { useColorScheme } from "nativewind"
 import React, { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-
-type Category = {
-  id: number
-  name: string
-  color: CustomColorKeys
-  emoji: string
-  parentCategoryId?: number | null
-}
-
-type CategoryWithChildrenCheck = Category & {
-  hasChildren?: boolean
-}
 
 type CategorySelectorScreenProps = {
   source: "scan" | "settings"
@@ -50,7 +42,7 @@ export default function CategorySelectorScreen(
       : Number(params.parentCategoryId)
     : null
 
-  const navigationPath = params.navigationPath
+  const navigationPath: NavigationPathItem[] = params.navigationPath
     ? JSON.parse(params.navigationPath as string)
     : []
 
@@ -105,7 +97,7 @@ export default function CategorySelectorScreen(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parentCategoryId])
 
-  const handleCategorySelect = (category: CategoryWithChildrenCheck) => {
+  const handleCategorySelect = async (category: CategoryWithChildrenCheck) => {
     if (source === "settings") {
       router.push({
         pathname: "/(tabs)/settings/[categoryId]",
@@ -123,7 +115,9 @@ export default function CategorySelectorScreen(
     }
   }
 
-  const handleCategoryNavigate = (category: CategoryWithChildrenCheck) => {
+  const handleCategoryNavigate = async (
+    category: CategoryWithChildrenCheck
+  ) => {
     const newNavigationPath = [
       ...navigationPath,
       { id: category.id, name: category.name },
@@ -144,7 +138,7 @@ export default function CategorySelectorScreen(
     })
   }
 
-  const handleBackNavigation = () => {
+  const handleBackNavigation = async () => {
     if (navigationPath.length === 0) {
       router.back()
     } else {
@@ -179,38 +173,18 @@ export default function CategorySelectorScreen(
         <View className='px-4'>
           <ScreenTitle title={t("screens.categorySelector.title")} />
 
-          {/* Breadcrumb Navigation */}
           {navigationPath.length > 0 && (
-            <View className='flex-row items-center mb-4 flex-wrap'>
-              <TouchableOpacity
-                onPress={handleBackNavigation}
-                className='flex-row items-center justify-center gap-2 mr-2 p-2 bg-gray-200 dark:bg-primary-800 rounded-lg'
-              >
-                <Ionicons
-                  name='arrow-back-outline'
-                  size={20}
-                  color={
-                    colorScheme === "dark" ? colors.gray[200] : colors.gray[600]
-                  }
-                />
-                <Text className='text-gray-600 dark:text-gray-200 text-base'>
-                  Back
-                </Text>
-              </TouchableOpacity>
+            <View className='flex-row items-center flex-wrap mb-4'>
+              <BackButton onPress={handleBackNavigation} />
 
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View className='flex-row items-center'>
-                  {navigationPath.map((pathItem: any, index: number) => (
-                    <View key={pathItem.id} className='flex-row items-center'>
-                      {index > 0 && (
-                        <Text className='text-base text-gray-600 dark:text-gray-200 mx-2'>
-                          ›
-                        </Text>
-                      )}
-                      <Text className='text-base text-gray-600 dark:text-gray-200 text-sm font-medium'>
-                        {pathItem.name}
-                      </Text>
-                    </View>
+                  {navigationPath.map((pathItem, index) => (
+                    <NavigationPath
+                      key={pathItem.id}
+                      index={index}
+                      pathItem={pathItem}
+                    />
                   ))}
                 </View>
               </ScrollView>
@@ -228,52 +202,13 @@ export default function CategorySelectorScreen(
           <ScrollView className='flex-1' showsVerticalScrollIndicator={false}>
             <View className='gap-3 pb-6 px-4'>
               {categories.map((category) => (
-                <View
+                <NavigationContainer
                   key={category.id}
-                  className={`flex-row items-center rounded-xl ${
-                    currentCategoryId === category.id
-                      ? "bg-primary-200 dark:bg-primary-700"
-                      : "bg-gray-50 dark:bg-primary-800"
-                  }`}
-                >
-                  <TouchableOpacity
-                    onPress={() => handleCategorySelect(category)}
-                    className='flex-1 flex-row items-center p-4'
-                    activeOpacity={0.7}
-                  >
-                    <EmojiWithBackground
-                      color={category.color}
-                      emoji={category.emoji}
-                      size='xs'
-                    />
-                    <Text
-                      className={`text-base ml-4 flex-1 ${
-                        currentCategoryId === category.id
-                          ? "text-primary-800 dark:text-primary-200 font-semibold"
-                          : "text-gray-900 dark:text-gray-100"
-                      }`}
-                    >
-                      {category.name}
-                    </Text>
-                  </TouchableOpacity>
-
-                  {category.hasChildren && (
-                    <TouchableOpacity
-                      onPress={() => handleCategoryNavigate(category)}
-                      className='p-2 items-center justify-center border-2 border-gray-500 dark:border-primary-500 rounded-xl m-4'
-                    >
-                      <Ionicons
-                        name='chevron-forward-outline'
-                        size={24}
-                        color={
-                          colorScheme === "dark"
-                            ? colors.primary[500]
-                            : colors.gray[500]
-                        }
-                      />
-                    </TouchableOpacity>
-                  )}
-                </View>
+                  category={category}
+                  currentCategoryId={currentCategoryId}
+                  onPress={handleCategorySelect}
+                  onNavigationPress={handleCategoryNavigate}
+                />
               ))}
             </View>
           </ScrollView>

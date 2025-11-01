@@ -27,6 +27,10 @@
     "done": {
       "en": "Done",
       "de": "Fertig"
+    },
+    "back": {
+      "en": "Back",
+      "de": "Zurück"
     }
   },
   "screens": {
