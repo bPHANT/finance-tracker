@@ -233,7 +233,7 @@ export default function TransactionScreen() {
             balance={true}
           />
           <Button
-            title={t("screens.input.submit")}
+            title={t("screens.input.save")}
             onPress={() => {
               handleSubmit()
             }}

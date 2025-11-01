@@ -35,8 +35,8 @@ export default function CategoryFormScreen() {
   )
 
   const [categoryName, setCategoryName] = useState<string>()
-  const [categoryColor, setCategoryColor] = useState<CustomColorKeys>("orange")
-  const [categoryEmoji, setCategoryEmoji] = useState("⚽️")
+  const [categoryColor, setCategoryColor] = useState<CustomColorKeys>("gray")
+  const [categoryEmoji, setCategoryEmoji] = useState(" ")
 
   const [colorModalOpen, setColorModalOpen] = useState(false)
   const [emojiModalOpen, setEmojiModalOpen] = useState(false)
@@ -115,7 +115,7 @@ export default function CategoryFormScreen() {
               />
             </View>
             <Button
-              title='Submit'
+              title={t("common.save")}
               onPress={handleSubmit}
               functional='submit'
             ></Button>

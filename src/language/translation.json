@@ -31,6 +31,10 @@
     "back": {
       "en": "Back",
       "de": "Zurück"
+    },
+    "save": {
+      "en": "Save",
+      "de": "Speichern"
     }
   },
   "screens": {
@@ -109,8 +113,8 @@
         "en": "Sum",
         "de": "Summe"
       },
-      "submit": {
-        "en": "Submit",
+      "save": {
+        "en": "save",
         "de": "Speichern"
       },
       "transactions": {
