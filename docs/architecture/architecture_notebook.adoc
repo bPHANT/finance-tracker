@@ -18,21 +18,23 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 
 //Formulieren Sie eine Reihe von Zielen, die die Architektur in ihrer Struktur und ihrem Verhalten erfüllen muss. Identifizieren Sie kritische Fragen, die von der Architektur adressiert werden müssen, z.B. besondere Hardware-Abhängigkeiten, die vom Rest des Systems isoliert werden sollten oder Sicherstellung der Funktionsfähigkeit unter besonderen Bedingungen (z.B. Offline-Nutzung).
 - Entwicklung einer plattformübergreifenden mobilen Anwendung (iOS, Android,).
-- Moderne, nutzerfreundliche und übersichtliche Benutzeroberfläche.
 - Einfache Erweiterbarkeit für zukünftige Integration eines Backends.
 - Leichte Wartbarkeit und Weiterentwicklung durch komponentenbasierten Aufbau.
-- Fokus auf schnelle Entwicklung durch Nutzung von Expo und React Native.
+- Sollte flexible und schnelle Programmierung von moderner UI erlauben.
 - Unterstützung für unterschiedliche Geräte und Betriebssysteme.
-- (Geplant) Synchronisation und Datenspeicherung über ein Backend-System.
+- Erlaubt Synchronisation und Datenspeicherung über ein Backend-System.
 - Minimale Abhängigkeiten, hohe Portabilität und offline/online Nutzung.
+- Unterstützung der verschiedenen Formfaktoren der mobilen Geräte. 
 
 == Annahmen und Abhängigkeiten
 //[List the assumptions and dependencies that drive architectural decisions. This could include sensitive or critical areas, dependencies on legacy interfaces, the skill and experience of the team, the availability of important resources, and so forth]
-- Das Entwicklungsteam hat Kenntnisse in JavaScript/TypeScript und React Native.
-- Die App wird aktuell als reines Frontend mit React Native und Expo entwickelt.
-- Backend-Integration und Datenspeicherung sind als nächste Schritte geplant.
+- Das Entwicklerteam hat Vorerfahrung mit Webentwicklung.
+- Wir können freie KI Rest APIs nutzen.
+- Lokale KI Verarbeitung ist wegen der schwachen Hardware der mobilen Geräte nicht möglich.
+- Die meisten mobilen Geräte besitzen eine Kamera.
+- Jeder Nutzer hat eine aktive Internetverbindung.
+- Die meisten Nutzer verwenden moderne Hardware, worauf moderne Architekturkomponenten perofrmant drauf laufen. 
 - Jeder Nutzer besitzt ein mobiles Endgerät (iOS oder Android) verwenden.
-- Expo ermöglicht schnelle Entwicklung und Testing auf verschiedenen Plattformen.
 
 == Architektur-relevante Anforderungen
 //Fügen Sie eine Referenz / Link zu den Anforderungen ein, die implementiert werden müssen, um die Architektur zu erzeugen.
