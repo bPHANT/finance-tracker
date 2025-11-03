@@ -8,7 +8,6 @@ import NavigationPath, {
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useCategory from "@/db/queries/category"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { useColorScheme } from "nativewind"
 import React, { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { ScrollView, Text, View } from "react-native"
@@ -25,7 +24,6 @@ export default function CategorySelectorScreen(
   props: CategorySelectorScreenProps
 ) {
   const { t } = useTranslation()
-  const { colorScheme } = useColorScheme()
 
   const router = useRouter()
   const params = useLocalSearchParams()

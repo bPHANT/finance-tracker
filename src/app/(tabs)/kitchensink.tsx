@@ -2,10 +2,9 @@ import CircularButton from "@/components/buttons/CircularButton"
 import TransactionRow from "@/components/containers/TransactionGroupContainer"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
-import { Pressable} from "react-native"
 import BalanceCard from "@/components/widgets/BalanceWidget"
 import { useRouter } from "expo-router"
-import { Text, View } from "react-native"
+import { Pressable, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function KitchensinkScreen() {
@@ -15,13 +14,13 @@ export default function KitchensinkScreen() {
     <SafeAreaView className='bg-gray-100 dark:bg-primary-950 flex-1 gap-4'>
       <ScreenTitle title='Kitchensink' />
 
- {/* Button zu Category Settings */}
-      <View className="mx-6 mb-2">
+      {/* Button zu Category Settings */}
+      <View className='mx-6 mb-2'>
         <Pressable
           onPress={() => router.push("/settings/categorySettings")}
-          className="bg-primary-600 dark:bg-primary-700 px-4 py-2 rounded-xl self-start"
+          className='bg-primary-600 dark:bg-primary-700 px-4 py-2 rounded-xl self-start'
         >
-          <Text className="text-white font-medium text-sm">
+          <Text className='text-white font-medium text-sm'>
             Kategorie bearbeiten
           </Text>
         </Pressable>
