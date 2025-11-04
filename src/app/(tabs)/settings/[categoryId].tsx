@@ -33,9 +33,9 @@ export default function CategoryFormScreen() {
   } = useCategory()
 
   const params = useLocalSearchParams()
-  const categoryId = params.categoryId ? Number(params.categoryId) : 0
   const from = params.from as "settings" | "parentSelection"
 
+  const [categoryId, setCategoryId] = useState<number>()
   const [categoryName, setCategoryName] = useState<string>()
   const [categoryColor, setCategoryColor] = useState<CustomColorKeys>("gray")
   const [categoryEmoji, setCategoryEmoji] = useState(" ")
@@ -47,6 +47,9 @@ export default function CategoryFormScreen() {
   } | null>(null)
 
   const fetchCategory = useCallback(async () => {
+    setCategoryId(params.categoryId ? Number(params.categoryId) : 0)
+    if (!categoryId) return
+
     const categoryResult = await getCategoryWithParent({ id: categoryId })
     setCategoryName(categoryResult?.name ?? "")
     setCategoryColor((categoryResult?.color ?? "gray") as CustomColorKeys)
@@ -67,17 +70,26 @@ export default function CategoryFormScreen() {
       "categoryFormState"
     )) as CategoryWithParent
 
-    const parentCategoryResult = await getCategory({ id: categoryId })
-
     setCategoryName(savedCategory.name)
     setCategoryColor(savedCategory.color)
     setCategoryEmoji(savedCategory.emoji)
 
-    if (parentCategoryResult)
-      setParentCategory({
-        ...parentCategoryResult,
-        color: parentCategoryResult.color as CustomColorKeys,
-      })
+    // Get the selected parent ID from params
+    const selectedParentId = params.selectedParentId
+      ? Number(params.selectedParentId)
+      : null
+
+    if (selectedParentId) {
+      const parentCategoryResult = await getCategory({ id: selectedParentId })
+
+      if (parentCategoryResult)
+        setParentCategory({
+          ...parentCategoryResult,
+          color: parentCategoryResult.color as CustomColorKeys,
+        })
+    }
+
+    setCategoryId(savedCategory.id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId])
 
@@ -105,9 +117,10 @@ export default function CategoryFormScreen() {
     })
 
     router.push({
-      pathname: "/settings/categorySelector",
+      pathname: "/categorySelector",
       params: {
         source: "form",
+        currentCategoryId: categoryId?.toString(),
       },
     })
   }
@@ -118,14 +131,20 @@ export default function CategoryFormScreen() {
       return
     }
 
-    updateCategory({
+    if (!categoryId) return
+
+    await updateCategory({
       id: categoryId,
       name: categoryName,
       color: categoryColor,
       emoji: categoryEmoji,
+      parentCategoryId: parentCategory?.id,
     })
 
-    router.back()
+    const categoryResult = await getCategoryWithParent({ id: categoryId })
+    console.log(JSON.stringify(categoryResult))
+
+    router.push("/settings")
   }
 
   return (
@@ -153,7 +172,7 @@ export default function CategoryFormScreen() {
         <ScrollView className='flex-col gap-4 px-4'>
           <View className='gap-4'>
             <ScreenTitle title={t("screens.settings.title")} showBackButton />
-            <View className='items-center '>
+            <View className='items-center'>
               <View>
                 <EmojiWithBackground
                   size='l'

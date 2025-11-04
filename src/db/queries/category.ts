@@ -1,5 +1,5 @@
 import { CustomColorKeys } from "@/assets/colors"
-import { eq, inArray, isNull } from "drizzle-orm"
+import { and, eq, inArray, isNull } from "drizzle-orm"
 import { alias } from "drizzle-orm/sqlite-core"
 import { useState } from "react"
 import { useDb } from ".."
@@ -84,10 +84,25 @@ export default function useCategory() {
         })
         .where(eq(categoryTable.id, id))
         .returning()
-      await db.insert(categoryTermTable).values({
-        term: name,
-        categoryId: categoryResult[0].id,
-      })
+
+      const updatedCategory = categoryResult[0]
+      const existing = await db
+        .select()
+        .from(categoryTermTable)
+        .where(
+          and(
+            eq(categoryTermTable.term, name),
+            eq(categoryTermTable.categoryId, updatedCategory.id)
+          )
+        )
+        .limit(1)
+
+      if (existing.length === 0) {
+        await db.insert(categoryTermTable).values({
+          term: name,
+          categoryId: updatedCategory.id,
+        })
+      }
     } catch (err) {
       const error =
         err instanceof Error ? err : new Error("Unknown error occurred")

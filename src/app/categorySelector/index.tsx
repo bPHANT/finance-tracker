@@ -112,10 +112,11 @@ export default function CategorySelectorScreen(
       })
     } else if (source === "form") {
       router.push({
-        pathname: "/settings/[categoryId]",
+        pathname: "/(tabs)/settings/[categoryId]",
         params: {
-          categoryId: category.id.toString(),
+          categoryId: currentCategoryId.toString(),
           from: "parentSelection",
+          selectedParentId: category.id.toString(),
         },
       })
     }
