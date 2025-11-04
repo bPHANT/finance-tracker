@@ -301,6 +301,10 @@
         "en": "Color",
         "de": "Farbe"
       },
+      "create": {
+        "en": "create",
+        "de": "Erstellen"
+      },
       "emoji": {
         "en": "Emoji",
         "de": "Emoji"

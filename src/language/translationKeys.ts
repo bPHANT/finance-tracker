@@ -69,4 +69,5 @@ export type TranslationKey =
   | "screens.settings.german"
   | "screens.categoryForm.name"
   | "screens.categoryForm.color"
+  | "screens.categoryForm.create"
   | "screens.categoryForm.emoji";

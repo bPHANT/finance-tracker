@@ -12,6 +12,8 @@ import React, { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { TouchableOpacity } from "react-native"
+import { Ionicons } from "@expo/vector-icons"
 
 type CategorySelectorScreenProps = {
   source: "scan" | "settings"
@@ -164,12 +166,30 @@ export default function CategorySelectorScreen(
       })
     }
   }
+  const handleAddPress = () => {
+    router.push({
+      pathname: "/(tabs)/settings/[categoryId]",
+      params: {
+        categoryId: -1,
+      },
+    })
+  }
 
   return (
     <SafeAreaView className='bg-gray-100 dark:bg-primary-950 flex-1'>
       <View className='flex-1'>
         <View className='px-4'>
-          <ScreenTitle title={t("screens.categorySelector.title")} />
+          <View className='flex-row items-center justify-between'>
+            <ScreenTitle title={t("screens.categorySelector.title")} />
+            <TouchableOpacity
+              accessibilityLabel={t("common.add")}
+              onPress={handleAddPress}
+              className='p-2 -mr-2'
+              hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
+            >
+              <Ionicons name='add-circle-outline' size={28} color='#ffffff' />
+            </TouchableOpacity>
+          </View>
 
           {navigationPath.length > 0 && (
             <View className='flex-row items-center flex-wrap mb-4'>

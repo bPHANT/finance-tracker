@@ -15,10 +15,15 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function CategoryFormScreen() {
   const { t } = useTypedTranslation()
-  const { get: getCategory, update: updateCategory } = useCategory()
+  const {
+    get: getCategory,
+    create: createCategory,
+    update: updateCategory,
+  } = useCategory()
 
   const params = useLocalSearchParams()
   const categoryId = params.categoryId ? Number(params.categoryId) : 0
+  const mode = params.categoryId === "-1" ? "create" : "update"
 
   const fetchCategory = useCallback(async () => {
     const categoryResult = await getCategory({ id: categoryId })
@@ -51,6 +56,9 @@ export default function CategoryFormScreen() {
       return
     }
 
+    async function createCategory() {
+      //TODO handle create Answer
+    }
     updateCategory({
       id: categoryId,
       name: categoryName,
@@ -115,10 +123,14 @@ export default function CategoryFormScreen() {
               />
             </View>
             <Button
-              title={t("common.save")}
+              title={
+                mode === "create"
+                  ? t("screens.categoryForm.create")
+                  : t("common.save")
+              }
               onPress={handleSubmit}
               functional='submit'
-            ></Button>
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
