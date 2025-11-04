@@ -67,24 +67,13 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 
 === Kontextabgrenzung
 //Level 1 im C4-Modell
-Das System "Spendex" ist eine plattformübergreifende Finanz-Tracking-App, die Nutzern ermöglicht, Ausgaben und Einnahmen zu verwalten, zu kategorisieren und statistisch auszuwerten. Die App läuft auf iOS, Android und im Web und richtet sich an Endnutzer, die ihre Finanzen unkompliziert überwachen möchten.
 
-- **Systemgrenze:** Die mobile App (Frontend) ist die zentrale Komponente. Externe Systeme wie Backend-APIs oder Datenbanksysteme sind für zukünftige Releases vorgesehen.
-- **Akteure:** Nutzer (Endanwender), ggf. Backend/Sync-Dienst (zukünftig)
-- **Umgebung:** Mobile Geräte (iOS, Android), Webbrowser
+image::https://github.com/bPHANT/finance-tracker/blob/main/docs/architecture/images/Schicht%201.png[]
 
 === Container
 //Level 2 im C4-Modell
-Die Architektur besteht aktuell aus einem Haupt-Container – der mobilen App – die mit React Native (Expo) umgesetzt ist. Die wichtigsten Container sind:
 
-- **Mobile App (Frontend):**
-  - Implementiert mit React Native und Expo.
-  - Beinhaltet alle UI-Komponenten, State-Management und lokale Speicherung der Daten.
-  - Verwendung von Expo-Modulen und React Navigation für plattformübergreifende Funktionen.
-  - Möglichkeit zur Offline-Nutzung.
-- **(Geplant) Backend-API:**
-  - Noch nicht umgesetzt, in zukünftigen Versionen vorgesehen.
-  - Zuständig für Synchronisierung, Speicherung, Benutzerverwaltung etc.
+image::https://github.com/bPHANT/finance-tracker/blob/main/docs/architecture/images/Schicht%202.png[]
 
 === Components
 //Level 3 im C4-Modell
