@@ -55,18 +55,22 @@ export default function CategoryFormScreen() {
       //TODO handle input answer
       return
     }
-
-    async function createCategory() {
-      //TODO handle create Answer
+    if (categoryId === -1) {
+      createCategory({
+        name: categoryName,
+        color: categoryColor,
+        emoji: categoryEmoji,
+      })
+    } else {
+      updateCategory({
+        id: categoryId,
+        name: categoryName,
+        color: categoryColor,
+        emoji: categoryEmoji,
+      })
     }
-    updateCategory({
-      id: categoryId,
-      name: categoryName,
-      color: categoryColor,
-      emoji: categoryEmoji,
-    })
 
-    router.back()
+    router.push("/settings/categorySelector")
   }
 
   return (
