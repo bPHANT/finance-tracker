@@ -103,6 +103,33 @@ export default function useCategory() {
     setLoading(true)
     setError(null)
     try {
+      const result = await db
+        .select({
+          id: categoryTable.id,
+          name: categoryTable.name,
+          color: categoryTable.color,
+          emoji: categoryTable.emoji,
+        })
+        .from(categoryTable)
+        .where(eq(categoryTable.id, id))
+        .limit(1)
+
+      return result[0] ?? null
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error fetching category:", error)
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getWithParent = async ({ id }: { id: number }) => {
+    setLoading(true)
+    setError(null)
+    try {
       const parentCategory = alias(categoryTable, "parentCategory")
       const result = await db
         .select({
@@ -264,6 +291,7 @@ export default function useCategory() {
     create,
     update,
     get,
+    getWithParent,
     getMany,
     getManyAsJson,
     getByParentId,

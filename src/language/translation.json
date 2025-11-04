@@ -283,10 +283,6 @@
         "en": "Manage categories",
         "de": "Kategorien verwalten"
       },
-      "chooseSupercategory": {
-        "en": "Choose Parent category",
-        "de": "Hauptkategorie auswählen"
-      },
       "german": {
         "en": "German",
         "de": "Deutsch"
@@ -304,6 +300,14 @@
       "emoji": {
         "en": "Emoji",
         "de": "Emoji"
+      },
+      "parentCategory": {
+        "en": "Parent Category",
+        "de": "Oberkategorie"
+      },
+      "noParentCategory": {
+        "en": "No Parent Category",
+        "de": "Keine Übergeprdnete Kategorie"
       }
     }
   }

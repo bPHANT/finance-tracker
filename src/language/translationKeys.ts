@@ -65,8 +65,9 @@ export type TranslationKey =
   | "screens.settings.english"
   | "screens.settings.manage"
   | "screens.settings.manageCategories"
-  | "screens.settings.chooseSupercategory"
   | "screens.settings.german"
   | "screens.categoryForm.name"
   | "screens.categoryForm.color"
-  | "screens.categoryForm.emoji";
+  | "screens.categoryForm.emoji"
+  | "screens.categoryForm.parentCategory"
+  | "screens.categoryForm.noParentCategory";

@@ -14,7 +14,7 @@ import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 type CategorySelectorScreenProps = {
-  source: "scan" | "settings"
+  source: "scan" | "settings" | "form"
   currentCategoryId: string | string[]
   parentCategoryId: string | string[]
   navigationPath: string | string[]
@@ -28,7 +28,7 @@ export default function CategorySelectorScreen(
   const router = useRouter()
   const params = useLocalSearchParams()
 
-  const source = (params.source as "scan" | "settings") || props.source
+  const source = (params.source as "scan" | "settings" | "form") || props.source
 
   const currentCategoryId = params.currentCategoryId
     ? Number(params.currentCategoryId)
@@ -103,11 +103,19 @@ export default function CategorySelectorScreen(
           categoryId: category.id.toString(),
         },
       })
-    } else {
+    } else if (source === "scan") {
       router.push({
         pathname: "/(tabs)/scan/transactionForm",
         params: {
           selectedCategory: JSON.stringify(category),
+        },
+      })
+    } else if (source === "form") {
+      router.push({
+        pathname: "/settings/[categoryId]",
+        params: {
+          categoryId: category.id.toString(),
+          from: "parentSelection",
         },
       })
     }
@@ -132,6 +140,7 @@ export default function CategorySelectorScreen(
         parentCategoryId: category.id.toString(),
         navigationPath: JSON.stringify(newNavigationPath),
         currentCategoryId: params.currentCategoryId,
+        source: source === "form" ? "form" : undefined,
       },
     })
   }

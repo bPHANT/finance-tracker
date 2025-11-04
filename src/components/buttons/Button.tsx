@@ -1,10 +1,15 @@
-import { colors } from "@/assets/colors"
+import { colors, CustomColorKeys } from "@/assets/colors"
 import { Ionicons } from "@expo/vector-icons"
 import { Text, TouchableOpacity, View } from "react-native"
+import EmojiWithBackground from "../display/EmojiWithBackground"
 
 type ButtonProps = {
   title: string
   icon?: keyof typeof Ionicons.glyphMap
+  emojiWithBackground?: {
+    emoji: string
+    color: CustomColorKeys
+  }
   arrowRight?: boolean
   textLeft?: boolean
   functional?: "submit" | "cancel"
@@ -26,6 +31,13 @@ export default function Button(props: ButtonProps) {
     >
       {props.icon && (
         <Ionicons name={props.icon} size={16} color={colors.gray[50]} />
+      )}
+      {props.emojiWithBackground && (
+        <EmojiWithBackground
+          color={props.emojiWithBackground.color}
+          emoji={props.emojiWithBackground.emoji}
+          size='xs'
+        />
       )}
       <Text className='text-gray-50 font-semibold rounded-lg'>
         {props.title}
