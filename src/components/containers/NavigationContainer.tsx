@@ -5,7 +5,7 @@ import { Text, TouchableOpacity, View } from "react-native"
 import EmojiWithBackground from "../display/EmojiWithBackground"
 
 export type Category = {
-  id: number
+  id: number | null
   name: string
   color: CustomColorKeys
   emoji: string
@@ -20,7 +20,7 @@ type NavigationContainerProps = {
   category: CategoryWithChildrenCheck
   currentCategoryId: number
   onPress: (category: CategoryWithChildrenCheck) => Promise<void>
-  onNavigationPress: (category: CategoryWithChildrenCheck) => Promise<void>
+  onNavigationPress?: (category: CategoryWithChildrenCheck) => Promise<void>
 }
 
 export default function NavigationContainer(props: NavigationContainerProps) {
@@ -58,7 +58,7 @@ export default function NavigationContainer(props: NavigationContainerProps) {
 
       {props.category.hasChildren && (
         <TouchableOpacity
-          onPress={() => props.onNavigationPress(props.category)}
+          onPress={() => props.onNavigationPress?.(props.category)}
           className='p-2 items-center justify-center border-2 border-gray-500 dark:border-primary-500 rounded-xl m-4'
         >
           <Ionicons

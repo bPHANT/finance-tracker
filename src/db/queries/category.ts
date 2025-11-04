@@ -1,5 +1,5 @@
 import { CustomColorKeys } from "@/assets/colors"
-import { eq, inArray, isNull } from "drizzle-orm"
+import { and, eq, inArray, isNull } from "drizzle-orm"
 import { alias } from "drizzle-orm/sqlite-core"
 import { useState } from "react"
 import { useDb } from ".."
@@ -27,7 +27,7 @@ export default function useCategory() {
     name: string
     color: CustomColorKeys
     emoji: string
-    parentCategoryId?: number
+    parentCategoryId?: number | null
   }) => {
     setLoading(true)
     setError(null)
@@ -68,7 +68,7 @@ export default function useCategory() {
     name: string
     color: CustomColorKeys
     emoji: string
-    parentCategoryId?: number
+    parentCategoryId?: number | null
   }) => {
     setLoading(true)
     setError(null)
@@ -84,10 +84,25 @@ export default function useCategory() {
         })
         .where(eq(categoryTable.id, id))
         .returning()
-      await db.insert(categoryTermTable).values({
-        term: name,
-        categoryId: categoryResult[0].id,
-      })
+
+      const updatedCategory = categoryResult[0]
+      const existing = await db
+        .select()
+        .from(categoryTermTable)
+        .where(
+          and(
+            eq(categoryTermTable.term, name),
+            eq(categoryTermTable.categoryId, updatedCategory.id)
+          )
+        )
+        .limit(1)
+
+      if (existing.length === 0) {
+        await db.insert(categoryTermTable).values({
+          term: name,
+          categoryId: updatedCategory.id,
+        })
+      }
     } catch (err) {
       const error =
         err instanceof Error ? err : new Error("Unknown error occurred")
@@ -100,6 +115,33 @@ export default function useCategory() {
   }
 
   const get = async ({ id }: { id: number }) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const result = await db
+        .select({
+          id: categoryTable.id,
+          name: categoryTable.name,
+          color: categoryTable.color,
+          emoji: categoryTable.emoji,
+        })
+        .from(categoryTable)
+        .where(eq(categoryTable.id, id))
+        .limit(1)
+
+      return result[0] ?? null
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error fetching category:", error)
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getWithParent = async ({ id }: { id: number }) => {
     setLoading(true)
     setError(null)
     try {
@@ -264,6 +306,7 @@ export default function useCategory() {
     create,
     update,
     get,
+    getWithParent,
     getMany,
     getManyAsJson,
     getByParentId,

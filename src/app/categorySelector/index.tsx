@@ -7,16 +7,15 @@ import NavigationPath, {
 } from "@/components/display/NavigationPath"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useCategory from "@/db/queries/category"
+import { Ionicons } from "@expo/vector-icons"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import React, { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { ScrollView, Text, View } from "react-native"
+import { ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { TouchableOpacity } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
 
 type CategorySelectorScreenProps = {
-  source: "scan" | "settings"
+  source: "scan" | "settings" | "form"
   currentCategoryId: string | string[]
   parentCategoryId: string | string[]
   navigationPath: string | string[]
@@ -30,7 +29,7 @@ export default function CategorySelectorScreen(
   const router = useRouter()
   const params = useLocalSearchParams()
 
-  const source = (params.source as "scan" | "settings") || props.source
+  const source = (params.source as "scan" | "settings" | "form") || props.source
 
   const currentCategoryId = params.currentCategoryId
     ? Number(params.currentCategoryId)
@@ -98,6 +97,10 @@ export default function CategorySelectorScreen(
   }, [parentCategoryId])
 
   const handleCategorySelect = async (category: CategoryWithChildrenCheck) => {
+    if (!category.id) {
+      console.log("Error while Selection: No category.id")
+      return
+    }
     if (source === "settings") {
       router.push({
         pathname: "/(tabs)/settings/[categoryId]",
@@ -105,14 +108,34 @@ export default function CategorySelectorScreen(
           categoryId: category.id.toString(),
         },
       })
-    } else {
+    } else if (source === "scan") {
       router.push({
         pathname: "/(tabs)/scan/transactionForm",
         params: {
           selectedCategory: JSON.stringify(category),
         },
       })
+    } else if (source === "form") {
+      router.push({
+        pathname: "/(tabs)/settings/[categoryId]",
+        params: {
+          categoryId: currentCategoryId.toString(),
+          source: "parentSelection",
+          selectedParentId: category.id.toString(),
+        },
+      })
     }
+  }
+
+  const handleNoParentCategorySelect = async () => {
+    router.push({
+      pathname: "/(tabs)/settings/[categoryId]",
+      params: {
+        categoryId: currentCategoryId.toString(),
+        source: "parentSelection",
+        selectedParentId: "-1",
+      },
+    })
   }
 
   const handleCategoryNavigate = async (
@@ -131,41 +154,18 @@ export default function CategorySelectorScreen(
     router.push({
       pathname,
       params: {
-        parentCategoryId: category.id.toString(),
+        parentCategoryId: category.id?.toString(),
         navigationPath: JSON.stringify(newNavigationPath),
         currentCategoryId: params.currentCategoryId,
+        source: source === "form" ? "form" : undefined,
       },
     })
   }
 
   const handleBackNavigation = async () => {
-    if (navigationPath.length === 0) {
-      router.back()
-    } else {
-      const newNavigationPath = [...navigationPath]
-      newNavigationPath.pop()
-
-      const newParentId =
-        newNavigationPath.length > 0
-          ? newNavigationPath[newNavigationPath.length - 1].id
-          : null
-
-      const pathname =
-        source === "settings"
-          ? "/(tabs)/settings/categorySelector"
-          : "/(tabs)/scan/categorySelector"
-
-      router.push({
-        pathname,
-        params: {
-          source,
-          parentCategoryId: newParentId ? newParentId.toString() : "null",
-          navigationPath: JSON.stringify(newNavigationPath),
-          currentCategoryId: params.currentCategoryId,
-        },
-      })
-    }
+    router.back()
   }
+
   const handleAddPress = () => {
     router.push({
       pathname: "/(tabs)/settings/[categoryId]",
@@ -180,7 +180,10 @@ export default function CategorySelectorScreen(
       <View className='flex-1'>
         <View className='px-4'>
           <View className='flex-row items-center justify-between'>
-            <ScreenTitle title={t("screens.categorySelector.title")} />
+            <ScreenTitle
+              title={t("screens.categorySelector.title")}
+              showBackButton={!parentCategoryId}
+            />
             <TouchableOpacity
               accessibilityLabel={t("common.add")}
               onPress={handleAddPress}
@@ -190,7 +193,6 @@ export default function CategorySelectorScreen(
               <Ionicons name='add-circle-outline' size={28} color='#ffffff' />
             </TouchableOpacity>
           </View>
-
           {navigationPath.length > 0 && (
             <View className='flex-row items-center flex-wrap mb-4'>
               <BackButton onPress={handleBackNavigation} />
@@ -219,6 +221,20 @@ export default function CategorySelectorScreen(
         ) : (
           <ScrollView className='flex-1' showsVerticalScrollIndicator={false}>
             <View className='gap-3 pb-6 px-4'>
+              {source === "form" && !parentCategoryId && (
+                <NavigationContainer
+                  category={{
+                    id: null,
+                    color: "gray",
+                    emoji: " ",
+                    name: t("screens.categorySelector.noParentCategory"),
+                    hasChildren: false,
+                    parentCategoryId: null,
+                  }}
+                  currentCategoryId={currentCategoryId}
+                  onPress={handleNoParentCategorySelect}
+                />
+              )}
               {categories.map((category) => (
                 <NavigationContainer
                   key={category.id}

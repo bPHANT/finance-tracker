@@ -90,6 +90,10 @@
       "loading": {
         "en": "Loading categories...",
         "de": "Kategorien werden geladen..."
+      },
+      "noParentCategory": {
+        "en": "None",
+        "de": "Keine"
       }
     },
     "input": {
@@ -112,10 +116,6 @@
       "sum": {
         "en": "Sum",
         "de": "Summe"
-      },
-      "save": {
-        "en": "save",
-        "de": "Speichern"
       },
       "transactions": {
         "en": "Transactions",
@@ -283,16 +283,22 @@
         "en": "Manage categories",
         "de": "Kategorien verwalten"
       },
-      "chooseSupercategory": {
-        "en": "Choose Parent category",
-        "de": "Hauptkategorie auswählen"
-      },
       "german": {
         "en": "German",
         "de": "Deutsch"
       }
     },
     "categoryForm": {
+      "title": {
+        "create": {
+          "en": "Create Category",
+          "de": "Kategorie erstellen"
+        },
+        "update": {
+          "en": "Update Category",
+          "de": "Kategorie bearbeiten"
+        }
+      },
       "name": {
         "en": "Name",
         "de": "Name"
@@ -302,12 +308,24 @@
         "de": "Farbe"
       },
       "create": {
-        "en": "create",
+        "en": "Create",
         "de": "Erstellen"
       },
       "emoji": {
         "en": "Emoji",
         "de": "Emoji"
+      },
+      "parentCategory": {
+        "en": "Parent Category",
+        "de": "Oberkategorie"
+      },
+      "noParentCategory": {
+        "en": "No Parent Category",
+        "de": "Keine Übergeordnete Kategorie"
+      },
+      "alertNoName": {
+        "en": "No category name defined!",
+        "de": "Kein Kategoriename angegeben!"
       }
     }
   }

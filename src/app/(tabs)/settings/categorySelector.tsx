@@ -5,7 +5,7 @@ export default function CategorySelectorScreenFromSettings() {
 
   return (
     <CategorySelectorScreen
-      source='settings'
+      source={(params.source as undefined | "form") ?? "settings"}
       currentCategoryId={params.currentCategoryId}
       parentCategoryId={params.parentCategoryId}
       navigationPath={params.navigationPath}

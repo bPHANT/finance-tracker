@@ -1,47 +1,107 @@
 import type { CustomColorKeys } from "@/assets/colors"
 import Button from "@/components/buttons/Button"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
+import CategoryTouchable from "@/components/input/CategoryTouchable"
+import FieldTitle from "@/components/input/FieldTitle"
 import TextField from "@/components/input/TextField"
 import ColorModal from "@/components/modal/ColorModal"
 import EmojiModal from "@/components/modal/EmojiModal"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useCategory from "@/db/queries/category"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
+import { storage } from "@/utils/storage"
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
 import React, { useCallback, useState } from "react"
 import { View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import { SafeAreaView } from "react-native-safe-area-context"
 
+type Category = {
+  id: number
+  name: string
+  color: CustomColorKeys
+  emoji: string
+}
+type CategoryWithParent = Category & { parentCategory: Category }
+
 export default function CategoryFormScreen() {
   const { t } = useTypedTranslation()
   const {
     get: getCategory,
+    getWithParent: getCategoryWithParent,
     create: createCategory,
     update: updateCategory,
   } = useCategory()
 
   const params = useLocalSearchParams()
-  const categoryId = params.categoryId ? Number(params.categoryId) : 0
+  const source = params.source as "settings" | "parentSelection"
+
+  const [categoryId, setCategoryId] = useState<number>()
+  const [categoryName, setCategoryName] = useState<string>()
+  const [categoryColor, setCategoryColor] = useState<CustomColorKeys>("gray")
+  const [categoryEmoji, setCategoryEmoji] = useState(" ")
+  const [parentCategory, setParentCategory] = useState<{
+    id: number
+    name: string
+    color: CustomColorKeys
+    emoji: string
+  } | null>(null)
   const mode = params.categoryId === "-1" ? "create" : "update"
 
   const fetchCategory = useCallback(async () => {
-    const categoryResult = await getCategory({ id: categoryId })
+    setCategoryId(params.categoryId ? Number(params.categoryId) : 0)
+    if (!categoryId) return
+
+    const categoryResult = await getCategoryWithParent({ id: categoryId })
     setCategoryName(categoryResult?.name ?? "")
     setCategoryColor((categoryResult?.color ?? "gray") as CustomColorKeys)
     setCategoryEmoji(categoryResult?.emoji ?? " ")
+    setParentCategory(
+      categoryResult?.parent
+        ? {
+            ...categoryResult?.parent,
+            color: categoryResult?.parent?.color as CustomColorKeys,
+          }
+        : null
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryId])
+
+  const loadCategory = useCallback(async () => {
+    const savedCategory = (await storage.getObject(
+      "categoryFormState"
+    )) as CategoryWithParent
+
+    setCategoryId(savedCategory.id)
+    setCategoryName(savedCategory.name)
+    setCategoryColor(savedCategory.color)
+    setCategoryEmoji(savedCategory.emoji)
+
+    const selectedParentId = params.selectedParentId
+      ? Number(params.selectedParentId)
+      : null
+
+    if (!selectedParentId || selectedParentId === -1) {
+      setParentCategory(null)
+      return
+    }
+    const parentCategoryResult = await getCategory({ id: selectedParentId })
+
+    if (parentCategoryResult)
+      setParentCategory({
+        ...parentCategoryResult,
+        color: parentCategoryResult.color as CustomColorKeys,
+      })
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId])
 
   useFocusEffect(
     useCallback(() => {
-      fetchCategory()
-    }, [fetchCategory])
+      if (source === "parentSelection") loadCategory()
+      else fetchCategory()
+    }, [fetchCategory, source, loadCategory])
   )
-
-  const [categoryName, setCategoryName] = useState<string>()
-  const [categoryColor, setCategoryColor] = useState<CustomColorKeys>("gray")
-  const [categoryEmoji, setCategoryEmoji] = useState(" ")
 
   const [colorModalOpen, setColorModalOpen] = useState(false)
   const [emojiModalOpen, setEmojiModalOpen] = useState(false)
@@ -50,23 +110,46 @@ export default function CategoryFormScreen() {
     setCategoryName(value)
   }
 
+  async function handleSelectParentCategory() {
+    await storage.setObject("categoryFormState", {
+      id: categoryId,
+      name: categoryName,
+      color: categoryColor,
+      emoji: categoryEmoji,
+      parent: parentCategory,
+    })
+
+    router.push({
+      pathname: "/categorySelector",
+      params: {
+        source: "form",
+        currentCategoryId: categoryId?.toString(),
+      },
+    })
+  }
+
   async function handleSubmit() {
-    if (!categoryName) {
-      //TODO handle input answer
+    if (!categoryName || categoryName.trim() === "") {
+      alert(t("screens.categoryForm.alertNoName"))
       return
     }
+
+    if (!categoryId) return
+
     if (categoryId === -1) {
       createCategory({
         name: categoryName,
         color: categoryColor,
         emoji: categoryEmoji,
+        parentCategoryId: parentCategory?.id ?? null,
       })
     } else {
-      updateCategory({
+      await updateCategory({
         id: categoryId,
         name: categoryName,
         color: categoryColor,
         emoji: categoryEmoji,
+        parentCategoryId: parentCategory?.id ?? null,
       })
     }
 
@@ -97,8 +180,17 @@ export default function CategoryFormScreen() {
       <SafeAreaView className='flex-1 bg-primary-50 dark:bg-primary-950'>
         <ScrollView className='flex-col gap-4 px-4'>
           <View className='gap-4'>
-            <ScreenTitle title={t("screens.settings.title")} showBackButton />
-            <View className='items-center '>
+            <ScreenTitle
+              title={
+                categoryId
+                  ? categoryId === -1
+                    ? t("screens.categoryForm.title.create")
+                    : t("screens.categoryForm.title.update")
+                  : t("screens.settings.categorySettings")
+              }
+              showBackButton
+            />
+            <View className='items-center'>
               <View>
                 <EmojiWithBackground
                   size='l'
@@ -124,6 +216,18 @@ export default function CategoryFormScreen() {
                 title={t("screens.categoryForm.emoji")}
                 onPress={() => setEmojiModalOpen(true)}
                 arrowRight
+              />
+            </View>
+            <View className='gap-1'>
+              <FieldTitle title={t("screens.categoryForm.parentCategory")} />
+              <CategoryTouchable
+                color={parentCategory?.color}
+                emoji={parentCategory?.emoji}
+                title={
+                  parentCategory?.name ??
+                  t("screens.categoryForm.noParentCategory")
+                }
+                onPress={handleSelectParentCategory}
               />
             </View>
             <Button
