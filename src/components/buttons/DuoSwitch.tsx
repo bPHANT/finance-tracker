@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native"
+import { Text, TouchableOpacity, View } from "react-native"
 
 export default function DuoSwitch<T extends string>({
   value,
@@ -21,12 +21,16 @@ export default function DuoSwitch<T extends string>({
               onChange(option)
             }}
             className={`px-4 py-2 ${
-              isSelected ? "bg-primary-600" : "bg-gray-50"
+              isSelected
+                ? "bg-primary-600 dark:bg-primary-600"
+                : "bg-gray-50 dark:bg-primary-900"
             }`}
           >
             <Text
               className={`font-semibold ${
-                isSelected ? "text-gray-50" : "text-primary-600"
+                isSelected
+                  ? "text-gray-50"
+                  : "text-primary-600 dark:text-gray-50"
               }`}
             >
               {option}

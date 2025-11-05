@@ -1,4 +1,4 @@
-import { CustomColors } from "@/assets/colors"
+import { CustomColorKeys } from "@/assets/colors"
 import TransactionGroupList, {
   TransactionGroupListProps,
 } from "@/components/containers/TransactionGroupList"
@@ -33,7 +33,7 @@ export default function TransactionsScreen() {
           id: group.id,
           name: group.name!,
           amount: group.totalAmount!,
-          color: group.categoryColor as CustomColors,
+          color: group.categoryColor as CustomColorKeys,
           emoji: group.categoryEmoji,
         })),
       }))

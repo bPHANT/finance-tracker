@@ -1,8 +1,8 @@
-import { Tabs } from "expo-router"
-import TabButton from "./TabButton"
-import { useColorScheme } from "nativewind"
 import { colors as themeColor } from "@/assets/colors"
 import { Ionicons } from "@expo/vector-icons"
+import { Tabs } from "expo-router"
+import { useColorScheme } from "nativewind"
+import TabButton from "./TabButton"
 
 type TabInfo = {
   title: string
@@ -44,6 +44,7 @@ export default function SecondTabs({
             colorScheme === "light" ? themeColor.primary[50] : "#28395c",
           borderTopWidth: 0,
           height: 48,
+          marginBottom: 24,
         },
         tabBarItemStyle: {
           height: 48,

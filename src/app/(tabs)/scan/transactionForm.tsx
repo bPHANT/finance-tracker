@@ -1,28 +1,28 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
-import {
-  View,
-  Text,
-  ScrollView,
-  Alert,
-  TouchableOpacity,
-  Keyboard,
-} from "react-native"
-import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router"
-import { SafeAreaView } from "react-native-safe-area-context"
-import TextField from "@/components/input/TextField"
-import ScreenTitle from "@/components/tabs/ScreenTitle"
+import { CustomColorKeys } from "@/assets/colors"
 import Button from "@/components/buttons/Button"
 import DuoSwitch from "@/components/buttons/DuoSwitch"
-import useCategory from "@/db/queries/category"
-import { CustomColors } from "@/assets/colors"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
-import { Ionicons } from "@expo/vector-icons"
+import TextField from "@/components/input/TextField"
+import ScreenTitle from "@/components/tabs/ScreenTitle"
+import useCategory from "@/db/queries/category"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
+import { Ionicons } from "@expo/vector-icons"
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import {
+  Alert,
+  Keyboard,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
 
 type Category = {
   id: number
   name: string
-  color: CustomColors
+  color: CustomColorKeys
   emoji: string
 }
 
@@ -158,7 +158,9 @@ export default function TransactionFormScreen() {
     isNavigatingToCategoryRef.current = true
     router.push({
       pathname: "/scan/categorySelector",
-      params: { currentCategoryId: formData.categoryId.toString() },
+      params: {
+        currentCategoryId: formData.categoryId.toString(),
+      },
     })
   }
 

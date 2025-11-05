@@ -1,22 +1,22 @@
-import { View, Text, Alert, TouchableOpacity } from "react-native"
-import EmojiWithBackground from "@/components/display/EmojiWithBackground"
+import { CustomColorKeys } from "@/assets/colors"
 import AmountBadge from "@/components/display/AmountBadge"
-import { CustomColors } from "@/assets/colors"
+import EmojiWithBackground from "@/components/display/EmojiWithBackground"
+import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { Ionicons } from "@expo/vector-icons"
 import { forwardRef, useImperativeHandle } from "react"
-import { useTypedTranslation } from "@/language/useTypedTranslation"
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  runOnJS,
-} from "react-native-reanimated"
+import { Alert, Text, TouchableOpacity, View } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated"
 
 export type TransactionGroupContainerProps = {
   name: string
   amount: string
-  color: CustomColors
+  color: CustomColorKeys
   emoji: string
   rounded?: "top" | "bottom" | "full"
   id?: number

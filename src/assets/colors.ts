@@ -62,7 +62,19 @@ export const colors = {
   functional: {
     delete: "#ff4d4d",
     edit: "#ffb84d",
+    submit: "#3fab48",
   },
 }
 
-export type CustomColors = keyof typeof colors.custom
+export type CustomColorKeys = keyof typeof colors.custom
+
+export const customBgColors: Record<CustomColorKeys, string> = {
+  orange: "bg-custom-orange",
+  turquoise: "bg-custom-turquoise",
+  gray: "bg-custom-gray",
+  violet: "bg-custom-violet",
+  yellow: "bg-custom-yellow",
+  blue: "bg-custom-blue",
+  pink: "bg-custom-pink",
+  green: "bg-custom-green",
+}

@@ -1,4 +1,4 @@
-import { CustomColors } from "@/assets/colors"
+import { CustomColorKeys } from "@/assets/colors"
 import Button from "@/components/buttons/Button"
 import FunctionalButton from "@/components/buttons/FunctionalButton"
 import TransactionContainer from "@/components/containers/TransactionContainer"
@@ -24,7 +24,7 @@ type TransactionResponse = {
 type Category = {
   id: number
   name: string
-  color: CustomColors
+  color: CustomColorKeys
   emoji: string
 }
 
@@ -233,7 +233,7 @@ export default function TransactionScreen() {
             balance={true}
           />
           <Button
-            title={t("screens.input.submit")}
+            title={t("screens.input.save")}
             onPress={() => {
               handleSubmit()
             }}

@@ -1,7 +1,7 @@
-import { View, Text } from "react-native"
+import { CustomColorKeys } from "@/assets/colors"
+import { Text, View } from "react-native"
 import InteractionButton from "../buttons/InteractionButton"
 import EmojiWithBackground from "../display/EmojiWithBackground"
-import { CustomColors } from "@/assets/colors"
 
 type TransactionContainerProps = {
   name: string
@@ -9,7 +9,7 @@ type TransactionContainerProps = {
   amount: string
   category: {
     name: string
-    color: CustomColors
+    color: CustomColorKeys
     emoji: string
   }
   onEdit?: () => void

@@ -1,11 +1,11 @@
 import CategorySelectorScreen from "@/app/categorySelector"
 import { useLocalSearchParams } from "expo-router"
-export default function CategorySelectorScreenFromScan() {
+export default function CategorySelectorScreenFromSettings() {
   const params = useLocalSearchParams()
 
   return (
     <CategorySelectorScreen
-      source='scan'
+      source={(params.source as undefined | "form") ?? "settings"}
       currentCategoryId={params.currentCategoryId}
       parentCategoryId={params.parentCategoryId}
       navigationPath={params.navigationPath}

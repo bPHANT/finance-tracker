@@ -27,6 +27,14 @@
     "done": {
       "en": "Done",
       "de": "Fertig"
+    },
+    "back": {
+      "en": "Back",
+      "de": "Zurück"
+    },
+    "save": {
+      "en": "Save",
+      "de": "Speichern"
     }
   },
   "screens": {
@@ -82,6 +90,10 @@
       "loading": {
         "en": "Loading categories...",
         "de": "Kategorien werden geladen..."
+      },
+      "noParentCategory": {
+        "en": "None",
+        "de": "Keine"
       }
     },
     "input": {
@@ -104,10 +116,6 @@
       "sum": {
         "en": "Sum",
         "de": "Summe"
-      },
-      "submit": {
-        "en": "Submit",
-        "de": "Speichern"
       },
       "transactions": {
         "en": "Transactions",
@@ -218,7 +226,6 @@
         "de": "Bitte wählen Sie eine gültige Kategorie"
       }
     },
-
     "budget": {
       "title": {
         "en": "Budget",
@@ -268,47 +275,58 @@
         "en": "English",
         "de": "Englisch"
       },
-      "categories": {
-        "en": "categories",
-        "de": "Kategorien"
+      "manage": {
+        "en": "Manage",
+        "de": "Verwalten"
       },
-      "categoryName": {
-        "en": "Name of category",
-        "de": "Name der Kategorie"
+      "manageCategories": {
+        "en": "Manage categories",
+        "de": "Kategorien verwalten"
       },
-      "supercategory": {
-        "en": "Parent category",
-        "de": "Hauptkategorie"
+      "german": {
+        "en": "German",
+        "de": "Deutsch"
+      }
+    },
+    "categoryForm": {
+      "title": {
+        "create": {
+          "en": "Create Category",
+          "de": "Kategorie erstellen"
+        },
+        "update": {
+          "en": "Update Category",
+          "de": "Kategorie bearbeiten"
+        }
       },
-      "subcategory": {
-        "en": "Subcategoryy",
-        "de": "Unterkategorie"
+      "name": {
+        "en": "Name",
+        "de": "Name"
+      },
+      "color": {
+        "en": "Color",
+        "de": "Farbe"
+      },
+      "create": {
+        "en": "Create",
+        "de": "Erstellen"
       },
       "emoji": {
         "en": "Emoji",
         "de": "Emoji"
       },
-      "color": {
-        "en": "color",
-        "de": "Farbe"
+      "parentCategory": {
+        "en": "Parent Category",
+        "de": "Oberkategorie"
       },
-      "configureCategories": {
-        "en": "Manage categories",
-        "de": "Kategorien verwalten"
+      "noParentCategory": {
+        "en": "No Parent Category",
+        "de": "Keine Übergeordnete Kategorie"
       },
-      "chooseSupercategory": {
-        "en": "Choose Parent category",
-        "de": "Hauptkategorie auswählen"
-      },
-      "chooseSubcategory": {
-        "en": "Choose subcategory",
-        "de": "Unterkategorie auswählen"
-      },
-      "german": {
-        "en": "German",
-        "de": "Deutsch"
-      
+      "alertNoName": {
+        "en": "No category name defined!",
+        "de": "Kein Kategoriename angegeben!"
+      }
     }
-  }
   }
 }

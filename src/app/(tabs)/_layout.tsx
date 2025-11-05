@@ -1,11 +1,11 @@
-import { useRouter, Tabs } from "expo-router"
-import React from "react"
-import { Ionicons } from "@expo/vector-icons"
-import { View } from "react-native"
-import { useColorScheme } from "nativewind"
-import TabButton from "@/components/tabs/TabButton"
 import { colors } from "@/assets/colors"
+import TabButton from "@/components/tabs/TabButton"
+import { Ionicons } from "@expo/vector-icons"
+import { Tabs, useRouter } from "expo-router"
+import { useColorScheme } from "nativewind"
+import React from "react"
 import { useTranslation } from "react-i18next"
+import { View } from "react-native"
 
 export default function TabLayout() {
   const { t } = useTranslation()
@@ -26,6 +26,7 @@ export default function TabLayout() {
           borderTopWidth: 0,
           height: 92,
           paddingTop: 16,
+          marginTop: -24,
         },
         tabBarItemStyle: {
           borderRadius: 0,

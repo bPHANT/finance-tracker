@@ -4,7 +4,7 @@ import EmojiWithBackground from "@/components/display/EmojiWithBackground"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import BalanceCard from "@/components/widgets/BalanceWidget"
 import { useRouter } from "expo-router"
-import { Text, View } from "react-native"
+import { Pressable, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function KitchensinkScreen() {
@@ -13,6 +13,18 @@ export default function KitchensinkScreen() {
   return (
     <SafeAreaView className='bg-gray-100 dark:bg-primary-950 flex-1 gap-4'>
       <ScreenTitle title='Kitchensink' />
+
+      {/* Button zu Category Settings */}
+      <View className='mx-6 mb-2'>
+        <Pressable
+          onPress={() => router.push("/settings/categorySettings")}
+          className='bg-primary-600 dark:bg-primary-700 px-4 py-2 rounded-xl self-start'
+        >
+          <Text className='text-white font-medium text-sm'>
+            Kategorie bearbeiten
+          </Text>
+        </Pressable>
+      </View>
 
       <View className='mx-6 flex-col gap-2 justify-start items-start'>
         <Text className='text-gray-900 dark:text-gray-100'>

@@ -1,5 +1,6 @@
-import { CustomColors } from "@/assets/colors"
-import { eq, inArray, isNull } from "drizzle-orm"
+import { CustomColorKeys } from "@/assets/colors"
+import { and, eq, inArray, isNull } from "drizzle-orm"
+import { alias } from "drizzle-orm/sqlite-core"
 import { useState } from "react"
 import { useDb } from ".."
 import { categoryTable } from "../schemas/categories"
@@ -24,9 +25,9 @@ export default function useCategory() {
     parentCategoryId,
   }: {
     name: string
-    color: CustomColors
+    color: CustomColorKeys
     emoji: string
-    parentCategoryId?: number
+    parentCategoryId?: number | null
   }) => {
     setLoading(true)
     setError(null)
@@ -51,6 +52,128 @@ export default function useCategory() {
       setError(error)
       console.error("Error creating category:", error)
       return "0"
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const update = async ({
+    id,
+    name,
+    color,
+    emoji,
+    parentCategoryId,
+  }: {
+    id: number
+    name: string
+    color: CustomColorKeys
+    emoji: string
+    parentCategoryId?: number | null
+  }) => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const categoryResult = await db
+        .update(categoryTable)
+        .set({
+          name,
+          color,
+          emoji,
+          parentCategoryId,
+        })
+        .where(eq(categoryTable.id, id))
+        .returning()
+
+      const updatedCategory = categoryResult[0]
+      const existing = await db
+        .select()
+        .from(categoryTermTable)
+        .where(
+          and(
+            eq(categoryTermTable.term, name),
+            eq(categoryTermTable.categoryId, updatedCategory.id)
+          )
+        )
+        .limit(1)
+
+      if (existing.length === 0) {
+        await db.insert(categoryTermTable).values({
+          term: name,
+          categoryId: updatedCategory.id,
+        })
+      }
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error updaing category:", error)
+      return "0"
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const get = async ({ id }: { id: number }) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const result = await db
+        .select({
+          id: categoryTable.id,
+          name: categoryTable.name,
+          color: categoryTable.color,
+          emoji: categoryTable.emoji,
+        })
+        .from(categoryTable)
+        .where(eq(categoryTable.id, id))
+        .limit(1)
+
+      return result[0] ?? null
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error fetching category:", error)
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getWithParent = async ({ id }: { id: number }) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const parentCategory = alias(categoryTable, "parentCategory")
+      const result = await db
+        .select({
+          id: categoryTable.id,
+          name: categoryTable.name,
+          color: categoryTable.color,
+          emoji: categoryTable.emoji,
+          parent: {
+            id: parentCategory.id,
+            name: parentCategory.name,
+            color: parentCategory.color,
+            emoji: parentCategory.emoji,
+          },
+        })
+        .from(categoryTable)
+        .leftJoin(
+          parentCategory,
+          eq(categoryTable.parentCategoryId, parentCategory.id)
+        )
+        .where(eq(categoryTable.id, id))
+        .limit(1)
+
+      return result[0] ?? null
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error fetching category:", error)
+      return null
     } finally {
       setLoading(false)
     }
@@ -181,6 +304,9 @@ export default function useCategory() {
 
   return {
     create,
+    update,
+    get,
+    getWithParent,
     getMany,
     getManyAsJson,
     getByParentId,
