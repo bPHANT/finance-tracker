@@ -360,10 +360,107 @@ export default function useTransactionGroup() {
     }
   }
 
+
+  const getTransactionsByGroupId = async ({ id }: { id: number}) => {
+    setLoading(true)
+    setError(null)
+
+    try
+    {
+      // Abfrage aus Datenbank
+      const rows = await db
+          .select({
+            group: {
+              id: transactionGroupTable.id,
+              name: transactionGroupTable.name,
+              note: transactionGroupTable.note,
+              date: transactionGroupTable.date,
+            },
+            tx: {
+              id: transactionTable.id,
+              name: transactionTable.name,
+              amount: transactionTable.amount,
+            },
+            term: {
+              id: categoryTermTable.id,
+              term: categoryTermTable.term,
+            },
+            category: {
+              id: categoryTable.id,
+              name: categoryTable.name,
+              emoji: categoryTable.emoji,
+              color: categoryTable.color,
+            },
+          })
+          .from(transactionGroupTable)
+          .innerJoin( //leftJoin damit TransactionsGroups ohne Einträge angezeigt werden können sinnvoll?
+            transactionTable,
+            eq(transactionTable.transactionGroupId, transactionGroupTable.id)
+          )
+          .innerJoin(
+            categoryTermTable,
+            eq(transactionTable.categoryTermId, categoryTermTable.id)
+          )
+          .innerJoin(
+            categoryTable,
+            eq(categoryTermTable.categoryId, categoryTable.id)
+          )
+          .innerJoin(
+            accountTable,
+            eq(transactionTable.accountId, accountTable.id)
+          )
+          .where(eq(transactionGroupTable.id, id))
+
+
+      // Edgecase falls keine Einträge gefunden werden (sollte igentlich nicht passieren)
+      if(rows.length == 0)
+      {
+        setLoading(false)
+        return null
+      }
+
+      // Mapped Liste der Transactions
+      const transactions = rows
+        .map(r => ({
+          id: r.tx.id,
+          name: r.tx.name,
+          amount: r.tx.amount,
+          categoryTerm: r.term.id,
+          categoryId: r.category.id,
+          categoryName: r.category.name,
+          categoryEmoji: r.category.emoji,
+          categoryColor: r.category.color,
+              
+        }))
+
+        // Bildet Summe amount aus Transactions
+        const totalAmount = transactions.reduce((s, t) => s + t.amount, 0)
+
+
+      return {
+        name: rows[0].group.name, // Group Name
+        note: rows[0].group.note, // Group Beschreibung
+        date: rows[0].group.date, // Group Datum
+        totalAmount, // Summe
+        transactions // Transactions
+      }
+
+
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      setLoading(false)
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     create,
     getMany,
     remove,
+    getTransactionsByGroupId,
     error,
     loading,
   }
