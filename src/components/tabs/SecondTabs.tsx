@@ -44,6 +44,7 @@ export default function SecondTabs({
             colorScheme === "light" ? themeColor.primary[50] : "#28395c",
           borderTopWidth: 0,
           height: 48,
+          marginTop: -24,
           marginBottom: 24,
         },
         tabBarItemStyle: {
