@@ -1,14 +1,8 @@
-import { GEMINI_API_KEY } from "@/api/GEMINI_API_KEY"
-
 import { colors } from "@/assets/colors"
 import useCategory from "@/db/queries/category"
+import { useAi } from "@/utils/ai"
 import { useIsFocused } from "@react-navigation/native"
-import {
-  CameraCapturedPicture,
-  CameraType,
-  CameraView,
-  useCameraPermissions,
-} from "expo-camera"
+import { CameraType, CameraView, useCameraPermissions } from "expo-camera"
 import { router } from "expo-router"
 import { useColorScheme } from "nativewind"
 import { useEffect, useRef, useState } from "react"
@@ -23,10 +17,12 @@ import {
 
 export default function CameraScreen() {
   const { colorScheme } = useColorScheme()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   //db
   const { getManyAsJson: getCategoriesAsJson } = useCategory()
+
+  const { categorizePicture } = useAi()
 
   // Camera variables
   const facing = "back" as CameraType
@@ -36,7 +32,7 @@ export default function CameraScreen() {
   // View variables
   const isFocused = useIsFocused()
   const windowWidth = Dimensions.get("window").width
-  const [isProcessing, changeState] = useState<boolean>(false)
+  const [isProcessing, setIsProcessing] = useState<boolean>(false)
   const [categories, setCategories] = useState<any>(null)
 
   async function takePicture() {
@@ -46,142 +42,34 @@ export default function CameraScreen() {
         quality: 0.7,
         skipProcessing: true,
       })
-      askGemini(photo)
+
+      try {
+        setIsProcessing(true)
+        await categorizePicture(photo, categories)
+        router.push({
+          pathname: "/scan/input",
+          params: {
+            loadFromStorage: 1,
+          },
+        })
+      } catch (error) {
+        alert(error)
+      } finally {
+        setIsProcessing(false)
+      }
     }
   }
 
   // Load categories with retry mechanism
   useEffect(() => {
     const loadCategories = async () => {
-      let retries = 5
-      const retryDelay = 1000
-
-      while (retries > 0) {
-        try {
-          const categoriesData = await getCategoriesAsJson()
-          if (categoriesData && categoriesData.length > 0) {
-            setCategories(categoriesData)
-            console.log("Categories loaded successfully")
-            break
-          } else {
-            throw new Error("No categories returned")
-          }
-        } catch (error) {
-          console.error(
-            `Error loading categories (${retries} retries left):`,
-            error
-          )
-          retries--
-
-          if (retries === 0) {
-            console.error("Failed to load categories after all retries")
-          } else {
-            await new Promise((resolve) => setTimeout(resolve, retryDelay))
-          }
-        }
-      }
+      const categoriesResult = await getCategoriesAsJson()
+      setCategories(categoriesResult)
     }
 
     loadCategories()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  async function askGemini(photo: CameraCapturedPicture) {
-    const apiKey = GEMINI_API_KEY
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`
-
-    if (!categories) {
-      console.error("Categories not loaded yet.")
-      return
-    }
-
-    // Just for testing at the moment, needs data from database and refacotor
-    const textInput =
-      "You are given an image that contains a financial record – such as a receipt, invoice, payroll statement, or similar document. Your task is to extract all recognizable individual items or line entries (e.g. products, services, income types) and return them in structured JSON format.\n" +
-      "\n" +
-      "Each extracted item must be represented as a separate JSON object with the following fields:\n" +
-      `Use ${
-        i18n.language === "de" ? "german" : "english"
-      } in the return values.\n` +
-      "\n" +
-      "- specific: The exact label as it appears in the image.\n" +
-      '- term: A more general, standardized term derived from the name (e.g., "Cappuccino Large" → "Coffee drink", or "Tax Advisor May 2024" → "Tax service").\n' +
-      "- amount: The monetary amount in Euros. Use a negative value for expenses (e.g., -12.49), and a positive value for all income, discounts, and refunds (e.g., 2500.00 or 0.50).\n" +
-      "- categoryId: The ID of that specific category (only the final selected category, not the entire path; always an integer).\n" +
-      "\n" +
-      "Classification Rules:\n" +
-      "- Use only the category structure provided in the JSON below.\n" +
-      "- Assign exactly one category to each item.\n" +
-      "- Be creative and precise: select the most specific and appropriate category available in the tree – as deep as possible, without being speculative.\n" +
-      "- Refunds and discounts count as income.\n" +
-      "- In payslips: salaries, bonuses, and allowances are income; taxes, insurance, and deductions are expenses.\n" +
-      "- If multiple subcategories match, choose the most relevant and descriptive one.\n" +
-      "\n" +
-      "Output format (JSON array):\n" +
-      "[\n" +
-      "  {\n" +
-      '    "specific": "Original label from the image",\n' +
-      '    "term": "Generalized product/service name",\n' +
-      '    "amount": -12.49,\n' +
-      '    "categoryId": 61\n' +
-      "  },\n" +
-      "  ...\n" +
-      "]\n" +
-      "\n" +
-      "Important:\n" +
-      "- Only return categoryId for the selected category, not the full hierarchy.\n" +
-      "- Use only valid category IDs and names from the following tree:\n" +
-      JSON.stringify(categories)
-
-    changeState(true)
-
-    console.log(JSON.stringify(categories))
-
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                { text: textInput },
-                {
-                  inlineData: {
-                    mimeType: photo.base64
-                      ? "image/jpeg"
-                      : "application/octet-stream",
-                    data: photo.base64,
-                  },
-                },
-              ],
-            },
-          ],
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.text()
-        throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorData}`
-        )
-      }
-
-      const data = await response.json()
-      changeState(false)
-
-      router.push({
-        pathname: "/scan/input",
-        params: { geminiResponse: data.candidates[0].content.parts[0].text },
-      })
-    } catch (error) {
-      console.error("Error sending picture to Gemini API:", error)
-    }
-
-    changeState(false)
-  }
 
   if (!permission?.granted) {
     requestPermission()
