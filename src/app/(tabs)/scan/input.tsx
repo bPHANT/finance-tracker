@@ -9,6 +9,7 @@ import useCategory from "@/db/queries/category"
 import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { useAi } from "@/utils/ai"
+import { storage } from "@/utils/storage"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import React, { useEffect, useState } from "react"
 import { Alert, Keyboard, ScrollView, Text, View } from "react-native"
@@ -98,6 +99,49 @@ export default function TransactionScreen() {
       }
     }
 
+    const loadStoredData = async () => {
+      const data = (await storage.getObject("inputData")) as any
+      const transaction = (await storage.getObject("inputTransaction")) as any
+
+      if (data) {
+        setTitle(data.title || "")
+        setNote(data.note || "")
+        setDate(data.date ? new Date(data.date) : new Date())
+
+        const storedTransactions = data.transactions || []
+
+        if (transaction) {
+          if (transaction.idx !== undefined) {
+            const updatedTransactions = [...storedTransactions]
+            updatedTransactions[transaction.idx] = {
+              name: transaction.name,
+              specific: transaction.specific,
+              amount: transaction.amount,
+              category: transaction.category,
+            }
+            setTransactions(updatedTransactions)
+          } else {
+            setTransactions([
+              ...storedTransactions,
+              {
+                name: transaction.name,
+                specific: transaction.specific,
+                amount: transaction.amount,
+                category: transaction.category,
+              },
+            ])
+          }
+        } else {
+          setTransactions(storedTransactions)
+        }
+
+        await storage.remove("inputData")
+        await storage.remove("inputTransaction")
+      } else if (transaction) {
+        await storage.remove("inputTransaction")
+      }
+    }
+
     const clearData = async () => {
       setTitle("")
       setNote("")
@@ -105,11 +149,12 @@ export default function TransactionScreen() {
       setTransactions([])
     }
 
-    if (params.loadFromStorage) loadAiData()
+    if (params.loadFromStorage === "1") loadAiData()
+    else if (params.loadFromStorage === "2") loadStoredData()
     else clearData()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.loadFromStorage])
+  }, [params.loadFromStorage, params.refresh])
 
   const onChangeDate = (event: any, selectedDate?: Date) => {
     if (selectedDate) {
@@ -144,17 +189,22 @@ export default function TransactionScreen() {
     setTransactions([])
   }
 
-  const handleAddTransaction = () => {
+  const handleAddTransaction = async () => {
+    await storage.setObject("inputData", { title, note, date, transactions })
     router.push("/scan/transactionForm")
   }
 
-  const handleEditTransaction = (index: number) => {
+  const handleEditTransaction = async (index: number) => {
     const transaction = transactions[index]
+    await storage.setObject("inputData", { title, note, date, transactions })
+    await storage.setObject("inputTransaction", {
+      ...transaction,
+      idx: index,
+    })
     router.push({
       pathname: "/scan/transactionForm",
       params: {
         transactionIndex: index.toString(),
-        editData: JSON.stringify(transaction),
       },
     })
   }

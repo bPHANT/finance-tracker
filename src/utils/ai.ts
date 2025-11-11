@@ -102,7 +102,6 @@ export function useAi() {
 
   async function getAnswer() {
     const data = (await storage.getObject("aiResponse")) as any
-    console.log(JSON.stringify(data))
     return data
   }
 

@@ -7,6 +7,7 @@ import NavigationPath, {
 } from "@/components/display/NavigationPath"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useCategory from "@/db/queries/category"
+import { storage } from "@/utils/storage"
 import { Ionicons } from "@expo/vector-icons"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import React, { useEffect, useState } from "react"
@@ -34,6 +35,10 @@ export default function CategorySelectorScreen(
   const currentCategoryId = params.currentCategoryId
     ? Number(params.currentCategoryId)
     : 0
+
+  const transactionIndex = params.transactionIndex
+    ? params.transactionIndex
+    : undefined
 
   const parentCategoryId = params.parentCategoryId
     ? params.parentCategoryId === "null"
@@ -108,13 +113,6 @@ export default function CategorySelectorScreen(
           categoryId: category.id.toString(),
         },
       })
-    } else if (source === "scan") {
-      router.push({
-        pathname: "/(tabs)/scan/transactionForm",
-        params: {
-          selectedCategory: JSON.stringify(category),
-        },
-      })
     } else if (source === "form") {
       router.push({
         pathname: "/(tabs)/settings/[categoryId]",
@@ -123,6 +121,12 @@ export default function CategorySelectorScreen(
           source: "parentSelection",
           selectedParentId: category.id.toString(),
         },
+      })
+    } else if (source === "scan") {
+      await storage.setObject("inputCategory", category)
+      router.push({
+        pathname: "/scan/transactionForm",
+        params: transactionIndex ? { transactionIndex } : undefined,
       })
     }
   }

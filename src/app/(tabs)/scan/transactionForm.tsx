@@ -6,9 +6,10 @@ import TextField from "@/components/input/TextField"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useCategory from "@/db/queries/category"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
+import { storage } from "@/utils/storage"
 import { Ionicons } from "@expo/vector-icons"
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import {
   Alert,
   Keyboard,
@@ -38,14 +39,15 @@ export default function TransactionFormScreen() {
   const router = useRouter()
   const params = useLocalSearchParams()
 
-  const isEditing = !!params.transactionIndex
   const transactionIndex = params.transactionIndex
     ? Number(params.transactionIndex)
     : -1
 
-  const editData = useMemo(() => {
-    return params.editData ? JSON.parse(params.editData as string) : null
-  }, [params.editData])
+  const isEditMode =
+    params.transactionIndex !== undefined &&
+    params.transactionIndex !== null &&
+    params.transactionIndex !== "" &&
+    transactionIndex >= 0
 
   const [formData, setFormData] = useState<TransactionFormData>({
     name: "",
@@ -59,7 +61,6 @@ export default function TransactionFormScreen() {
   )
   const [categories, setCategories] = useState<Category[]>([])
   const [, setIsLoading] = useState(false)
-  const processedCategoryRef = useRef<string | null>(null)
   const isNavigatingToCategoryRef = useRef(false)
   const processedEditDataRef = useRef<boolean>(false)
 
@@ -73,21 +74,18 @@ export default function TransactionFormScreen() {
       type: "expense",
     })
     setSelectedCategory(null)
-    processedCategoryRef.current = null
     processedEditDataRef.current = false
   }, [])
   useFocusEffect(
     useCallback(() => {
-      // When the screen gains focus, reset the navigation flag
       isNavigatingToCategoryRef.current = false
 
       return () => {
-        // This runs when the screen loses focus
-        if (!isEditing && !isNavigatingToCategoryRef.current) {
+        if (!isEditMode && !isNavigatingToCategoryRef.current) {
           resetForm()
         }
       }
-    }, [resetForm, isEditing])
+    }, [resetForm, isEditMode])
   )
 
   useEffect(() => {
@@ -121,51 +119,65 @@ export default function TransactionFormScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      if (isEditing && editData && !processedEditDataRef.current) {
-        setFormData({
-          name: editData.name,
-          amount: Math.abs(editData.amount).toString(),
-          categoryId: editData.category.id,
-          type: editData.amount < 0 ? "expense" : "income",
-        })
-        setSelectedCategory(editData.category)
-        processedEditDataRef.current = true
+      const loadFormData = async () => {
+        const savedFormData = (await storage.getObject(
+          "transactionFormData"
+        )) as any
+        const editData = (await storage.getObject("inputTransaction")) as any
+        const selectedCategoryData = (await storage.getObject(
+          "inputCategory"
+        )) as any
+
+        if (savedFormData) {
+          setFormData(savedFormData.formData)
+          if (savedFormData.selectedCategory) {
+            setSelectedCategory(savedFormData.selectedCategory)
+          }
+          await storage.remove("transactionFormData")
+        } else if (isEditMode && editData && !processedEditDataRef.current) {
+          setFormData({
+            name: editData.name,
+            amount: Math.abs(parseFloat(editData.amount)).toString(),
+            categoryId: editData.category.id,
+            type: parseFloat(editData.amount) < 0 ? "expense" : "income",
+          })
+          setSelectedCategory(editData.category)
+          processedEditDataRef.current = true
+        }
+
+        if (selectedCategoryData) {
+          setSelectedCategory(selectedCategoryData)
+          setFormData((prev) => ({
+            ...prev,
+            categoryId: selectedCategoryData.id,
+          }))
+          await storage.remove("inputCategory")
+        }
       }
-    }, [isEditing, editData])
+
+      loadFormData()
+    }, [isEditMode])
   )
 
-  useEffect(() => {
-    if (
-      params.selectedCategory &&
-      params.selectedCategory !== processedCategoryRef.current
-    ) {
-      try {
-        const category = JSON.parse(params.selectedCategory as string)
-        setSelectedCategory(category)
-        setFormData((prev) => ({
-          ...prev,
-          categoryId: category.id,
-        }))
-
-        processedCategoryRef.current = params.selectedCategory as string
-      } catch (error) {
-        console.error("Error parsing selected category:", error)
-      }
-    }
-  }, [params.selectedCategory])
-
-  const handleCategoryPress = () => {
+  const handleCategoryPress = async () => {
     isNavigatingToCategoryRef.current = true
+    await storage.setObject("transactionFormData", {
+      formData,
+      selectedCategory,
+      isEditing: isEditMode,
+      transactionIndex,
+    })
     router.push({
       pathname: "/scan/categorySelector",
       params: {
         currentCategoryId: formData.categoryId.toString(),
+        source: "scan",
+        transactionIndex: isEditMode ? transactionIndex.toString() : undefined,
       },
     })
   }
 
-  const handleSubmit = () => {
-    // Dismiss keyboard first
+  const handleSubmit = async () => {
     Keyboard.dismiss()
 
     if (
@@ -201,30 +213,35 @@ export default function TransactionFormScreen() {
       type: formData.type,
     }
 
-    if (isEditing) {
-      router.push({
-        pathname: "/scan/input",
-        params: {
-          updatedTransaction: JSON.stringify({
-            index: transactionIndex,
-            data: transactionData,
-          }),
-        },
+    if (isEditMode) {
+      await storage.setObject("inputTransaction", {
+        ...transactionData,
+        idx: transactionIndex,
       })
     } else {
-      router.push({
-        pathname: "/scan/input",
-        params: {
-          newTransaction: JSON.stringify(transactionData),
-        },
-      })
+      await storage.setObject("inputTransaction", transactionData)
     }
+
+    router.push({
+      pathname: "/scan/input",
+      params: {
+        loadFromStorage: "2",
+        refresh: Date.now().toString(),
+      },
+    })
     resetForm()
   }
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     Keyboard.dismiss()
-    router.push("/scan/input")
+    await storage.remove("inputTransaction")
+    router.push({
+      pathname: "/scan/input",
+      params: {
+        loadFromStorage: "2",
+        refresh: Date.now().toString(),
+      },
+    })
     resetForm()
   }
 
@@ -233,7 +250,7 @@ export default function TransactionFormScreen() {
       <ScrollView className='mx-4' keyboardShouldPersistTaps='handled'>
         <ScreenTitle
           title={
-            isEditing
+            isEditMode
               ? t("screens.transactionForm.titleEdit")
               : t("screens.transactionForm.titleAdd")
           }
@@ -321,7 +338,7 @@ export default function TransactionFormScreen() {
             <View className='flex-1'>
               <Button
                 title={
-                  isEditing
+                  isEditMode
                     ? t("screens.transactionForm.updateTransaction")
                     : t("screens.transactionForm.addTransaction")
                 }
