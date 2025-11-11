@@ -1,7 +1,6 @@
+import { useLocalSearchParams } from "expo-router"
 import { useTranslation } from "react-i18next"
 import { Text, View } from "react-native"
-import { useLocalSearchParams } from "expo-router"
-import useTransactionGroup from "@/db/queries/transactionGroup"
 
 export default function GroupScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>()
