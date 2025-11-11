@@ -86,10 +86,10 @@ export default function TransactionsScreen() {
                     console.log("PRESSED", id)
                     router.push({
                       pathname: "/transactions/group",
-                      params: { id: String(id) },
+                      params: { id },
                     })
-                  }}                
-                  />
+                  }}
+                />
               </View>
             ))}
           </View>

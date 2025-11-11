@@ -18,6 +18,7 @@ export default function TransactionLayout() {
         activeIcon: "color-filter",
         inactiveIcon: "color-filter-outline",
       }}
+      invisibleTabs={["group"]}
     />
   )
 }

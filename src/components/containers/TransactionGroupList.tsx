@@ -1,5 +1,5 @@
-import { View } from "react-native"
 import { useRef } from "react"
+import { View } from "react-native"
 import TransactionGroupContainer, {
   TransactionGroupContainerProps,
   TransactionGroupContainerRef,
@@ -48,7 +48,7 @@ export default function TransactionGroupList(props: TransactionGroupListProps) {
             id={group.id}
             onDelete={handleDelete}
             onSwipeOpen={() => handleSwipeOpen(index)}
-            onPress={(id) => props.onPress?.(id)} 
+            onPress={props.onPress}
             rounded={
               length === 1
                 ? "full"
