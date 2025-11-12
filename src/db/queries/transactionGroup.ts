@@ -418,14 +418,14 @@ export default function useTransactionGroup() {
       // Mapped Liste der Transactions
       const transactions = rows
         .map(r => ({
-          id: r.tx.id,
-          name: r.tx.name,
-          amount: r.tx.amount,
-          categoryTerm: r.term.id,
-          categoryId: r.category.id,
-          categoryName: r.category.name,
-          categoryEmoji: r.category.emoji,
-          categoryColor: r.category.color,
+          id: r.transaction.id,
+          name: r.transaction.name,
+          amount: r.transaction.amount,
+          categoryTerm: r.transaction.categoryTerm,
+          categoryId: r.transaction.categoryId,
+          categoryName: r.transaction.categoryName,
+          categoryEmoji: r.transaction.categoryEmoji,
+          categoryColor: r.transaction.categoryColor,
               
         }))
 
@@ -455,7 +455,7 @@ export default function useTransactionGroup() {
     create,
     getMany,
     remove,
-    getTransactionsByGroupId,
+    get,
     error,
     loading,
   }

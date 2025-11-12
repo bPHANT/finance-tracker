@@ -83,9 +83,8 @@ export default function TransactionsScreen() {
                   groups={grouped.groups}
                   onDelete={handleDeleteTransactionGroup}
                   onPress={(id) => {
-                    console.log("PRESSED", id)
                     router.push({
-                      pathname: "/transactions/group",
+                      pathname: "/transactions/transactionFormGroup",
                       params: { id },
                     })
                   }}
