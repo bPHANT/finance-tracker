@@ -361,7 +361,7 @@ export default function useTransactionGroup() {
   }
 
 
-  const getTransactionsByGroupId = async ({ id }: { id: number}) => {
+  const get = async ({ id }: { id: number}) => {
     setLoading(true)
     setError(null)
 
