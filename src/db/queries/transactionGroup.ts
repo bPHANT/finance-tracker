@@ -434,9 +434,7 @@ export default function useTransactionGroup() {
 
 
       return {
-        name: rows[0].group.name, // Group Name
-        note: rows[0].group.note, // Group Beschreibung
-        date: rows[0].group.date, // Group Datum
+        ...rows[0].group,
         totalAmount, // Summe
         transactions // Transactions
       }
