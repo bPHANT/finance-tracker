@@ -442,6 +442,7 @@ export default function useTransactionGroup() {
 
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Unknown error occurred")
+      console.error("Error fetching transactionGroup:", error)
       setError(error)
       setLoading(false)
       return null
