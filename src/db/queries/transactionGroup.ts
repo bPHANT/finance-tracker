@@ -376,20 +376,16 @@ export default function useTransactionGroup() {
               note: transactionGroupTable.note,
               date: transactionGroupTable.date,
             },
-            tx: {
+            transaction: {
               id: transactionTable.id,
               name: transactionTable.name,
               amount: transactionTable.amount,
-            },
-            term: {
-              id: categoryTermTable.id,
-              term: categoryTermTable.term,
-            },
-            category: {
-              id: categoryTable.id,
-              name: categoryTable.name,
-              emoji: categoryTable.emoji,
-              color: categoryTable.color,
+              categoryTermId: categoryTermTable.id,
+              categoryTerm: categoryTermTable.term,
+              categoryId: categoryTable.id,
+              categoryName: categoryTable.name,
+              categoryEmoji: categoryTable.emoji,
+              categoryColor: categoryTable.color,
             },
           })
           .from(transactionGroupTable)
