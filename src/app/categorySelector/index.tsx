@@ -124,10 +124,7 @@ export default function CategorySelectorScreen(
       })
     } else if (source === "scan") {
       await storage.setObject("inputCategory", category)
-      router.push({
-        pathname: "/scan/transactionForm",
-        params: transactionIndex ? { transactionIndex } : undefined,
-      })
+      router.back()
     }
   }
 
@@ -167,7 +164,32 @@ export default function CategorySelectorScreen(
   }
 
   const handleBackNavigation = async () => {
-    router.back()
+    if (navigationPath.length === 0) {
+      router.back()
+      return
+    }
+
+    const newNavigationPath = navigationPath.slice(0, -1)
+    const newParentId =
+      newNavigationPath.length > 0
+        ? newNavigationPath[newNavigationPath.length - 1].id
+        : null
+
+    const pathname =
+      source === "settings"
+        ? "/(tabs)/settings/categorySelector"
+        : "/categorySelector"
+
+    router.push({
+      pathname,
+      params: {
+        parentCategoryId: newParentId?.toString() ?? "null",
+        navigationPath: JSON.stringify(newNavigationPath),
+        currentCategoryId: params.currentCategoryId,
+        source: source === "form" ? "form" : source,
+        transactionIndex: transactionIndex,
+      },
+    })
   }
 
   const handleAddPress = () => {
