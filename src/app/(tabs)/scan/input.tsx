@@ -10,9 +10,16 @@ import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { useAi } from "@/utils/ai"
 import { storage } from "@/utils/storage"
-import { useLocalSearchParams, useRouter } from "expo-router"
-import React, { useEffect, useState } from "react"
-import { Alert, Keyboard, ScrollView, Text, View } from "react-native"
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
+import React, { useCallback, useEffect, useState } from "react"
+import {
+  Alert,
+  BackHandler,
+  Keyboard,
+  ScrollView,
+  Text,
+  View,
+} from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 type TransactionResponse = {
@@ -50,6 +57,21 @@ export default function TransactionScreen() {
 
   const { getMany: getCategories } = useCategory()
   const { create: createTransactionGroup } = useTransactionGroup()
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        return true
+      }
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      )
+
+      return () => subscription.remove()
+    }, [])
+  )
 
   useEffect(() => {
     const loadAiData = async () => {
@@ -191,6 +213,7 @@ export default function TransactionScreen() {
 
   const handleAddTransaction = async () => {
     await storage.setObject("inputData", { title, note, date, transactions })
+    await storage.remove("inputTransaction")
     router.push("/scan/transactionForm")
   }
 
@@ -201,10 +224,11 @@ export default function TransactionScreen() {
       ...transaction,
       idx: index,
     })
+    console.log(`${index}\n${JSON.stringify(transaction)}`)
     router.push({
       pathname: "/scan/transactionForm",
       params: {
-        transactionIndex: index.toString(),
+        transactionIndex: index,
       },
     })
   }

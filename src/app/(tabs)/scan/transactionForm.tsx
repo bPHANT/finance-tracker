@@ -12,6 +12,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import {
   Alert,
+  BackHandler,
   Keyboard,
   ScrollView,
   Text,
@@ -60,7 +61,6 @@ export default function TransactionFormScreen() {
     null
   )
   const [categories, setCategories] = useState<Category[]>([])
-  const [, setIsLoading] = useState(false)
   const isNavigatingToCategoryRef = useRef(false)
   const processedEditDataRef = useRef<boolean>(false)
 
@@ -88,12 +88,34 @@ export default function TransactionFormScreen() {
     }, [resetForm, isEditMode])
   )
 
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        router.replace({
+          pathname: "/scan/input",
+          params: {
+            loadFromStorage: "2",
+            refresh: Date.now().toString(),
+          },
+        })
+        resetForm()
+        return true
+      }
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      )
+
+      return () => subscription.remove()
+    }, [resetForm, router])
+  )
+
   useEffect(() => {
     let isMounted = true
 
     const loadCategories = async () => {
       try {
-        setIsLoading(true)
         const allCategoryIds = Array.from({ length: 100 }, (_, i) => i + 1)
         const categoryResult = await getCategories({ ids: allCategoryIds })
 
@@ -102,10 +124,6 @@ export default function TransactionFormScreen() {
         }
       } catch (error) {
         console.error("Error loading categories:", error)
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
       }
     }
 
@@ -222,7 +240,7 @@ export default function TransactionFormScreen() {
       await storage.setObject("inputTransaction", transactionData)
     }
 
-    router.push({
+    router.replace({
       pathname: "/scan/input",
       params: {
         loadFromStorage: "2",
@@ -235,7 +253,7 @@ export default function TransactionFormScreen() {
   const handleCancel = async () => {
     Keyboard.dismiss()
     await storage.remove("inputTransaction")
-    router.push({
+    router.dismissTo({
       pathname: "/scan/input",
       params: {
         loadFromStorage: "2",

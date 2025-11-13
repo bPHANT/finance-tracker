@@ -3,12 +3,13 @@ import useCategory from "@/db/queries/category"
 import { useAi } from "@/utils/ai"
 import { useIsFocused } from "@react-navigation/native"
 import { CameraType, CameraView, useCameraPermissions } from "expo-camera"
-import { router } from "expo-router"
+import { router, useFocusEffect } from "expo-router"
 import { useColorScheme } from "nativewind"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import {
   ActivityIndicator,
+  BackHandler,
   Dimensions,
   Text,
   TouchableOpacity,
@@ -35,6 +36,21 @@ export default function CameraScreen() {
   const [isProcessing, setIsProcessing] = useState<boolean>(false)
   const [categories, setCategories] = useState<any>(null)
 
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        return true
+      }
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      )
+
+      return () => subscription.remove()
+    }, [])
+  )
+
   async function takePicture() {
     if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync({
@@ -46,7 +62,7 @@ export default function CameraScreen() {
       try {
         setIsProcessing(true)
         await categorizePicture(photo, categories)
-        router.push({
+        router.replace({
           pathname: "/scan/input",
           params: {
             loadFromStorage: 1,
@@ -60,7 +76,6 @@ export default function CameraScreen() {
     }
   }
 
-  // Load categories with retry mechanism
   useEffect(() => {
     const loadCategories = async () => {
       const categoriesResult = await getCategoriesAsJson()
