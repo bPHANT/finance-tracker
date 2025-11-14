@@ -1,4 +1,3 @@
-import BackButton from "@/components/buttons/BackButton"
 import NavigationContainer, {
   CategoryWithChildrenCheck,
 } from "@/components/containers/NavigationContainer"
@@ -258,7 +257,7 @@ export default function CategorySelectorScreen(
           </View>
           {navigationPath.length > 0 && (
             <View className='flex-row items-center flex-wrap mb-4'>
-              <BackButton onPress={handleBackNavigation} />
+              {/* <BackButton onPress={handleBackNavigation} /> */}
 
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View className='flex-row items-center'>
