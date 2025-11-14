@@ -120,7 +120,7 @@ export default function CategoryFormScreen() {
     })
 
     router.push({
-      pathname: "/categorySelector",
+      pathname: "/settings/categorySelector",
       params: {
         source: "form",
         currentCategoryId: categoryId?.toString(),
@@ -153,6 +153,7 @@ export default function CategoryFormScreen() {
       })
     }
 
+    router.dismissTo("/settings")
     router.push("/settings/categorySelector")
   }
 
@@ -188,7 +189,7 @@ export default function CategoryFormScreen() {
                     : t("screens.categoryForm.title.update")
                   : t("screens.settings.categorySettings")
               }
-              showBackButton
+              onBack={async () => router.back()}
             />
             <View className='items-center'>
               <View>

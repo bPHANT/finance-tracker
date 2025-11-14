@@ -8,10 +8,18 @@ import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useCategory from "@/db/queries/category"
 import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
-import { useRoute } from "@react-navigation/native"
-import { useLocalSearchParams, useRouter } from "expo-router"
-import React, { useEffect, useRef, useState } from "react"
-import { Alert, Keyboard, ScrollView, Text, View } from "react-native"
+import { useAi } from "@/utils/ai"
+import { storage } from "@/utils/storage"
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
+import React, { useCallback, useEffect, useState } from "react"
+import {
+  Alert,
+  BackHandler,
+  Keyboard,
+  ScrollView,
+  Text,
+  View,
+} from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 type TransactionResponse = {
@@ -40,109 +48,135 @@ export default function TransactionScreen() {
   const router = useRouter()
   const params = useLocalSearchParams()
 
-  const route = useRoute()
-  const { geminiResponse } = (route.params as { geminiResponse: string }) || {
-    geminiResponse: "",
-  }
+  const { getAnswer } = useAi()
 
   const [title, setTitle] = useState("")
   const [note, setNote] = useState("")
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [date, setDate] = useState(new Date())
-  const processedResponse = useRef<string>("")
 
   const { getMany: getCategories } = useCategory()
   const { create: createTransactionGroup } = useTransactionGroup()
 
-  useEffect(() => {
-    if (params.newTransaction) {
-      try {
-        const newTransaction = JSON.parse(params.newTransaction as string)
-        setTransactions((prev) => [...prev, newTransaction])
-        router.setParams({ newTransaction: undefined })
-      } catch (error) {
-        console.error("Error parsing new transaction:", error)
-        Alert.alert(t("common.error"), t("screens.input.errors.parsingError"))
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        return true
       }
-    }
-  }, [params.newTransaction, router, t])
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      )
+
+      return () => subscription.remove()
+    }, [])
+  )
 
   useEffect(() => {
-    if (params.updatedTransaction) {
+    const loadAiData = async () => {
+      const aiData = await getAnswer()
       try {
-        const { index, data } = JSON.parse(params.updatedTransaction as string)
-        setTransactions((prev) =>
-          prev.map((transaction, i) => (i === index ? data : transaction))
+        const categoryIds = aiData.map(
+          (transaction: TransactionResponse) => transaction.categoryId
         )
-        router.setParams({ updatedTransaction: undefined })
+
+        if (!categoryIds || categoryIds.length === 0) {
+          Alert.alert(
+            t("common.error"),
+            t("screens.input.errors.noCategoryIds")
+          )
+          setTransactions([])
+          return
+        }
+
+        const categories = await getCategories({
+          ids: categoryIds,
+        })
+
+        if (!categories || categories.length === 0) {
+          Alert.alert(
+            t("common.error"),
+            t("screens.input.errors.categoryNotFound")
+          )
+          return
+        }
+
+        setTransactions(
+          aiData.map((transaction: TransactionResponse) => {
+            const category = categories.find(
+              (category: any) => category.id === transaction.categoryId
+            )
+            return {
+              name: transaction.term,
+              specific: transaction.specific || "",
+              amount: transaction.amount.toString(),
+              category: category,
+            }
+          })
+        )
       } catch (error) {
-        console.error("Error parsing updated transaction:", error)
+        console.error("Error while parsing: ", error)
         Alert.alert(t("common.error"), t("screens.input.errors.parsingError"))
       }
     }
-  }, [params.updatedTransaction, router, t])
 
-  useEffect(() => {
-    const processGeminiResponse = async () => {
-      console.log("Processing geminiResponse:", geminiResponse)
-      processedResponse.current = geminiResponse
+    const loadStoredData = async () => {
+      const data = (await storage.getObject("inputData")) as any
+      const transaction = (await storage.getObject("inputTransaction")) as any
 
-      if (geminiResponse && geminiResponse !== "") {
-        try {
-          const cleaned = geminiResponse.replace(/```|json/g, "").trim()
-          const parsed = JSON.parse(cleaned)
+      if (data) {
+        setTitle(data.title || "")
+        setNote(data.note || "")
+        setDate(data.date ? new Date(data.date) : new Date())
 
-          const categoryIds = parsed.map(
-            (transaction: TransactionResponse) => transaction.categoryId
-          )
+        const storedTransactions = data.transactions || []
 
-          if (!categoryIds || categoryIds.length === 0) {
-            Alert.alert(
-              t("common.error"),
-              t("screens.input.errors.noCategoryIds")
-            )
-            setTransactions([])
-            return
+        if (transaction) {
+          if (transaction.idx !== undefined) {
+            const updatedTransactions = [...storedTransactions]
+            updatedTransactions[transaction.idx] = {
+              name: transaction.name,
+              specific: transaction.specific,
+              amount: transaction.amount,
+              category: transaction.category,
+            }
+            setTransactions(updatedTransactions)
+          } else {
+            setTransactions([
+              ...storedTransactions,
+              {
+                name: transaction.name,
+                specific: transaction.specific,
+                amount: transaction.amount,
+                category: transaction.category,
+              },
+            ])
           }
-
-          console.log(categoryIds)
-          const categories = await getCategories({
-            ids: categoryIds,
-          })
-
-          if (!categories || categories.length === 0) {
-            Alert.alert(
-              t("common.error"),
-              t("screens.input.errors.categoryNotFound")
-            )
-            return
-          }
-
-          setTransactions(
-            parsed.map((transaction: TransactionResponse) => {
-              const category = categories.find(
-                (category: any) => category.id === transaction.categoryId
-              )
-              return {
-                name: transaction.term,
-                specific: transaction.specific || "",
-                amount: transaction.amount.toString(),
-                category: category,
-              }
-            })
-          )
-        } catch (error) {
-          console.error("Error while parsing: ", error)
-          Alert.alert(t("common.error"), t("screens.input.errors.parsingError"))
+        } else {
+          setTransactions(storedTransactions)
         }
-      } else {
-        setTransactions([])
+
+        await storage.remove("inputData")
+        await storage.remove("inputTransaction")
+      } else if (transaction) {
+        await storage.remove("inputTransaction")
       }
     }
 
-    processGeminiResponse()
+    const clearData = async () => {
+      setTitle("")
+      setNote("")
+      setDate(new Date())
+      setTransactions([])
+    }
+
+    if (params.loadFromStorage === "1") loadAiData()
+    else if (params.loadFromStorage === "2") loadStoredData()
+    else clearData()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [geminiResponse])
+  }, [params.loadFromStorage, params.refresh])
 
   const onChangeDate = (event: any, selectedDate?: Date) => {
     if (selectedDate) {
@@ -177,17 +211,24 @@ export default function TransactionScreen() {
     setTransactions([])
   }
 
-  const handleAddTransaction = () => {
+  const handleAddTransaction = async () => {
+    await storage.setObject("inputData", { title, note, date, transactions })
+    await storage.remove("inputTransaction")
     router.push("/scan/transactionForm")
   }
 
-  const handleEditTransaction = (index: number) => {
+  const handleEditTransaction = async (index: number) => {
     const transaction = transactions[index]
+    await storage.setObject("inputData", { title, note, date, transactions })
+    await storage.setObject("inputTransaction", {
+      ...transaction,
+      idx: index,
+    })
+    console.log(`${index}\n${JSON.stringify(transaction)}`)
     router.push({
       pathname: "/scan/transactionForm",
       params: {
-        transactionIndex: index.toString(),
-        editData: JSON.stringify(transaction),
+        transactionIndex: index,
       },
     })
   }
@@ -233,7 +274,7 @@ export default function TransactionScreen() {
             balance={true}
           />
           <Button
-            title={t("screens.input.save")}
+            title={t("common.save")}
             onPress={() => {
               handleSubmit()
             }}

@@ -1,4 +1,3 @@
-import BackButton from "@/components/buttons/BackButton"
 import NavigationContainer, {
   CategoryWithChildrenCheck,
 } from "@/components/containers/NavigationContainer"
@@ -7,11 +6,18 @@ import NavigationPath, {
 } from "@/components/display/NavigationPath"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useCategory from "@/db/queries/category"
+import { storage } from "@/utils/storage"
 import { Ionicons } from "@expo/vector-icons"
-import { useLocalSearchParams, useRouter } from "expo-router"
-import React, { useEffect, useState } from "react"
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
+import React, { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { ScrollView, Text, TouchableOpacity, View } from "react-native"
+import {
+  BackHandler,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 type CategorySelectorScreenProps = {
@@ -35,6 +41,10 @@ export default function CategorySelectorScreen(
     ? Number(params.currentCategoryId)
     : 0
 
+  const transactionIndex = params.transactionIndex
+    ? params.transactionIndex
+    : undefined
+
   const parentCategoryId = params.parentCategoryId
     ? params.parentCategoryId === "null"
       ? null
@@ -49,6 +59,23 @@ export default function CategorySelectorScreen(
   const [isLoading, setIsLoading] = useState(false)
 
   const { getByParentId, hasChildren } = useCategory()
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        handleBackNavigation()
+        return true
+      }
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      )
+
+      return () => subscription.remove()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [navigationPath, source, transactionIndex])
+  )
 
   useEffect(() => {
     let isMounted = true
@@ -108,15 +135,8 @@ export default function CategorySelectorScreen(
           categoryId: category.id.toString(),
         },
       })
-    } else if (source === "scan") {
-      router.push({
-        pathname: "/(tabs)/scan/transactionForm",
-        params: {
-          selectedCategory: JSON.stringify(category),
-        },
-      })
     } else if (source === "form") {
-      router.push({
+      router.replace({
         pathname: "/(tabs)/settings/[categoryId]",
         params: {
           categoryId: currentCategoryId.toString(),
@@ -124,12 +144,18 @@ export default function CategorySelectorScreen(
           selectedParentId: category.id.toString(),
         },
       })
+    } else if (source === "scan") {
+      await storage.setObject("inputCategory", category)
+      router.replace({
+        pathname: "/scan/transactionForm",
+        params: { transactionIndex: transactionIndex },
+      })
     }
   }
 
   const handleNoParentCategorySelect = async () => {
     router.push({
-      pathname: "/(tabs)/settings/[categoryId]",
+      pathname: "/settings/[categoryId]",
       params: {
         categoryId: currentCategoryId.toString(),
         source: "parentSelection",
@@ -148,8 +174,8 @@ export default function CategorySelectorScreen(
 
     const pathname =
       source === "settings"
-        ? "/(tabs)/settings/categorySelector"
-        : "/(tabs)/scan/categorySelector"
+        ? "/settings/categorySelector"
+        : "/scan/categorySelector"
 
     router.push({
       pathname,
@@ -163,7 +189,43 @@ export default function CategorySelectorScreen(
   }
 
   const handleBackNavigation = async () => {
-    router.back()
+    if (navigationPath.length === 0) {
+      if (source === "settings") {
+        router.back()
+      } else if (source === "form") {
+        router.back()
+      } else if (source === "scan") {
+        router.replace({
+          pathname: "/(tabs)/scan/transactionForm",
+          params: { transactionIndex: transactionIndex },
+        })
+      } else {
+        router.back()
+      }
+      return
+    }
+
+    const newNavigationPath = navigationPath.slice(0, -1)
+    const newParentId =
+      newNavigationPath.length > 0
+        ? newNavigationPath[newNavigationPath.length - 1].id
+        : null
+
+    const pathname =
+      source === "settings"
+        ? "/settings/categorySelector"
+        : "/scan/categorySelector"
+
+    router.push({
+      pathname,
+      params: {
+        parentCategoryId: newParentId?.toString() ?? "null",
+        navigationPath: JSON.stringify(newNavigationPath),
+        currentCategoryId: params.currentCategoryId,
+        source: source === "form" ? "form" : source,
+        transactionIndex: transactionIndex,
+      },
+    })
   }
 
   const handleAddPress = () => {
@@ -182,7 +244,7 @@ export default function CategorySelectorScreen(
           <View className='flex-row items-center justify-between'>
             <ScreenTitle
               title={t("screens.categorySelector.title")}
-              showBackButton={!parentCategoryId}
+              onBack={() => handleBackNavigation()}
             />
             <TouchableOpacity
               accessibilityLabel={t("common.add")}
@@ -195,7 +257,7 @@ export default function CategorySelectorScreen(
           </View>
           {navigationPath.length > 0 && (
             <View className='flex-row items-center flex-wrap mb-4'>
-              <BackButton onPress={handleBackNavigation} />
+              {/* <BackButton onPress={handleBackNavigation} /> */}
 
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View className='flex-row items-center'>

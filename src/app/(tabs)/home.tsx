@@ -1,10 +1,10 @@
 import CircularButton from "@/components/buttons/CircularButton"
+import useTransaction from "@/db/queries/transaction"
+import useTransactionGroup from "@/db/queries/transactionGroup"
 import { router, useFocusEffect } from "expo-router"
 import { useCallback, useState } from "react"
-import { Text, View } from "react-native"
+import { BackHandler, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import useTransactionGroup from "@/db/queries/transactionGroup"
-import useTransaction from "@/db/queries/transaction"
 
 export default function HomeScreen() {
   const { error } = useTransactionGroup()
@@ -25,6 +25,21 @@ export default function HomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      const onBackPress = () => {
+        return true
+      }
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      )
+
+      return () => subscription.remove()
+    }, [])
+  )
+
+  useFocusEffect(
+    useCallback(() => {
       fetchTotalAmount()
     }, [fetchTotalAmount])
   )
@@ -38,10 +53,7 @@ export default function HomeScreen() {
           </View>
         )}
         <View className='flex-row justify-center pt-2 gap-4'>
-          <CircularButton
-            icon='search'
-            onPress={() => {}}
-          />
+          <CircularButton icon='search' onPress={() => {}} />
           <CircularButton
             icon='grid-outline'
             onPress={() => router.push("/kitchensink")}
