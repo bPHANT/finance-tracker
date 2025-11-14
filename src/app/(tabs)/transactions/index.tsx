@@ -7,7 +7,7 @@ import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { router, useFocusEffect } from "expo-router"
 import { useCallback, useState } from "react"
-import { ScrollView, Text, View } from "react-native"
+import { BackHandler, ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 type TransactionGroups = {
@@ -22,6 +22,21 @@ export default function TransactionsScreen() {
     useTransactionGroup()
   const [transactionGroups, setTransactionGroups] = useState<TransactionGroups>(
     []
+  )
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        return true
+      }
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      )
+
+      return () => subscription.remove()
+    }, [])
   )
 
   const fetchTransactionGroups = useCallback(async () => {

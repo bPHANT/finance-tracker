@@ -5,15 +5,31 @@ import ScreenTitle from "@/components/tabs/ScreenTitle"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { storage } from "@/utils/storage"
 import { Ionicons } from "@expo/vector-icons"
-import { router } from "expo-router"
+import { router, useFocusEffect } from "expo-router"
 import { useColorScheme } from "nativewind"
-import { Text, View } from "react-native"
+import { useCallback } from "react"
+import { BackHandler, Text, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function SettingsScreen() {
   const { colorScheme, toggleColorScheme } = useColorScheme()
   const { t, i18n } = useTypedTranslation()
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        return true
+      }
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      )
+
+      return () => subscription.remove()
+    }, [])
+  )
 
   const handleLanguageSwitch = (language: "de" | "en") => {
     i18n.changeLanguage(language)
@@ -28,10 +44,7 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView className='flex-1 bg-background dark:bg-primary-950'>
       <ScrollView className='mx-4'>
-        <ScreenTitle
-          title={t("screens.settings.title")}
-          showBackButton={false}
-        />
+        <ScreenTitle title={t("screens.settings.title")} />
 
         <View className='gap-6 mt-3'>
           <View className='gap-3'>

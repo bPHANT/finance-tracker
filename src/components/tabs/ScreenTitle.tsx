@@ -1,26 +1,20 @@
 import { Ionicons } from "@expo/vector-icons"
-import { useRouter } from "expo-router"
-import { View, Text, TouchableOpacity } from "react-native"
 import { useColorScheme } from "nativewind"
+import { Text, TouchableOpacity, View } from "react-native"
 
 export default function ScreenTitle({
   title,
-  showBackButton,
+  onBack,
 }: {
   title: string
-  showBackButton?: boolean
+  onBack?: () => Promise<void> | undefined
 }) {
   const { colorScheme } = useColorScheme()
 
-  const router = useRouter()
-
   return (
     <View className='flex-row items-center mb-2'>
-      {showBackButton && (
-        <TouchableOpacity
-          className='p-2 rounded-full'
-          onPress={() => router.back()}
-        >
+      {onBack && (
+        <TouchableOpacity className='p-2 rounded-full' onPress={onBack}>
           <Ionicons
             name='arrow-back'
             size={24}
