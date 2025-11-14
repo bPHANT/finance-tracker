@@ -14,7 +14,7 @@ export default function BudgetLayout() {
       }}
       rightTab={{
         title: t("screens.input.title"),
-        name: "input",
+        name: "transactionGroupForm",
         activeIcon: "pencil",
         inactiveIcon: "pencil-outline",
       }}

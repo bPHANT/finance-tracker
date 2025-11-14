@@ -1,0 +1,113 @@
+import { CustomColorKeys } from "@/assets/colors"
+import Button from "@/components/buttons/Button"
+import FunctionalButton from "@/components/buttons/FunctionalButton"
+import TransactionContainer from "@/components/containers/TransactionContainer"
+import DateField from "@/components/input/DateField"
+import TextField from "@/components/input/TextField"
+import ScreenTitle from "@/components/tabs/ScreenTitle"
+import { useTypedTranslation } from "@/language/useTypedTranslation"
+import React from "react"
+import { ScrollView, Text, View } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
+
+type Category = {
+  id: number
+  name: string
+  color: CustomColorKeys
+  emoji: string
+}
+
+export type Transaction = {
+  name: string
+  specific?: string
+  amount: string
+  category: Category
+}
+
+type TransactionGroupFormProps = {
+  title: string
+  onTitleChange: (value: string) => Promise<void>
+  date: Date
+  onDateChange: (value: string) => Promise<void>
+  note: string
+  onNoteChange: (value: string) => Promise<void>
+  amount: string
+  transactions: Transaction[]
+  onEdit: (idx: number) => Promise<void>
+  onDelete: (idx: number) => Promise<void>
+  onAdd: () => Promise<void>
+  onSubmit: () => Promise<void>
+}
+
+export default function TransactionGroupFormScreen(
+  props: TransactionGroupFormProps
+) {
+  const { t } = useTypedTranslation()
+
+  return (
+    <SafeAreaView className='bg-gray-100 dark:bg-primary-950 flex-1 mb-6'>
+      <ScrollView
+        className='mx-4'
+        keyboardShouldPersistTaps='handled'
+        showsVerticalScrollIndicator={false}
+      >
+        <ScreenTitle title={t("screens.input.title")} />
+
+        <View className='gap-4 mb-6'>
+          <TextField
+            title={t("screens.input.name")}
+            value={props.title}
+            onChangeValue={props.onTitleChange}
+          />
+          <DateField
+            title={t("screens.input.date")}
+            date={props.date}
+            onChangeDate={props.onDateChange}
+          />
+          <TextField
+            title={t("screens.input.note")}
+            value={props.note}
+            onChangeValue={props.onDateChange}
+          />
+          <TextField
+            title={t("screens.input.sum")}
+            value={props.amount}
+            balance={true}
+          />
+          <Button title={t("common.save")} onPress={props.onSubmit} />
+        </View>
+
+        <View className='flex-row gap-1 mb-4 justify-between items-center'>
+          <Text className='text-subtitle font-semibold text-gray-950 dark:text-gray-100'>
+            {t("screens.input.transactions")}
+          </Text>
+          <FunctionalButton
+            title={t("screens.input.add")}
+            onPress={props.onAdd}
+          />
+        </View>
+
+        <View className='gap-2'>
+          {props.transactions.length === 0 && (
+            <Text className='text-gray-950 dark:text-gray-100'>
+              {t("screens.input.noTransactions")}
+            </Text>
+          )}
+          {props.transactions.map((transaction, index) => (
+            <View key={index}>
+              {/* Amount */}
+              <TransactionContainer
+                name={transaction.name}
+                amount={transaction.amount}
+                specific={transaction.specific}
+                category={transaction.category}
+                onEdit={async () => props.onEdit(index)}
+                onDelete={async () => props.onDelete(index)}
+              />
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  )
+}

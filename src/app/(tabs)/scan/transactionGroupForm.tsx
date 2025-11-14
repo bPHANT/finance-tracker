@@ -1,26 +1,14 @@
 import { CustomColorKeys } from "@/assets/colors"
-import Button from "@/components/buttons/Button"
-import FunctionalButton from "@/components/buttons/FunctionalButton"
-import TransactionContainer from "@/components/containers/TransactionContainer"
-import DateField from "@/components/input/DateField"
-import TextField from "@/components/input/TextField"
-import ScreenTitle from "@/components/tabs/ScreenTitle"
+import TransactionGroupFormScreen from "@/components/screens/transactionGroupForm"
 import useCategory from "@/db/queries/category"
 import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { useAi } from "@/utils/ai"
+import { calculateTotalAmount, dateFromString } from "@/utils/helper"
 import { storage } from "@/utils/storage"
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 import React, { useCallback, useEffect, useState } from "react"
-import {
-  Alert,
-  BackHandler,
-  Keyboard,
-  ScrollView,
-  Text,
-  View,
-} from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { Alert, BackHandler, Keyboard } from "react-native"
 
 type TransactionResponse = {
   specific: string
@@ -43,7 +31,7 @@ type Transaction = {
   category: Category
 }
 
-export default function TransactionScreen() {
+export default function TransactionGroupFormScreenFromScan() {
   const { t } = useTypedTranslation()
   const router = useRouter()
   const params = useLocalSearchParams()
@@ -178,12 +166,6 @@ export default function TransactionScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.loadFromStorage, params.refresh])
 
-  const onChangeDate = (event: any, selectedDate?: Date) => {
-    if (selectedDate) {
-      setDate(selectedDate)
-    }
-  }
-
   const handleSubmit = async () => {
     if (title.trim() === "" || transactions.length === 0) {
       Alert.alert(t("common.error"), t("screens.input.errors.missingData"))
@@ -233,87 +215,24 @@ export default function TransactionScreen() {
     })
   }
 
-  const total = transactions
-    .reduce(
-      (sum, transaction: Transaction) =>
-        sum + parseFloat(transaction.amount || "0"),
-      0
-    )
-    .toFixed(2)
+  const handleDeleteTransaction = async (index: number) => {
+    setTransactions(transactions.filter((_, i) => i !== index))
+  }
 
   return (
-    <SafeAreaView className='bg-gray-100 dark:bg-primary-950 flex-1'>
-      <ScrollView
-        className='mx-4'
-        keyboardShouldPersistTaps='handled'
-        showsVerticalScrollIndicator={false}
-      >
-        <ScreenTitle title={t("screens.input.title")} />
-
-        <View className='gap-4 mb-6'>
-          <TextField
-            title={t("screens.input.name")}
-            value={title}
-            onChangeValue={(value) => {
-              setTitle(value)
-            }}
-          />
-          <DateField
-            title={t("screens.input.date")}
-            date={date}
-            onChangeDate={onChangeDate}
-          />
-          <TextField
-            title={t("screens.input.note")}
-            value={note}
-            onChangeValue={(value) => setNote(value)}
-          />
-          <TextField
-            title={t("screens.input.sum")}
-            value={total}
-            balance={true}
-          />
-          <Button
-            title={t("common.save")}
-            onPress={() => {
-              handleSubmit()
-            }}
-          />
-        </View>
-
-        <View className='flex-row gap-1 mb-4 justify-between items-center'>
-          <Text className='text-subtitle font-semibold text-gray-950 dark:text-gray-100'>
-            {t("screens.input.transactions")}
-          </Text>
-          <FunctionalButton
-            title={t("screens.input.add")}
-            onPress={handleAddTransaction}
-          />
-        </View>
-
-        <View className='gap-2'>
-          {transactions.length === 0 && (
-            <Text className='text-gray-950 dark:text-gray-100'>
-              {t("screens.input.noTransactions")}
-            </Text>
-          )}
-          {transactions.map((transaction, index) => (
-            <View key={index}>
-              {/* Amount */}
-              <TransactionContainer
-                name={transaction.name}
-                amount={transaction.amount}
-                specific={transaction.specific}
-                category={transaction.category}
-                onEdit={() => handleEditTransaction(index)}
-                onDelete={() => {
-                  setTransactions((prev) => prev.filter((_, i) => i !== index))
-                }}
-              />
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <TransactionGroupFormScreen
+      title={title}
+      date={date}
+      note={note}
+      amount={calculateTotalAmount(transactions)}
+      transactions={transactions}
+      onTitleChange={async (value) => setTitle(value)}
+      onDateChange={async (value) => setDate(await dateFromString(value))}
+      onNoteChange={async (value) => setNote(value)}
+      onEdit={handleEditTransaction}
+      onDelete={handleDeleteTransaction}
+      onAdd={handleAddTransaction}
+      onSubmit={handleSubmit}
+    />
   )
 }

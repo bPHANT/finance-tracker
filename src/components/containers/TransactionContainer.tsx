@@ -12,8 +12,8 @@ type TransactionContainerProps = {
     color: CustomColorKeys
     emoji: string
   }
-  onEdit?: () => void
-  onDelete?: () => void
+  onEdit?: () => Promise<void>
+  onDelete?: () => Promise<void>
 }
 
 export default function TransactionContainer(props: TransactionContainerProps) {

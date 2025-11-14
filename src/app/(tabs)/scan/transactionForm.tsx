@@ -92,7 +92,7 @@ export default function TransactionFormScreen() {
     useCallback(() => {
       const onBackPress = () => {
         router.replace({
-          pathname: "/scan/input",
+          pathname: "/scan/transactionGroupForm",
           params: {
             loadFromStorage: "2",
             refresh: Date.now().toString(),
@@ -241,7 +241,7 @@ export default function TransactionFormScreen() {
     }
 
     router.replace({
-      pathname: "/scan/input",
+      pathname: "/scan/transactionGroupForm",
       params: {
         loadFromStorage: "2",
         refresh: Date.now().toString(),
@@ -254,7 +254,7 @@ export default function TransactionFormScreen() {
     Keyboard.dismiss()
     await storage.remove("inputTransaction")
     router.dismissTo({
-      pathname: "/scan/input",
+      pathname: "/scan/transactionGroupForm",
       params: {
         loadFromStorage: "2",
         refresh: Date.now().toString(),

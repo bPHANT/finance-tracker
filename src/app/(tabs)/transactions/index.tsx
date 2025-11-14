@@ -99,8 +99,8 @@ export default function TransactionsScreen() {
                   onDelete={handleDeleteTransactionGroup}
                   onPress={(id) => {
                     router.push({
-                      pathname: "/transactions/transactionFormGroup",
-                      params: { id },
+                      pathname: "/transactions/transactionGroupForm",
+                      params: { transactionGroupId: id },
                     })
                   }}
                 />

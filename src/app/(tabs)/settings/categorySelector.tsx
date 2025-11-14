@@ -1,4 +1,4 @@
-import CategorySelectorScreen from "@/app/categorySelector"
+import CategorySelectorScreen from "@/components/screens/categorySelector"
 import { useLocalSearchParams } from "expo-router"
 export default function CategorySelectorScreenFromSettings() {
   const params = useLocalSearchParams()
