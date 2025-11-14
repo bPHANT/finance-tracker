@@ -81,17 +81,20 @@ export default function CategoryFormScreen() {
       ? Number(params.selectedParentId)
       : null
 
-    if (!selectedParentId || selectedParentId === -1) {
+    if (selectedParentId === -1) {
       setParentCategory(null)
       return
-    }
-    const parentCategoryResult = await getCategory({ id: selectedParentId })
+    } else if (selectedParentId) {
+      const parentCategoryResult = await getCategory({ id: selectedParentId })
 
-    if (parentCategoryResult)
-      setParentCategory({
-        ...parentCategoryResult,
-        color: parentCategoryResult.color as CustomColorKeys,
-      })
+      if (parentCategoryResult)
+        setParentCategory({
+          ...parentCategoryResult,
+          color: parentCategoryResult.color as CustomColorKeys,
+        })
+    } else {
+      setParentCategory(savedCategory.parentCategory)
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId])
@@ -116,7 +119,7 @@ export default function CategoryFormScreen() {
       name: categoryName,
       color: categoryColor,
       emoji: categoryEmoji,
-      parent: parentCategory,
+      parentCategory: parentCategory,
     })
 
     router.push({

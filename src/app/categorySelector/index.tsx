@@ -189,11 +189,17 @@ export default function CategorySelectorScreen(
   }
 
   const handleBackNavigation = async () => {
-    if (navigationPath.length === 0) {
+    if (!parentCategoryId) {
       if (source === "settings") {
-        router.back()
+        router.replace("/settings")
       } else if (source === "form") {
-        router.back()
+        router.replace({
+          pathname: "/(tabs)/settings/[categoryId]",
+          params: {
+            categoryId: currentCategoryId.toString(),
+            source: "parentSelection",
+          },
+        })
       } else if (source === "scan") {
         router.replace({
           pathname: "/(tabs)/scan/transactionForm",
