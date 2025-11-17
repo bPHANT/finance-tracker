@@ -9,477 +9,335 @@ export async function seedCategories(db: ExpoSQLiteDatabase<any>) {
   }
 
   const incomeId = 1
-  const housingId = 10
-  const utilitiesId = 20
-  const transportationId = 30
-  const foodId = 40
-  const entertainmentId = 50
-  const shoppingId = 60
-  const healthId = 70
-  const educationId = 80
-  const travelId = 90
-  const personalId = 100
+  const foodId = 10
+  const freetimeId = 20
+  const apartmentId = 30
+  const travelId = 40
+  const subscriptionId = 50
+  const insuranceId = 60
+  const universityId = 70
+  const giftId = 80
+  const clothesId = 90
+  const techId = 100
+  const drugstoreID = 110
 
   const categories = [
     // Income Categories
     {
       id: incomeId,
-      name: "Income",
+      name: "Einnahmen",
       parentCategoryId: null,
       color: "green",
       emoji: "💰",
     },
     {
       id: 2,
-      name: "Salary",
+      name: "Werkstudentenjob",
       parentCategoryId: incomeId,
       color: "green",
       emoji: "💼",
     },
     {
       id: 3,
-      name: "Freelance",
+      name: "BaföG",
       parentCategoryId: incomeId,
       color: "turquoise",
-      emoji: "💻",
+      emoji: "🎓",
     },
     {
       id: 4,
-      name: "Investments",
+      name: "Kindergeld",
       parentCategoryId: incomeId,
       color: "blue",
-      emoji: "📈",
+      emoji: "👶",
     },
     {
       id: 5,
-      name: "Side Hustle",
+      name: "Familie",
       parentCategoryId: incomeId,
       color: "orange",
-      emoji: "🚀",
-    },
-    {
-      id: 6,
-      name: "Rental Income",
-      parentCategoryId: incomeId,
-      color: "violet",
-      emoji: "🏠",
-    },
-
-    // Housing Categories
-    {
-      id: housingId,
-      name: "Housing",
-      parentCategoryId: null,
-      color: "blue",
       emoji: "🏡",
     },
     {
-      id: 11,
-      name: "Rent/Mortgage",
-      parentCategoryId: housingId,
-      color: "blue",
-      emoji: "🏠",
-    },
-    {
-      id: utilitiesId,
-      name: "Utilities",
-      parentCategoryId: housingId,
-      color: "yellow",
-      emoji: "⚡",
-    },
-    {
-      id: 21,
-      name: "Electricity",
-      parentCategoryId: utilitiesId,
-      color: "yellow",
-      emoji: "💡",
-    },
-    {
-      id: 22,
-      name: "Water",
-      parentCategoryId: utilitiesId,
-      color: "turquoise",
-      emoji: "💧",
-    },
-    {
-      id: 23,
-      name: "Internet",
-      parentCategoryId: utilitiesId,
+      id: 6,
+      name: "Verkäufe",
+      parentCategoryId: incomeId,
       color: "violet",
-      emoji: "🌐",
-    },
-    {
-      id: 24,
-      name: "Gas",
-      parentCategoryId: utilitiesId,
-      color: "orange",
-      emoji: "🔥",
-    },
-    {
-      id: 12,
-      name: "Home Maintenance",
-      parentCategoryId: housingId,
-      color: "gray",
-      emoji: "🔧",
-    },
-    {
-      id: 13,
-      name: "Home Insurance",
-      parentCategoryId: housingId,
-      color: "green",
-      emoji: "🛡️",
-    },
-
-    // Transportation Categories
-    {
-      id: transportationId,
-      name: "Transportation",
-      parentCategoryId: null,
-      color: "orange",
-      emoji: "🚗",
-    },
-    {
-      id: 31,
-      name: "Car Payment",
-      parentCategoryId: transportationId,
-      color: "orange",
-      emoji: "🚙",
-    },
-    {
-      id: 32,
-      name: "Gas",
-      parentCategoryId: transportationId,
-      color: "yellow",
-      emoji: "⛽",
-    },
-    {
-      id: 33,
-      name: "Car Insurance",
-      parentCategoryId: transportationId,
-      color: "blue",
-      emoji: "🛡️",
-    },
-    {
-      id: 34,
-      name: "Car Maintenance",
-      parentCategoryId: transportationId,
-      color: "gray",
-      emoji: "🔧",
-    },
-    {
-      id: 35,
-      name: "Public Transport",
-      parentCategoryId: transportationId,
-      color: "turquoise",
-      emoji: "🚌",
-    },
-    {
-      id: 36,
-      name: "Parking",
-      parentCategoryId: transportationId,
-      color: "violet",
-      emoji: "🅿️",
+      emoji: "♻️",
     },
 
     // Food Categories
     {
       id: foodId,
-      name: "Food & Dining",
+      name: "Essen",
       parentCategoryId: null,
-      color: "pink",
+      color: "blue",
       emoji: "🍽️",
     },
     {
-      id: 41,
-      name: "Groceries",
+      id: 11,
+      name: "Restaurant/Cafe",
       parentCategoryId: foodId,
-      color: "green",
-      emoji: "🛒",
-    },
-    {
-      id: 42,
-      name: "Restaurants",
-      parentCategoryId: foodId,
-      color: "pink",
-      emoji: "🍕",
-    },
-    {
-      id: 43,
-      name: "Fast Food",
-      parentCategoryId: foodId,
-      color: "orange",
-      emoji: "🍟",
-    },
-    {
-      id: 44,
-      name: "Coffee",
-      parentCategoryId: foodId,
-      color: "yellow",
+      color: "turquoise",
       emoji: "☕",
     },
     {
-      id: 45,
-      name: "Delivery",
+      id: 12,
+      name: "Fast Food",
       parentCategoryId: foodId,
-      color: "turquoise",
-      emoji: "🚚",
+      color: "gray",
+      emoji: "🍔",
+    },
+    {
+      id: 13,
+      name: "Einkaufen",
+      parentCategoryId: foodId,
+      color: "pink",
+      emoji: "🛒",
+    },
+    {
+      id: 14,
+      name: "Mensa",
+      parentCategoryId: foodId,
+      color: "green",
+      emoji: "🧑‍🎓",
     },
 
-    // Entertainment Categories
+    // Freetime Categories
     {
-      id: entertainmentId,
-      name: "Entertainment",
+      id: freetimeId,
+      name: "Freizeit",
       parentCategoryId: null,
-      color: "violet",
-      emoji: "🎭",
-    },
-    {
-      id: 51,
-      name: "Streaming Services",
-      parentCategoryId: entertainmentId,
-      color: "violet",
-      emoji: "📺",
-    },
-    {
-      id: 52,
-      name: "Movies",
-      parentCategoryId: entertainmentId,
-      color: "pink",
-      emoji: "🎬",
-    },
-    {
-      id: 53,
-      name: "Gaming",
-      parentCategoryId: entertainmentId,
-      color: "blue",
-      emoji: "🎮",
-    },
-    {
-      id: 54,
-      name: "Books",
-      parentCategoryId: entertainmentId,
       color: "orange",
-      emoji: "📚",
+      emoji: "🎉",
     },
     {
-      id: 55,
-      name: "Music",
-      parentCategoryId: entertainmentId,
+      id: 21,
+      name: "Hobby",
+      parentCategoryId: freetimeId,
+      color: "orange",
+      emoji: "🎨",
+    },
+    {
+      id: 22,
+      name: "Freunde/Familie",
+      parentCategoryId: freetimeId,
       color: "yellow",
+      emoji: "🫂",
+    },
+    {
+      id: 23,
+      name: "Partys/Konzerte",
+      parentCategoryId: freetimeId,
+      color: "blue",
       emoji: "🎵",
     },
-    {
-      id: 56,
-      name: "Sports Events",
-      parentCategoryId: entertainmentId,
-      color: "green",
-      emoji: "⚽",
-    },
 
-    // Health & Fitness Categories
+    // apartment categories
     {
-      id: healthId,
-      name: "Health & Fitness",
+      id: apartmentId,
+      name: "Wohnung",
       parentCategoryId: null,
-      color: "green",
-      emoji: "🏥",
-    },
-    {
-      id: 71,
-      name: "Medical",
-      parentCategoryId: healthId,
-      color: "green",
-      emoji: "⚕️",
-    },
-    {
-      id: 72,
-      name: "Dental",
-      parentCategoryId: healthId,
-      color: "turquoise",
-      emoji: "🦷",
-    },
-    {
-      id: 73,
-      name: "Pharmacy",
-      parentCategoryId: healthId,
-      color: "pink",
-      emoji: "💊",
-    },
-    {
-      id: 74,
-      name: "Gym Membership",
-      parentCategoryId: healthId,
-      color: "orange",
-      emoji: "💪",
-    },
-    {
-      id: 75,
-      name: "Health Insurance",
-      parentCategoryId: healthId,
-      color: "blue",
-      emoji: "🛡️",
-    },
-
-    // Shopping Categories
-    {
-      id: shoppingId,
-      name: "Shopping",
-      parentCategoryId: null,
-      color: "turquoise",
-      emoji: "🛍️",
-    },
-    {
-      id: 61,
-      name: "Clothing",
-      parentCategoryId: shoppingId,
-      color: "pink",
-      emoji: "👕",
-    },
-    {
-      id: 62,
-      name: "Electronics",
-      parentCategoryId: shoppingId,
-      color: "blue",
-      emoji: "📱",
-    },
-    {
-      id: 63,
-      name: "Home Goods",
-      parentCategoryId: shoppingId,
-      color: "orange",
+      color: "gray",
       emoji: "🏠",
     },
     {
-      id: 64,
-      name: "Personal Care",
-      parentCategoryId: shoppingId,
+      id: 31,
+      name: "Miete",
+      parentCategoryId: apartmentId,
+      color: "turquoise",
+      emoji: "🏠",
+    },
+    {
+      id: 32,
+      name: "Internet",
+      parentCategoryId: apartmentId,
       color: "violet",
-      emoji: "🧴",
+      emoji: "🌐",
     },
     {
-      id: 65,
-      name: "Gifts",
-      parentCategoryId: shoppingId,
-      color: "yellow",
-      emoji: "🎁",
+      id: 33,
+      name: "Möbel",
+      parentCategoryId: apartmentId,
+      color: "pink",
+      emoji: "🛋️",
     },
 
-    // Education Categories
-    {
-      id: educationId,
-      name: "Education",
-      parentCategoryId: null,
-      color: "yellow",
-      emoji: "📚",
-    },
-    {
-      id: 81,
-      name: "Tuition",
-      parentCategoryId: educationId,
-      color: "yellow",
-      emoji: "🎓",
-    },
-    {
-      id: 82,
-      name: "Online Courses",
-      parentCategoryId: educationId,
-      color: "blue",
-      emoji: "💻",
-    },
-    {
-      id: 83,
-      name: "School Supplies",
-      parentCategoryId: educationId,
-      color: "orange",
-      emoji: "✏️",
-    },
-    {
-      id: 84,
-      name: "Certification",
-      parentCategoryId: educationId,
-      color: "green",
-      emoji: "📜",
-    },
-
-    // Travel Categories
+    // Travel Category
     {
       id: travelId,
-      name: "Travel",
+      name: "Reisen",
       parentCategoryId: null,
-      color: "turquoise",
+      color: "pink",
       emoji: "✈️",
     },
+
+    // Subscription Categories
     {
-      id: 91,
-      name: "Flights",
-      parentCategoryId: travelId,
-      color: "turquoise",
-      emoji: "✈️",
-    },
-    {
-      id: 92,
-      name: "Hotels",
-      parentCategoryId: travelId,
-      color: "blue",
-      emoji: "🏨",
-    },
-    {
-      id: 93,
-      name: "Car Rental",
-      parentCategoryId: travelId,
-      color: "orange",
-      emoji: "🚗",
-    },
-    {
-      id: 94,
-      name: "Travel Insurance",
-      parentCategoryId: travelId,
+      id: subscriptionId,
+      name: "Abo",
+      parentCategoryId: null,
       color: "green",
+      emoji: "🔄",
+    },
+    {
+      id: 51,
+      name: "Handyvertrag",
+      parentCategoryId: subscriptionId,
+      color: "pink",
+      emoji: "📱",
+    },
+    {
+      id: 52,
+      name: "Streaming-Dienst",
+      parentCategoryId: subscriptionId,
+      color: "orange",
+      emoji: "🎬",
+    },
+
+    // Insurance Categories
+    {
+      id: insuranceId,
+      name: "Versicherung",
+      parentCategoryId: null,
+      color: "yellow",
       emoji: "🛡️",
     },
     {
-      id: 95,
-      name: "Activities",
-      parentCategoryId: travelId,
-      color: "pink",
-      emoji: "🎢",
+      id: 61,
+      name: "Krankversicherung/Pflegeversicherung",
+      parentCategoryId: insuranceId,
+      color: "turquoise",
+      emoji: "🏥",
+    },
+    {
+      id: 62,
+      name: "Privathaftpflichtversicherung",
+      parentCategoryId: insuranceId,
+      color: "turquoise",
+      emoji: "🤝",
     },
 
-    // Personal Categories
+    // University Categories
     {
-      id: personalId,
-      name: "Personal",
+      id: universityId,
+      name: "Uni",
       parentCategoryId: null,
-      color: "gray",
-      emoji: "👤",
+      color: "violet",
+      emoji: "🧑‍🎓",
+    },
+    {
+      id: 71,
+      name: "Semesterbeitrag",
+      parentCategoryId: universityId,
+      color: "violet",
+      emoji: "💳",
+    },
+    {
+      id: 72,
+      name: "Equipment",
+      parentCategoryId: universityId,
+      color: "pink",
+      emoji: "📚",
+    },
+
+    // Gift Categories
+    {
+      id: giftId,
+      name: "Geschenke",
+      parentCategoryId: null,
+      color: "blue",
+      emoji: "🎁",
+    },
+    {
+      id: 81,
+      name: "Geburtstage",
+      parentCategoryId: giftId,
+      color: "orange",
+      emoji: "🎂",
+    },
+    {
+      id: 82,
+      name: "Weihnachten",
+      parentCategoryId: giftId,
+      color: "yellow",
+      emoji: "🎄",
+    },
+
+    // Clothes Categories
+    {
+      id: clothesId,
+      name: "Kleidung",
+      parentCategoryId: null,
+      color: "green",
+      emoji: "⚽",
+    },
+    {
+      id: 91,
+      name: "Kleidung",
+      parentCategoryId: clothesId,
+      color: "green",
+      emoji: "👕",
+    },
+    {
+      id: 92,
+      name: "Sportkleidung",
+      parentCategoryId: clothesId,
+      color: "green",
+      emoji: "🏃‍♂️",
+    },
+    {
+      id: 93,
+      name: "Schuhe",
+      parentCategoryId: clothesId,
+      color: "turquoise",
+      emoji: "👟",
+    },
+
+    // Tech Category
+    {
+      id: techId,
+      name: "Technik",
+      parentCategoryId: null,
+      color: "pink",
+      emoji: "💻",
     },
     {
       id: 101,
-      name: "Haircuts",
-      parentCategoryId: personalId,
-      color: "violet",
-      emoji: "✂️",
+      name: "Gaming",
+      parentCategoryId: techId,
+      color: "orange",
+      emoji: "🎮",
+    },
+
+    // Drugstore Categories
+    {
+      id: drugstoreID,
+      name: "Gesundheit",
+      parentCategoryId: null,
+      color: "blue",
+      emoji: "🩺",
     },
     {
-      id: 102,
-      name: "Subscriptions",
-      parentCategoryId: personalId,
-      color: "gray",
-      emoji: "📰",
+      id: 111,
+      name: "Medizin",
+      parentCategoryId: drugstoreID,
+      color: "turquoise",
+      emoji: "💊",
     },
     {
-      id: 103,
-      name: "Donations",
-      parentCategoryId: personalId,
-      color: "green",
-      emoji: "❤️",
+      id: 112,
+      name: "Körperpflege",
+      parentCategoryId: drugstoreID,
+      color: "pink",
+      emoji: "🧴",
     },
     {
-      id: 104,
-      name: "Pet Care",
-      parentCategoryId: personalId,
-      color: "yellow",
-      emoji: "🐕",
+      id: 113,
+      name: "Haushalt",
+      parentCategoryId: drugstoreID,
+      color: "blue",
+      emoji: "🧹",
     },
   ] as Category[]
 
