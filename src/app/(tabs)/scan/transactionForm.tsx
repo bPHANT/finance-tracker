@@ -253,7 +253,7 @@ export default function TransactionFormScreen() {
   const handleCancel = async () => {
     Keyboard.dismiss()
     await storage.remove("inputTransaction")
-    router.dismissTo({
+    router.replace({
       pathname: "/scan/input",
       params: {
         loadFromStorage: "2",

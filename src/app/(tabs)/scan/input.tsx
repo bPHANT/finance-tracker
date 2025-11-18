@@ -224,7 +224,6 @@ export default function TransactionScreen() {
       ...transaction,
       idx: index,
     })
-    console.log(`${index}\n${JSON.stringify(transaction)}`)
     router.push({
       pathname: "/scan/transactionForm",
       params: {

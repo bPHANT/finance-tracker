@@ -288,7 +288,7 @@ export default function CategorySelectorScreen(
           </View>
         ) : (
           <ScrollView className='flex-1' showsVerticalScrollIndicator={false}>
-            <View className='gap-3 pb-6 px-4'>
+            <View className='gap-3 px-4 mb-8'>
               {source === "form" && !parentCategoryId && (
                 <NavigationContainer
                   category={{

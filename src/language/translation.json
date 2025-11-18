@@ -206,8 +206,8 @@
         "de": "Bitte wählen Sie eine Kategorie"
       },
       "addTransaction": {
-        "en": "Add Transaction",
-        "de": "Transaktion hinzufügen"
+        "en": "Add",
+        "de": "Hinzufügen"
       },
       "updateTransaction": {
         "en": "Update",
