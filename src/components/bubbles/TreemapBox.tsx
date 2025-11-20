@@ -8,10 +8,11 @@ import Animated, {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
 export interface BoxData {
-  id: string
+  id: number
   name: string
   emoji: string
   value: number
+  displayAmount?: number
   color: string
 }
 
@@ -22,7 +23,7 @@ interface TreemapBoxProps {
   width: number
   height: number
   index: number
-  onPress?: (id: string) => void
+  onPress?: (id: number) => void
 }
 
 export function TreemapBox({
@@ -94,7 +95,11 @@ export function TreemapBox({
               fontSize: Math.max(10, Math.min(width / 10, 16)),
             }}
           >
-            ${item.value}
+            {item.displayAmount !== undefined
+              ? `${item.displayAmount < 0 ? "-" : ""}${Math.abs(
+                  item.displayAmount
+                ).toFixed(2)}€`
+              : `${item.value.toFixed(2)}€`}
           </Text>
         </>
       ) : (

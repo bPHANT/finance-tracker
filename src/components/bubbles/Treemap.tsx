@@ -6,7 +6,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window")
 
 interface TreemapProps {
   data: BoxData[]
-  onBoxPress?: (id: string) => void
+  onBoxPress?: (id: number) => void
   topOffset?: number
 }
 

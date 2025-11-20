@@ -1,22 +1,86 @@
+import { colors, type CustomColorKeys } from "@/assets/colors"
 import { Treemap } from "@/components/bubbles/Treemap"
 import { type BoxData } from "@/components/bubbles/TreemapBox"
+import useCategory from "@/db/queries/category"
+import { useFocusEffect } from "expo-router"
+import { useCallback, useRef, useState } from "react"
+import { BackHandler } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
-const SAMPLE_DATA: BoxData[] = [
-  { id: "1", name: "Groceries", emoji: "🛒", value: 450, color: "#FF6B6B" },
-  { id: "2", name: "Rent", emoji: "🏠", value: 1200, color: "#4ECDC4" },
-  { id: "3", name: "Transport", emoji: "🚗", value: 200, color: "#45B7D1" },
-  { id: "4", name: "Entertainment", emoji: "🎬", value: 150, color: "#FFA07A" },
-  { id: "5", name: "Utilities", emoji: "💡", value: 300, color: "#98D8C8" },
-  { id: "6", name: "Dining", emoji: "🍽️", value: 250, color: "#F7DC6F" },
-  { id: "7", name: "Shopping", emoji: "🛍️", value: 180, color: "#BB8FCE" },
-  { id: "8", name: "Health", emoji: "⚕️", value: 120, color: "#85C1E2" },
-]
-
 export default function BubbleScreen() {
-  const handleBoxPress = (id: string) => {
-    console.log("Box pressed:", id)
-    // Handle box press by id here
+  const { getManyWithAmount: getCategories, hasChildren } = useCategory()
+  const getCategoriesRef = useRef(getCategories)
+  getCategoriesRef.current = getCategories
+
+  const [parentCategoryId, setParentCategoryId] = useState<number | null>(null)
+  const [categoryStack, setCategoryStack] = useState<(number | null)[]>([null])
+  const [data, setData] = useState<BoxData[]>([])
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        setCategoryStack((prev) => {
+          if (prev.length > 1) {
+            const newStack = prev.slice(0, -1)
+            setParentCategoryId(newStack[newStack.length - 1])
+            return newStack
+          }
+          return prev
+        })
+        return true
+      }
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      )
+
+      return () => subscription.remove()
+    }, [])
+  )
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        const categories = await getCategoriesRef.current({
+          parentId: parentCategoryId,
+        })
+
+        const boxData: BoxData[] = categories
+          .filter((cat) => {
+            const amount =
+              typeof cat.totalAmount === "number"
+                ? cat.totalAmount
+                : parseFloat(cat.totalAmount)
+            return amount !== 0
+          })
+          .map((cat) => {
+            const amount =
+              typeof cat.totalAmount === "number"
+                ? cat.totalAmount
+                : parseFloat(cat.totalAmount)
+            return {
+              id: cat.id,
+              name: cat.name,
+              emoji: cat.emoji,
+              value: Math.abs(amount),
+              displayAmount: amount,
+              color: colors.custom[cat.color as CustomColorKeys],
+            }
+          })
+
+        setData(boxData)
+      }
+
+      fetchData()
+    }, [parentCategoryId])
+  )
+
+  const handleBoxPress = async (id: number) => {
+    if (await hasChildren({ categoryId: id })) {
+      setCategoryStack((prev) => [...prev, id])
+      setParentCategoryId(id)
+    }
   }
 
   return (
@@ -24,7 +88,7 @@ export default function BubbleScreen() {
       className='flex-1 bg-background dark:bg-primary-950 mb-6'
       edges={["left", "right"]}
     >
-      <Treemap data={SAMPLE_DATA} onBoxPress={handleBoxPress} topOffset={48} />
+      <Treemap data={data} onBoxPress={handleBoxPress} topOffset={48} />
     </SafeAreaView>
   )
 }
