@@ -5,6 +5,7 @@ import { useState } from "react"
 import { useDb } from ".."
 import { categoryTable } from "../schemas/categories"
 import { categoryTermTable } from "../schemas/categoryTerms"
+import { categoryToBudgetTable } from "../schemas/categoriesToBudgets"
 
 type CategoryWithChildren = {
   id: number
@@ -302,6 +303,65 @@ export default function useCategory() {
     }
   }
 
+
+  const remove = async (categoryId: number) => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      await db.transaction(async (tx) => {
+        // Kategorie + Parent
+        const [category] = await tx
+          .select({
+            id: categoryTable.id,
+            parentCategoryId: categoryTable.parentCategoryId,
+          })
+          .from(categoryTable)
+          .where(eq(categoryTable.id, categoryId))
+
+        // Keine Kategorie gefunden
+        if (!category) {
+          return
+        }
+
+        const parentId = category.parentCategoryId
+
+        // Root Kategorien dürfen nicht gelöscht werden? 
+        if (parentId == null) {
+          throw new Error(
+            "Cannot delete root category without a parent category"
+          )
+        }
+
+        // Alle Terms werden auf Parent verschoben
+        await tx
+          .update(categoryTermTable)
+          .set({ categoryId: parentId })
+          .where(eq(categoryTermTable.categoryId, categoryId))
+
+        // Alle Kinder der zu löschenden Kategorie an Parent hängen
+        await tx
+          .update(categoryTable)
+          .set({ parentCategoryId: parentId })
+          .where(eq(categoryTable.parentCategoryId, categoryId))
+
+        // Kategorie wird gelöscht
+        await tx
+          .delete(categoryTable)
+          .where(eq(categoryTable.id, categoryId))
+      })
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error deleting category:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+
+
   return {
     create,
     update,
@@ -311,6 +371,7 @@ export default function useCategory() {
     getManyAsJson,
     getByParentId,
     hasChildren,
+    remove,
     error,
     loading,
   }
