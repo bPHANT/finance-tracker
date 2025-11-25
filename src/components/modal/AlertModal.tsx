@@ -1,5 +1,5 @@
 import React from "react"
-import { Modal, View, Text, Pressable, StyleSheet } from "react-native"
+import { Modal, View, Text, Pressable } from "react-native"
 
 type AlertType = "error" | "confirm"
 
@@ -12,30 +12,49 @@ type Props = {
   onCancel?: () => void
 }
 
-const AlertModal: React.FC<Props> = ({
-  visible,
-  type,
-  title,
-  message,
-  onConfirm,
-  onCancel,
-}) => {
+export default function AlertModal(props: Props) {
+  const { visible, type, title, message, onConfirm, onCancel } = props
+
   return (
     <Modal transparent visible={visible} animationType='fade'>
-      <View style={styles.overlay}>
-        <View style={styles.box}>
-          {title && <Text style={styles.title}>{title}</Text>}
-          <Text style={styles.message}>{message}</Text>
+      <View className='flex-1 bg-black/40 justify-center items-center'>
+        {/* Alert-Box */}
+        <View
+          className='
+            w-4/5
+            rounded-2xl
+            p-5
+            bg-white dark:bg-primary-900
 
-          <View style={styles.buttonRow}>
+            shadow-xl shadow-black/20 dark:shadow-black/50
+          '
+          // Fix für nativewind )
+          style={{ backgroundColor: "#fff" }}
+        >
+          {/* Titel */}
+          {title && (
+            <Text className='text-lg font-semibold mb-2 dark:text-gray-50'>
+              {title}
+            </Text>
+          )}
+
+          {/* Nachricht */}
+          <Text className='text-base mb-6 dark:text-gray-100'>{message}</Text>
+
+          {/* Buttons */}
+          <View className='flex-row justify-end items-center'>
             {type === "confirm" && (
-              <Pressable style={styles.cancelBtn} onPress={onCancel}>
-                <Text style={styles.cancelText}>Abbrechen</Text>
+              <Pressable className='mr-6' onPress={onCancel}>
+                <Text className='text-base text-gray-500 dark:text-gray-300'>
+                  Abbrechen
+                </Text>
               </Pressable>
             )}
 
-            <Pressable style={styles.confirmBtn} onPress={onConfirm}>
-              <Text style={styles.confirmText}>OK</Text>
+            <Pressable onPress={onConfirm}>
+              <Text className='text-base font-semibold text-blue-600 dark:text-blue-400'>
+                OK
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -43,46 +62,3 @@ const AlertModal: React.FC<Props> = ({
     </Modal>
   )
 }
-
-export default AlertModal
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  box: {
-    width: "80%",
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 12,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 8,
-  },
-  message: {
-    fontSize: 15,
-    marginBottom: 20,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-  },
-  cancelBtn: {
-    marginRight: 15,
-  },
-  cancelText: {
-    color: "#888",
-    fontSize: 16,
-  },
-  confirmBtn: {},
-  confirmText: {
-    color: "#007AFF",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-})

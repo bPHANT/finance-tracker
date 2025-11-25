@@ -116,7 +116,6 @@ export default function KitchensinkScreen() {
         message='Möchten Sie diese Aktion wirklich ausführen?'
         onConfirm={() => {
           setShowConfirmAlert(false)
-          // TODO: Aktion bei Bestätigung
         }}
         onCancel={() => setShowConfirmAlert(false)}
       />
