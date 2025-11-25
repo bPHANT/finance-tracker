@@ -5,7 +5,7 @@ import { useState } from "react"
 import { useDb } from ".."
 import { categoryTable } from "../schemas/categories"
 import { categoryTermTable } from "../schemas/categoryTerms"
-import { categoryToBudgetTable } from "../schemas/categoriesToBudgets"
+
 
 type CategoryWithChildren = {
   id: number
