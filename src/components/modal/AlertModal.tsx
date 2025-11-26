@@ -19,7 +19,7 @@ export default function AlertModal(props: AlertModalProps) {
     <Modal transparent visible={visible} animationType='fade'>
       <View className='flex-1 bg-black/40 justify-center items-center'>
         {/* Alert-Box */}
-        <View className='w-4/5 rounded-2xl p-5 bg-white dark:bg-primary-900 shadow-xl shadow-black/20 dark:shadow-black/50'>
+        <View className='w-4/5 rounded-2xl p-5 bg-gray-50 dark:bg-primary-900 shadow-xl shadow-black/20 dark:shadow-black/50'>
           {/* Titel */}
           {title && (
             <Text className='text-lg font-semibold mb-2 dark:text-gray-50'>
