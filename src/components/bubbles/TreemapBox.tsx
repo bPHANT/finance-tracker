@@ -24,6 +24,7 @@ interface TreemapBoxProps {
   height: number
   index: number
   onPress?: (id: number) => void
+  onLongPress?: (id: number) => void
 }
 
 export function TreemapBox({
@@ -34,6 +35,7 @@ export function TreemapBox({
   height,
   index,
   onPress,
+  onLongPress,
 }: TreemapBoxProps) {
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -54,7 +56,7 @@ export function TreemapBox({
     }
   })
 
-  // Determine if box is large enough to show text (threshold: 100px width)
+  // Determine if box is large enough to show text
   const showText = width > 100
   const labelFontSize = Math.max(12, Math.min(width / 8, 18))
   const emojiSize = showText
@@ -67,10 +69,17 @@ export function TreemapBox({
     }
   }
 
+  const handleLongPress = () => {
+    if (onLongPress) {
+      onLongPress(item.id)
+    }
+  }
+
   return (
     <AnimatedPressable
       className='p-3 justify-center items-center border border-white/30 active:opacity-80'
       onPress={handlePress}
+      onLongPress={handleLongPress}
       style={[
         animatedStyle,
         {
@@ -87,6 +96,7 @@ export function TreemapBox({
             }}
             numberOfLines={2}
           >
+            {" "}
             {item.emoji} {item.name}
           </Text>
           <Text

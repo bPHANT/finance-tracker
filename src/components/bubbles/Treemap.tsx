@@ -1,5 +1,7 @@
 import { useState } from "react"
-import { Dimensions, LayoutChangeEvent, View } from "react-native"
+import { Dimensions, LayoutChangeEvent, ScrollView, View } from "react-native"
+import BackButton from "../buttons/BackButton"
+import NavigationPath, { NavigationPathItem } from "../display/NavigationPath"
 import { TreemapBox, type BoxData } from "./TreemapBox"
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window")
@@ -7,7 +9,10 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window")
 interface TreemapProps {
   data: BoxData[]
   onBoxPress?: (id: number) => void
+  onBoxLongPress?: (id: number) => void
   topOffset?: number
+  navigationPath?: NavigationPathItem[]
+  onBackPress?: () => Promise<void>
 }
 
 // Treemap layout algorithm to fill space without gaps
@@ -69,8 +74,17 @@ function calculateTreemapLayout(
   return result
 }
 
-export function Treemap({ data, onBoxPress, topOffset = 72 }: TreemapProps) {
+export function Treemap({
+  data,
+  onBoxPress,
+  onBoxLongPress,
+  topOffset,
+  navigationPath = [],
+  onBackPress,
+}: TreemapProps) {
   const [containerHeight, setContainerHeight] = useState(0)
+  const showNavigation = navigationPath.length > 0
+  const navigationHeight = 0
 
   const handleLayout = (event: LayoutChangeEvent) => {
     setContainerHeight(event.nativeEvent.layout.height)
@@ -79,27 +93,54 @@ export function Treemap({ data, onBoxPress, topOffset = 72 }: TreemapProps) {
   const boxes = calculateTreemapLayout(data, SCREEN_WIDTH, containerHeight)
 
   return (
-    <View
-      className='flex-1'
-      style={{ marginTop: topOffset }}
-      onLayout={handleLayout}
-    >
-      {containerHeight > 0 && (
-        <View className='flex-1 relative'>
-          {boxes.map((box, index) => (
-            <TreemapBox
-              key={box.id}
-              item={box}
-              x={box.x}
-              y={box.y}
-              width={box.width}
-              height={box.height}
-              index={index}
-              onPress={onBoxPress}
-            />
-          ))}
+    <View className='flex-1' style={{ marginTop: topOffset }}>
+      {showNavigation && (
+        <View className='px-4 py-2 bg-background dark:bg-primary-950 border-b border-gray-200 dark:border-primary-800'>
+          <View className='flex-row items-center justify-between'>
+            {onBackPress && navigationPath.length > 0 && (
+              <BackButton onPress={onBackPress} />
+            )}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className='flex-1'
+            >
+              <View className='flex-row items-center'>
+                {navigationPath.map((pathItem, index) => (
+                  <NavigationPath
+                    key={pathItem.id}
+                    index={index}
+                    pathItem={pathItem}
+                  />
+                ))}
+              </View>
+            </ScrollView>
+          </View>
         </View>
       )}
+      <View
+        className='flex-1'
+        style={{ marginTop: navigationHeight }}
+        onLayout={handleLayout}
+      >
+        {containerHeight > 0 && (
+          <View className='flex-1 relative'>
+            {boxes.map((box, index) => (
+              <TreemapBox
+                key={box.id}
+                item={box}
+                x={box.x}
+                y={box.y}
+                width={box.width}
+                height={box.height}
+                index={index}
+                onPress={onBoxPress}
+                onLongPress={onBoxLongPress}
+              />
+            ))}
+          </View>
+        )}
+      </View>
     </View>
   )
 }
