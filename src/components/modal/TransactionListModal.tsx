@@ -1,4 +1,5 @@
 import { colors } from "@/assets/colors"
+import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { Ionicons } from "@expo/vector-icons"
 import { useColorScheme } from "nativewind"
 import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native"
@@ -27,6 +28,7 @@ export default function TransactionListModal({
   categoryEmoji,
 }: TransactionListModalProps) {
   const { colorScheme } = useColorScheme()
+  const { t } = useTypedTranslation()
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -59,8 +61,10 @@ export default function TransactionListModal({
                   {categoryName}
                 </Text>
                 <Text className='text-sm text-gray-600 dark:text-gray-400'>
-                  {transactions.length} transaction
-                  {transactions.length !== 1 ? "s" : ""}
+                  {transactions.length}{" "}
+                  {transactions.length === 1
+                    ? t("screens.input.transactionCount")
+                    : t("screens.input.transactionCountPlural")}
                 </Text>
               </View>
             </View>
@@ -101,7 +105,7 @@ export default function TransactionListModal({
                 </View>
                 <View className='flex-row items-center gap-2'>
                   <Text className='text-sm text-gray-600 dark:text-gray-400'>
-                    {item.groupName || "Unnamed Group"}
+                    {item.groupName ?? t("screens.input.unnamedGroup")}
                   </Text>
                   <Text className='text-sm text-gray-500 dark:text-gray-500'>
                     •
@@ -122,7 +126,7 @@ export default function TransactionListModal({
                   }
                 />
                 <Text className='mt-4 text-gray-600 dark:text-gray-400'>
-                  No transactions found
+                  {t("screens.input.noTransactionsFound")}
                 </Text>
               </View>
             }
