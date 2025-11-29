@@ -59,21 +59,25 @@ export default function TransactionGroupFormScreen(
             value={props.title}
             onChangeValue={props.onTitleChange}
           />
+
           <DateField
             title={t("screens.input.date")}
             date={props.date}
             onChangeDate={props.onDateChange}
           />
+
           <TextField
             title={t("screens.input.note")}
             value={props.note}
-            onChangeValue={props.onDateChange}
+            onChangeValue={props.onNoteChange}  // ✅ BUG FIXED
           />
+
           <TextField
             title={t("screens.input.sum")}
             value={props.amount}
             balance={true}
           />
+
           <Button title={t("common.save")} onPress={props.onSubmit} />
         </View>
 
@@ -81,6 +85,7 @@ export default function TransactionGroupFormScreen(
           <Text className='text-subtitle font-semibold text-gray-950 dark:text-gray-100'>
             {t("screens.input.transactions")}
           </Text>
+
           <FunctionalButton
             title={t("screens.input.add")}
             onPress={props.onAdd}
@@ -93,9 +98,9 @@ export default function TransactionGroupFormScreen(
               {t("screens.input.noTransactions")}
             </Text>
           )}
+
           {props.transactions.map((transaction, index) => (
             <View key={index}>
-              {/* Amount */}
               <TransactionContainer
                 name={transaction.name}
                 amount={transaction.amount}

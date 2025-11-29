@@ -21,7 +21,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context"
 
 type CategorySelectorScreenProps = {
-  source: "scan" | "settings" | "form"
+  source: "scan" | "settings" | "form" | "transactions"
   currentCategoryId: string | string[]
   parentCategoryId: string | string[]
   navigationPath: string | string[]
