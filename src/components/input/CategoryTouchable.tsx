@@ -8,6 +8,7 @@ type CategoryTouchableProps = {
   emoji?: string
   title: string
   onPress: () => Promise<void>
+  showDelete?: boolean
 }
 
 export default function CategoryTouchable(props: CategoryTouchableProps) {
@@ -20,7 +21,11 @@ export default function CategoryTouchable(props: CategoryTouchableProps) {
     >
       <EmojiWithBackground color={color} emoji={emoji} size='xs' />
       <Text className='text-gray-900 dark:text-gray-50'>{props.title}</Text>
-      <Ionicons name={"chevron-forward"} size={16} color={colors.gray[50]} />
+      <Ionicons
+        name={props.showDelete ? "trash-outline" : "chevron-forward"}
+        size={16}
+        color={props.showDelete ? colors.functional.delete : colors.gray[50]}
+      />
     </TouchableOpacity>
   )
 }
