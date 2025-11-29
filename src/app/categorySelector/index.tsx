@@ -186,6 +186,8 @@ export default function CategorySelectorScreen(
     const pathname =
       source === "settings"
         ? "/settings/categorySelector"
+        : source === "budgetForm"
+        ? "/(tabs)/budget/categorySelector"
         : "/scan/categorySelector"
 
     router.push({
@@ -194,7 +196,12 @@ export default function CategorySelectorScreen(
         parentCategoryId: category.id?.toString(),
         navigationPath: JSON.stringify(newNavigationPath),
         currentCategoryId: params.currentCategoryId,
-        source: source === "form" ? "form" : undefined,
+        source:
+          source === "form"
+            ? "form"
+            : source === "budgetForm"
+            ? "budgetForm"
+            : undefined,
       },
     })
   }
@@ -239,6 +246,8 @@ export default function CategorySelectorScreen(
     const pathname =
       source === "settings"
         ? "/settings/categorySelector"
+        : source === "budgetForm"
+        ? "/(tabs)/budget/categorySelector"
         : "/scan/categorySelector"
 
     router.push({

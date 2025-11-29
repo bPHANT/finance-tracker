@@ -146,13 +146,14 @@ export default function BudgetFormScreen() {
       setLinkedCategories(savedBudget.linkedCategories)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [budgetId])
+  }, [params.selectedCategoryId, getCategory])
 
   useFocusEffect(
     useCallback(() => {
       if (source === "categorySelection") loadBudget()
       else fetchBudget()
-    }, [fetchBudget, source, loadBudget])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [source, params.selectedCategoryId, params.budgetId])
   )
 
   const [colorModalOpen, setColorModalOpen] = useState(false)
