@@ -18,7 +18,7 @@ export default function BudgetLayout() {
         activeIcon: "flag",
         inactiveIcon: "flag-outline",
       }}
-      invisibleTabs={["[budgetId]"]}
+      invisibleTabs={["[budgetId]", "categorySelector"]}
     />
   )
 }
