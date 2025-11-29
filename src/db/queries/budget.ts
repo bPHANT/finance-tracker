@@ -231,10 +231,115 @@ export default function useBudget() {
     }
   }
 
+  const remove = async (id: number) => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      return await db.transaction(async (tx) => {
+        // Delete category links first
+        await tx
+          .delete(categoryToBudgetTable)
+          .where(eq(categoryToBudgetTable.budgetId, id))
+
+        // Delete the budget
+        const result = await tx
+          .delete(budgetTable)
+          .where(eq(budgetTable.id, id))
+          .returning()
+
+        return result.length > 0
+      })
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error deleting budget:", error)
+      return false
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const update = async ({
+    id,
+    name,
+    amount,
+    start,
+    end,
+    period,
+    color,
+    emoji,
+    categoryIds,
+  }: {
+    id: number
+    name: string
+    amount: number
+    start: number
+    end?: number | null
+    period: "daily" | "weekly" | "monthly" | "semesterly" | "yearly"
+    color: string
+    emoji: string
+    categoryIds: number[]
+  }) => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      return await db.transaction(async (tx) => {
+        // Update the budget
+        const budgetResult = await tx
+          .update(budgetTable)
+          .set({
+            name,
+            amount,
+            start,
+            end,
+            period,
+            color,
+            emoji,
+          })
+          .where(eq(budgetTable.id, id))
+          .returning()
+
+        if (!budgetResult || budgetResult.length === 0) {
+          throw new Error("Failed to update budget")
+        }
+
+        // Delete existing category links
+        await tx
+          .delete(categoryToBudgetTable)
+          .where(eq(categoryToBudgetTable.budgetId, id))
+
+        // Insert new category links
+        if (categoryIds.length > 0) {
+          await tx.insert(categoryToBudgetTable).values(
+            categoryIds.map((categoryId) => ({
+              budgetId: id,
+              categoryId,
+            }))
+          )
+        }
+
+        return budgetResult[0]
+      })
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error updating budget:", error)
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     create,
     get,
     getMany,
+    remove,
+    update,
     error,
     loading,
   }

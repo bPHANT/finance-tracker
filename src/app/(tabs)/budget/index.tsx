@@ -3,13 +3,14 @@ import BudgetContainer from "@/components/containers/BudgetContainer"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useBudget from "@/db/queries/budget"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
-import { useEffect, useState } from "react"
+import { router, useFocusEffect } from "expo-router"
+import { useCallback, useState } from "react"
 import { ScrollView, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function BudgetScreen() {
   const { t } = useTypedTranslation()
-  const { getMany } = useBudget()
+  const { getMany: getBudgets } = useBudget()
 
   const [budgets, setBudgets] = useState<
     {
@@ -22,29 +23,31 @@ export default function BudgetScreen() {
     }[]
   >([])
 
-  useEffect(() => {
-    const loadBudgets = async () => {
-      const now = new Date()
-      const result = await getMany({
-        year: now.getFullYear(),
-        month: now.getMonth() + 1,
-      })
+  const fetchBudgets = useCallback(async () => {
+    const now = new Date()
+    const result = await getBudgets({
+      year: now.getFullYear(),
+      month: now.getMonth() + 1,
+    })
 
-      setBudgets(
-        result.map((b) => ({
-          id: b.id,
-          name: b.name,
-          amount: b.amount.toString(),
-          paidAmount: b.paidAmount,
-          color: b.color,
-          emoji: b.emoji,
-        }))
-      )
-    }
-
-    loadBudgets()
+    setBudgets(
+      result.map((b) => ({
+        id: b.id,
+        name: b.name,
+        amount: b.amount.toString(),
+        paidAmount: b.paidAmount,
+        color: b.color,
+        emoji: b.emoji,
+      }))
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchBudgets()
+    }, [fetchBudgets])
+  )
 
   return (
     <SafeAreaView className='flex-1 bg-gray-100 dark:bg-primary-950'>
@@ -52,7 +55,12 @@ export default function BudgetScreen() {
         <ScreenTitle title={t("screens.budget.title")} />
         <CircularButton
           icon='add'
-          onPress={() => console.log("Create new budget")}
+          onPress={() =>
+            router.push({
+              pathname: "/(tabs)/budget/[budgetId]",
+              params: { budgetId: "-1" },
+            })
+          }
         />
       </View>
 
@@ -69,7 +77,12 @@ export default function BudgetScreen() {
             paidAmount={budget.paidAmount.toString()}
             color={budget.color as any}
             emoji={budget.emoji}
-            onPress={() => console.log(`Budget ${budget.id} clicked`)}
+            onPress={() =>
+              router.push({
+                pathname: "/(tabs)/budget/[budgetId]",
+                params: { budgetId: budget.id.toString() },
+              })
+            }
           />
         ))}
       </ScrollView>

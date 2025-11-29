@@ -14,7 +14,7 @@ import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { storage } from "@/utils/storage"
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
 import React, { useCallback, useState } from "react"
-import { Text, View } from "react-native"
+import { Alert, Text, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import { SafeAreaView } from "react-native-safe-area-context"
 
@@ -27,7 +27,12 @@ type Category = {
 
 export default function BudgetFormScreen() {
   const { t } = useTypedTranslation()
-  const { get: getBudget, create: createBudget } = useBudget()
+  const {
+    get: getBudget,
+    create: createBudget,
+    update: updateBudget,
+    remove: removeBudget,
+  } = useBudget()
   const { get: getCategory } = useCategory()
 
   const params = useLocalSearchParams()
@@ -48,8 +53,10 @@ export default function BudgetFormScreen() {
   const mode = params.budgetId === "-1" ? "create" : "update"
 
   const fetchBudget = useCallback(async () => {
-    setBudgetId(params.budgetId ? Number(params.budgetId) : 0)
-    if (!budgetId || budgetId === -1) {
+    const id = params.budgetId ? Number(params.budgetId) : 0
+    setBudgetId(id)
+
+    if (!id || id === -1) {
       // Clear form for new budget
       setBudgetName("")
       setBudgetAmount("")
@@ -62,7 +69,7 @@ export default function BudgetFormScreen() {
       return
     }
 
-    const budgetResult = await getBudget(budgetId)
+    const budgetResult = await getBudget(id)
     if (!budgetResult) return
 
     setBudgetName(budgetResult.name)
@@ -78,8 +85,7 @@ export default function BudgetFormScreen() {
         color: cat.color as CustomColorKeys,
       }))
     )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [budgetId])
+  }, [params.budgetId, getBudget])
 
   const loadBudget = useCallback(async () => {
     const savedBudget = (await storage.getObject("budgetFormState")) as {
@@ -100,6 +106,7 @@ export default function BudgetFormScreen() {
 
     let categoryColor: CustomColorKeys | null = null
     let categoryEmoji: string | null = null
+    let categoryName: string | null = null
 
     if (selectedCategoryId) {
       const categoryResult = await getCategory({ id: selectedCategoryId })
@@ -119,6 +126,11 @@ export default function BudgetFormScreen() {
           categoryEmoji = newCategory.emoji
         }
 
+        // Set budget name to category's if budget name is empty
+        if (savedBudget && savedBudget.name === "") {
+          categoryName = newCategory.name
+        }
+
         // Add category to saved list if not already present
         if (savedBudget) {
           const categoryExists = savedBudget.linkedCategories.find(
@@ -136,7 +148,7 @@ export default function BudgetFormScreen() {
 
     if (savedBudget) {
       setBudgetId(savedBudget.id)
-      setBudgetName(savedBudget.name)
+      setBudgetName(categoryName ?? savedBudget.name)
       setBudgetAmount(savedBudget.amount)
       setBudgetColor(categoryColor ?? savedBudget.color)
       setBudgetEmoji(categoryEmoji ?? savedBudget.emoji)
@@ -145,7 +157,6 @@ export default function BudgetFormScreen() {
       setBudgetPeriod(savedBudget.period)
       setLinkedCategories(savedBudget.linkedCategories)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.selectedCategoryId, getCategory])
 
   useFocusEffect(
@@ -219,10 +230,48 @@ export default function BudgetFormScreen() {
         emoji: budgetEmoji,
         categoryIds: linkedCategories.map((cat) => cat.id),
       })
+    } else {
+      await updateBudget({
+        id: budgetId,
+        name: budgetName,
+        amount: parseFloat(budgetAmount),
+        start: budgetStart.getTime(),
+        end: budgetEnd?.getTime() ?? null,
+        period: budgetPeriod,
+        color: budgetColor,
+        emoji: budgetEmoji,
+        categoryIds: linkedCategories.map((cat) => cat.id),
+      })
     }
-    // TODO: Add update logic when update method exists
 
-    router.back()
+    router.replace("/budget")
+  }
+
+  async function handleDelete() {
+    Alert.alert(
+      "Delete Budget",
+      "Are you sure you want to delete this budget? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            if (!budgetId || budgetId === -1) return
+
+            const success = await removeBudget(budgetId)
+            if (success) {
+              router.back()
+            } else {
+              Alert.alert("Error", "Failed to delete budget. Please try again.")
+            }
+          },
+        },
+      ]
+    )
   }
 
   return (
@@ -348,6 +397,13 @@ export default function BudgetFormScreen() {
               onPress={handleSubmit}
               functional='submit'
             />
+            {mode === "update" && (
+              <Button
+                title=' Delete'
+                onPress={handleDelete}
+                functional='cancel'
+              />
+            )}
             <View className='h-2' />
           </View>
         </ScrollView>
