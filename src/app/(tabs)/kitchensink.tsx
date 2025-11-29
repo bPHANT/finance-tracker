@@ -14,24 +14,25 @@ export default function KitchensinkScreen() {
 
   return (
     <SafeAreaView className='bg-gray-100 dark:bg-primary-950 flex-1'>
-      <ScreenTitle title='Kitchensink' />
+      <ScrollView>
+        <ScreenTitle title='Kitchensink' />
 
-      {/* Button zu Category Settings */}
-      <View className='mx-6 mb-2 gap-2'>
-        <Button
-          onPress={() => router.push("/settings/categorySettings")}
-          title='Kategorie bearbeiten'
-        ></Button>
-        <Button
-          onPress={() =>
-            router.push({
-              pathname: "/(tabs)/budget/[budgetId]",
-              params: { budgetId: "-1" },
-            })
-          }
-          title='Budget erstellen'
-        ></Button>
-      </View>
+        {/* Button zu Category Settings */}
+        <View className='mx-6 mb-2 gap-2'>
+          <Button
+            onPress={() => router.push("/settings/categorySettings")}
+            title='Kategorie bearbeiten'
+          ></Button>
+          <Button
+            onPress={() =>
+              router.push({
+                pathname: "/(tabs)/budget/[budgetId]",
+                params: { budgetId: "-1" },
+              })
+            }
+            title='Budget erstellen'
+          ></Button>
+        </View>
 
         <View className='mx-6 flex-col gap-2 justify-start items-start'>
           <Text className='text-gray-900 dark:text-gray-100'>

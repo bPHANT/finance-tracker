@@ -1,27 +1,25 @@
-import { useRouter } from "expo-router"
+import CircularButton from "@/components/buttons/CircularButton"
+import BudgetContainer from "@/components/containers/BudgetContainer"
+import ScreenTitle from "@/components/tabs/ScreenTitle"
+import useBudget from "@/db/queries/budget"
+import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { useEffect, useState } from "react"
 import { ScrollView, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import BudgetContainer from "@/components/containers/BudgetContainer"
-import CircularButton from "@/components/buttons/CircularButton"
-import ScreenTitle from "@/components/tabs/ScreenTitle"
-import { useTypedTranslation } from "@/language/useTypedTranslation"
-import useBudget from "@/db/queries/budget"
 
 export default function BudgetScreen() {
   const { t } = useTypedTranslation()
-  const router = useRouter()
   const { getMany } = useBudget()
 
   const [budgets, setBudgets] = useState<
-    Array<{
+    {
       id: number
       name: string
       amount: string
       paidAmount: number
       color: string
       emoji: string
-    }>
+    }[]
   >([])
 
   useEffect(() => {
@@ -45,6 +43,7 @@ export default function BudgetScreen() {
     }
 
     loadBudgets()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
