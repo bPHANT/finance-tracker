@@ -21,7 +21,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context"
 
 type CategorySelectorScreenProps = {
-  source: "scan" | "settings" | "form"
+  source: "scan" | "settings" | "form" | "budgetForm"
   currentCategoryId: string | string[]
   parentCategoryId: string | string[]
   navigationPath: string | string[]
@@ -35,7 +35,9 @@ export default function CategorySelectorScreen(
   const router = useRouter()
   const params = useLocalSearchParams()
 
-  const source = (params.source as "scan" | "settings" | "form") || props.source
+  const source =
+    (params.source as "scan" | "settings" | "form" | "budgetForm") ||
+    props.source
 
   const currentCategoryId = params.currentCategoryId
     ? Number(params.currentCategoryId)
@@ -144,6 +146,15 @@ export default function CategorySelectorScreen(
           selectedParentId: category.id.toString(),
         },
       })
+    } else if (source === "budgetForm") {
+      router.replace({
+        pathname: "/(tabs)/budget/[budgetId]",
+        params: {
+          budgetId: currentCategoryId.toString(),
+          source: "categorySelection",
+          selectedCategoryId: category.id.toString(),
+        },
+      })
     } else if (source === "scan") {
       await storage.setObject("inputCategory", category)
       router.replace({
@@ -198,6 +209,14 @@ export default function CategorySelectorScreen(
           params: {
             categoryId: currentCategoryId.toString(),
             source: "parentSelection",
+          },
+        })
+      } else if (source === "budgetForm") {
+        router.replace({
+          pathname: "/(tabs)/budget/[budgetId]",
+          params: {
+            budgetId: currentCategoryId.toString(),
+            source: "categorySelection",
           },
         })
       } else if (source === "scan") {
