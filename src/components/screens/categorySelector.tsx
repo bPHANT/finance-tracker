@@ -144,10 +144,14 @@ export default function CategorySelectorScreen(
           selectedParentId: category.id.toString(),
         },
       })
-    } else if (source === "scan") {
+    } else if (source === "scan" || source === "transactions") {
       await storage.setObject("inputCategory", category)
+      const pathname =
+        source === "scan"
+          ? "/scan/transactionForm"
+          : "/transactions/transactionForm"
       router.replace({
-        pathname: "/scan/transactionForm",
+        pathname,
         params: { transactionIndex: transactionIndex },
       })
     }
@@ -172,10 +176,12 @@ export default function CategorySelectorScreen(
       { id: category.id, name: category.name },
     ]
 
-    const pathname =
-      source === "settings"
-        ? "/settings/categorySelector"
-        : "/scan/categorySelector"
+    let pathname = "/scan/categorySelector"
+    if (source === "settings") {
+      pathname = "/settings/categorySelector"
+    } else if (source === "transactions") {
+      pathname = "/transactions/categorySelector"
+    }
 
     router.push({
       pathname,
@@ -205,6 +211,11 @@ export default function CategorySelectorScreen(
           pathname: "/(tabs)/scan/transactionForm",
           params: { transactionIndex: transactionIndex },
         })
+      } else if (source === "transactions") {
+        router.replace({
+          pathname: "/transactions/transactionForm",
+          params: { transactionIndex: transactionIndex },
+        })
       } else {
         router.back()
       }
@@ -217,10 +228,12 @@ export default function CategorySelectorScreen(
         ? newNavigationPath[newNavigationPath.length - 1].id
         : null
 
-    const pathname =
-      source === "settings"
-        ? "/settings/categorySelector"
-        : "/scan/categorySelector"
+    let pathname = "/scan/categorySelector"
+    if (source === "settings") {
+      pathname = "/settings/categorySelector"
+    } else if (source === "transactions") {
+      pathname = "/transactions/categorySelector"
+    }
 
     router.push({
       pathname,

@@ -38,7 +38,7 @@ export default function TransactionGroupFormScreenFromScan() {
 
   const { getAnswer } = useAi()
 
-  const [title, setTitle] = useState("")
+  const [name, setTitle] = useState("")
   const [note, setNote] = useState("")
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [date, setDate] = useState(new Date())
@@ -167,7 +167,7 @@ export default function TransactionGroupFormScreenFromScan() {
   }, [params.loadFromStorage, params.refresh])
 
   const handleSubmit = async () => {
-    if (title.trim() === "" || transactions.length === 0) {
+    if (name.trim() === "" || transactions.length === 0) {
       Alert.alert(t("common.error"), t("screens.input.errors.missingData"))
       return
     }
@@ -179,7 +179,7 @@ export default function TransactionGroupFormScreenFromScan() {
     }))
 
     await createTransactionGroup({
-      name: title,
+      name: name,
       note,
       date,
       transactions: transactionData,
@@ -194,14 +194,24 @@ export default function TransactionGroupFormScreenFromScan() {
   }
 
   const handleAddTransaction = async () => {
-    await storage.setObject("inputData", { title, note, date, transactions })
+    await storage.setObject("inputData", {
+      title: name,
+      note,
+      date,
+      transactions,
+    })
     await storage.remove("inputTransaction")
     router.push("/scan/transactionForm")
   }
 
   const handleEditTransaction = async (index: number) => {
     const transaction = transactions[index]
-    await storage.setObject("inputData", { title, note, date, transactions })
+    await storage.setObject("inputData", {
+      title: name,
+      note,
+      date,
+      transactions,
+    })
     await storage.setObject("inputTransaction", {
       ...transaction,
       idx: index,
@@ -221,7 +231,8 @@ export default function TransactionGroupFormScreenFromScan() {
 
   return (
     <TransactionGroupFormScreen
-      title={title}
+      title={t("screens.input.title")}
+      name={name}
       date={date}
       note={note}
       amount={calculateTotalAmount(transactions)}

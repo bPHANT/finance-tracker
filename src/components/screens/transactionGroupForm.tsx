@@ -26,6 +26,7 @@ export type Transaction = {
 
 type TransactionGroupFormProps = {
   title: string
+  name: string
   onTitleChange: (value: string) => Promise<void>
   date: Date
   onDateChange: (value: string) => Promise<void>
@@ -33,10 +34,12 @@ type TransactionGroupFormProps = {
   onNoteChange: (value: string) => Promise<void>
   amount: string
   transactions: Transaction[]
+  submitText: string
   onEdit: (idx: number) => Promise<void>
   onDelete: (idx: number) => Promise<void>
   onAdd: () => Promise<void>
   onSubmit: () => Promise<void>
+  onBack?: () => Promise<void>
 }
 
 export default function TransactionGroupFormScreen(
@@ -51,12 +54,12 @@ export default function TransactionGroupFormScreen(
         keyboardShouldPersistTaps='handled'
         showsVerticalScrollIndicator={false}
       >
-        <ScreenTitle title={t("screens.input.title")} />
+        <ScreenTitle title={props.title} onBack={props.onBack} />
 
         <View className='gap-4 mb-6'>
           <TextField
             title={t("screens.input.name")}
-            value={props.title}
+            value={props.name}
             onChangeValue={props.onTitleChange}
           />
 
@@ -69,7 +72,7 @@ export default function TransactionGroupFormScreen(
           <TextField
             title={t("screens.input.note")}
             value={props.note}
-            onChangeValue={props.onNoteChange}  // ✅ BUG FIXED
+            onChangeValue={props.onNoteChange} // ✅ BUG FIXED
           />
 
           <TextField
@@ -78,7 +81,7 @@ export default function TransactionGroupFormScreen(
             balance={true}
           />
 
-          <Button title={t("common.save")} onPress={props.onSubmit} />
+          <Button title={props.submitText} onPress={props.onSubmit} />
         </View>
 
         <View className='flex-row gap-1 mb-4 justify-between items-center'>

@@ -53,7 +53,8 @@ export default function TransactionsScreen() {
         })),
       }))
     )
-  }, [getTransactionGroups])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useFocusEffect(
     useCallback(() => {
