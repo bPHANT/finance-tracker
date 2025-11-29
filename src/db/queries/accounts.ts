@@ -1,7 +1,7 @@
+import { eq } from "drizzle-orm"
 import { useState } from "react"
 import { useDb } from ".."
 import { accountTable } from "../schemas"
-import { eq } from "drizzle-orm"
 
 export default function useAccounts() {
   const db = useDb()
