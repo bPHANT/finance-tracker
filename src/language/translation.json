@@ -60,8 +60,8 @@
     },
     "bubbles": {
       "title": {
-        "en": "Bubbles",
-        "de": "Bubbles"
+        "en": "Boxes",
+        "de": "Boxen"
       }
     },
     "camera": {
@@ -124,6 +124,22 @@
       "noTransactions": {
         "en": "No transactions added yet",
         "de": "Noch keine Transaktionen hinzugefügt"
+      },
+      "transactionCount": {
+        "en": "transaction",
+        "de": "Transaktion"
+      },
+      "transactionCountPlural": {
+        "en": "transactions",
+        "de": "Transaktionen"
+      },
+      "noTransactionsFound": {
+        "en": "No transactions found",
+        "de": "Keine Transaktionen gefunden"
+      },
+      "unnamedGroup": {
+        "en": "Unnamed Group",
+        "de": "Unbenannte Gruppe"
       },
       "add": {
         "en": "Add",
