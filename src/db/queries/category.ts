@@ -310,7 +310,6 @@ export default function useCategory() {
 
     try {
       await db.transaction(async (tx) => {
-        // Kategorie + Parent
         const [category] = await tx
           .select({
             id: categoryTable.id,
@@ -319,33 +318,28 @@ export default function useCategory() {
           .from(categoryTable)
           .where(eq(categoryTable.id, categoryId))
 
-        // Keine Kategorie gefunden
         if (!category) {
           return
         }
 
         const parentId = category.parentCategoryId
 
-        // Root Kategorien dürfen nicht gelöscht werden? 
         if (parentId == null) {
           throw new Error(
             "Cannot delete root category without a parent category"
           )
         }
 
-        // Alle Terms werden auf Parent verschoben
         await tx
           .update(categoryTermTable)
           .set({ categoryId: parentId })
           .where(eq(categoryTermTable.categoryId, categoryId))
 
-        // Alle Kinder der zu löschenden Kategorie an Parent hängen
         await tx
           .update(categoryTable)
           .set({ parentCategoryId: parentId })
           .where(eq(categoryTable.parentCategoryId, categoryId))
 
-        // Kategorie wird gelöscht
         await tx
           .delete(categoryTable)
           .where(eq(categoryTable.id, categoryId))
