@@ -31,6 +31,7 @@ export default function CategoryFormScreen() {
     getWithParent: getCategoryWithParent,
     create: createCategory,
     update: updateCategory,
+    remove: deleteCategory
   } = useCategory()
 
   const params = useLocalSearchParams()
@@ -165,6 +166,15 @@ export default function CategoryFormScreen() {
     })
   }
 
+  async function handleDelete() {
+    if (!categoryId) return
+
+    // TO DO ! INSERT ALERT !
+    
+    await deleteCategory(categoryId)
+    router.dismissTo("/settings")
+  }
+
   return (
     <>
       <ColorModal
@@ -248,6 +258,13 @@ export default function CategoryFormScreen() {
               onPress={handleSubmit}
               functional='submit'
             />
+            {mode === "update" && (
+              <Button
+                title={t("common.delete")}
+                onPress={handleDelete}
+                functional="cancel"
+              />
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
