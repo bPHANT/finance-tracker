@@ -216,7 +216,6 @@ export default function TransactionGroupFormScreenFromScan() {
       ...transaction,
       idx: index,
     })
-    console.log(`${index}\n${JSON.stringify(transaction)}`)
     router.push({
       pathname: "/scan/transactionForm",
       params: {
@@ -244,6 +243,7 @@ export default function TransactionGroupFormScreenFromScan() {
       onDelete={handleDeleteTransaction}
       onAdd={handleAddTransaction}
       onSubmit={handleSubmit}
+      submitText={t("common.save")}
     />
   )
 }

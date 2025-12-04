@@ -6,25 +6,24 @@ import NavigationPath, {
 } from "@/components/display/NavigationPath"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useCategory from "@/db/queries/category"
-import { storage } from "@/utils/storage"
 import { Ionicons } from "@expo/vector-icons"
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
+import { useFocusEffect } from "expo-router"
 import React, { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import {
-  BackHandler,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native"
+import { BackHandler, ScrollView, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 type CategorySelectorScreenProps = {
-  source: "scan" | "settings" | "form" | "transactions"
-  currentCategoryId: string | string[]
-  parentCategoryId: string | string[]
-  navigationPath: string | string[]
+  currentCategoryId: number | null
+  parentCategoryId: number | null
+  navigationPath: NavigationPathItem[]
+  showRootCategory?: boolean
+  onCancel: () => Promise<void>
+  onCategorySelect: (
+    category: CategoryWithChildrenCheck,
+    originalCategoryId?: number | null
+  ) => Promise<void>
+  onAdd?: () => Promise<void>
 }
 
 export default function CategorySelectorScreen(
@@ -32,33 +31,43 @@ export default function CategorySelectorScreen(
 ) {
   const { t } = useTranslation()
 
-  const router = useRouter()
-  const params = useLocalSearchParams()
-
-  const source = (params.source as "scan" | "settings" | "form") || props.source
-
-  const currentCategoryId = params.currentCategoryId
-    ? Number(params.currentCategoryId)
-    : 0
-
-  const transactionIndex = params.transactionIndex
-    ? params.transactionIndex
-    : undefined
-
-  const parentCategoryId = params.parentCategoryId
-    ? params.parentCategoryId === "null"
-      ? null
-      : Number(params.parentCategoryId)
-    : null
-
-  const navigationPath: NavigationPathItem[] = params.navigationPath
-    ? JSON.parse(params.navigationPath as string)
-    : []
-
   const [categories, setCategories] = useState<CategoryWithChildrenCheck[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [originalCategoryId, setOriginalCategoryId] = useState<number | null>(
+    props.currentCategoryId
+  )
+  const [parentCategoryId, setParentCategoryId] = useState<number | null>(
+    props.parentCategoryId
+  )
+  const [navigationPath, setNavigationPath] = useState<NavigationPathItem[]>(
+    props.navigationPath
+  )
 
   const { getByParentId, hasChildren } = useCategory()
+
+  useEffect(() => {
+    setParentCategoryId(props.parentCategoryId)
+    setOriginalCategoryId(props.currentCategoryId)
+    setNavigationPath(props.navigationPath)
+  }, [props.parentCategoryId, props.currentCategoryId, props.navigationPath])
+
+  function resetPath() {
+    setParentCategoryId(null)
+  }
+
+  async function handleBackNavigation() {
+    if (parentCategoryId) {
+      const newNavigationPath = navigationPath.slice(0, -1)
+      setParentCategoryId(
+        newNavigationPath.length > 0
+          ? newNavigationPath[newNavigationPath.length - 1].id
+          : null
+      )
+      setNavigationPath(newNavigationPath)
+    } else {
+      resetPath()
+      props.onCancel()
+    }
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -74,7 +83,7 @@ export default function CategorySelectorScreen(
 
       return () => subscription.remove()
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [navigationPath, source, transactionIndex])
+    }, [])
   )
 
   useEffect(() => {
@@ -82,10 +91,8 @@ export default function CategorySelectorScreen(
 
     const loadCategories = async () => {
       try {
-        setIsLoading(true)
-
         const categoryResult = await getByParentId({
-          parentId: parentCategoryId === null ? null : parentCategoryId,
+          parentId: parentCategoryId,
         })
 
         if (isMounted) {
@@ -107,153 +114,65 @@ export default function CategorySelectorScreen(
         }
       } catch (error) {
         console.error("Error loading categories:", error)
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
       }
     }
 
     loadCategories()
-
-    return () => {
-      isMounted = false
-    }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parentCategoryId])
 
-  const handleCategorySelect = async (category: CategoryWithChildrenCheck) => {
-    if (!category.id) {
-      console.log("Error while Selection: No category.id")
-      return
-    }
-    if (source === "settings") {
-      router.push({
-        pathname: "/(tabs)/settings/[categoryId]",
-        params: {
-          categoryId: category.id.toString(),
-        },
-      })
-    } else if (source === "form") {
-      router.replace({
-        pathname: "/(tabs)/settings/[categoryId]",
-        params: {
-          categoryId: currentCategoryId.toString(),
-          source: "parentSelection",
-          selectedParentId: category.id.toString(),
-        },
-      })
-    } else if (source === "scan" || source === "transactions") {
-      await storage.setObject("inputCategory", category)
-      const pathname =
-        source === "scan"
-          ? "/scan/transactionForm"
-          : "/transactions/transactionForm"
-      router.replace({
-        pathname,
-        params: { transactionIndex: transactionIndex },
-      })
-    }
-  }
+  // const handleCategorySelect = async (category: CategoryWithChildrenCheck) => {
+  //   if (!category.id) {
+  //     console.log("Error while Selection: No category.id")
+  //     return
+  //   }
+  //   if (source === "settings") {
+  //     router.push({
+  //       pathname: "/(tabs)/settings/[categoryId]",
+  //       params: {
+  //         categoryId: category.id.toString(),
+  //       },
+  //     })
+  //   } else if (source === "form") {
+  //     router.replace({
+  //       pathname: "/(tabs)/settings/[categoryId]",
+  //       params: {
+  //         categoryId: currentCategoryId.toString(),
+  //         source: "parentSelection",
+  //         selectedParentId: category.id.toString(),
+  //       },
+  //     })
+  //   } else if (source === "scan" || source === "transactions") {
+  //     await storage.setObject("inputCategory", category)
+  //     const pathname =
+  //       source === "scan"
+  //         ? "/scan/transactionForm"
+  //         : "/transactions/transactionForm"
+  //     router.replace({
+  //       pathname,
+  //       params: { transactionIndex: transactionIndex },
+  //     })
+  //   }
+  // }
 
-  const handleNoParentCategorySelect = async () => {
-    router.push({
-      pathname: "/settings/[categoryId]",
-      params: {
-        categoryId: currentCategoryId.toString(),
-        source: "parentSelection",
-        selectedParentId: "-1",
-      },
-    })
-  }
+  // const handleNoParentCategorySelect = async () => {
+  //   router.push({
+  //     pathname: "/settings/[categoryId]",
+  //     params: {
+  //       categoryId: currentCategoryId.toString(),
+  //       source: "parentSelection",
+  //       selectedParentId: "-1",
+  //     },
+  //   })
+  // }
 
-  const handleCategoryNavigate = async (
-    category: CategoryWithChildrenCheck
-  ) => {
-    const newNavigationPath = [
+  async function handleCategoryNavigate(category: CategoryWithChildrenCheck) {
+    if (!category.id) return
+    setParentCategoryId(category.id)
+    setNavigationPath([
       ...navigationPath,
       { id: category.id, name: category.name },
-    ]
-
-    let pathname = "/scan/categorySelector"
-    if (source === "settings") {
-      pathname = "/settings/categorySelector"
-    } else if (source === "transactions") {
-      pathname = "/transactions/categorySelector"
-    }
-
-    router.push({
-      pathname,
-      params: {
-        parentCategoryId: category.id?.toString(),
-        navigationPath: JSON.stringify(newNavigationPath),
-        currentCategoryId: params.currentCategoryId,
-        source: source === "form" ? "form" : undefined,
-      },
-    })
-  }
-
-  const handleBackNavigation = async () => {
-    if (!parentCategoryId) {
-      if (source === "settings") {
-        router.replace("/settings")
-      } else if (source === "form") {
-        router.replace({
-          pathname: "/(tabs)/settings/[categoryId]",
-          params: {
-            categoryId: currentCategoryId.toString(),
-            source: "parentSelection",
-          },
-        })
-      } else if (source === "scan") {
-        router.replace({
-          pathname: "/(tabs)/scan/transactionForm",
-          params: { transactionIndex: transactionIndex },
-        })
-      } else if (source === "transactions") {
-        router.replace({
-          pathname: "/transactions/transactionForm",
-          params: { transactionIndex: transactionIndex },
-        })
-      } else {
-        router.back()
-      }
-      return
-    }
-
-    const newNavigationPath = navigationPath.slice(0, -1)
-    const newParentId =
-      newNavigationPath.length > 0
-        ? newNavigationPath[newNavigationPath.length - 1].id
-        : null
-
-    let pathname = "/scan/categorySelector"
-    if (source === "settings") {
-      pathname = "/settings/categorySelector"
-    } else if (source === "transactions") {
-      pathname = "/transactions/categorySelector"
-    }
-
-    router.push({
-      pathname,
-      params: {
-        parentCategoryId: newParentId?.toString() ?? "null",
-        navigationPath: JSON.stringify(newNavigationPath),
-        currentCategoryId: params.currentCategoryId,
-        source: source === "form" ? "form" : source,
-        transactionIndex: transactionIndex,
-      },
-    })
-  }
-
-  const handleAddPress = () => {
-    router.push({
-      pathname: "/(tabs)/settings/[categoryId]",
-      params: {
-        categoryId: -1,
-      },
-    })
+    ])
   }
 
   return (
@@ -263,11 +182,11 @@ export default function CategorySelectorScreen(
           <View className='flex-row items-center justify-between'>
             <ScreenTitle
               title={t("screens.categorySelector.title")}
-              onBack={() => handleBackNavigation()}
+              onBack={handleBackNavigation}
             />
             <TouchableOpacity
               accessibilityLabel={t("common.add")}
-              onPress={handleAddPress}
+              onPress={props.onAdd}
               className='p-2 -mr-2'
               hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
             >
@@ -276,8 +195,6 @@ export default function CategorySelectorScreen(
           </View>
           {navigationPath.length > 0 && (
             <View className='flex-row items-center flex-wrap mb-4'>
-              {/* <BackButton onPress={handleBackNavigation} /> */}
-
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View className='flex-row items-center'>
                   {navigationPath.map((pathItem, index) => (
@@ -293,41 +210,35 @@ export default function CategorySelectorScreen(
           )}
         </View>
 
-        {isLoading ? (
-          <View className='flex-1 items-center justify-center'>
-            <Text className='text-gray-600 dark:text-gray-400'>
-              {t("screens.categorySelector.loading")}
-            </Text>
+        <ScrollView className='flex-1' showsVerticalScrollIndicator={false}>
+          <View className='gap-3 pb-6 px-4'>
+            {props.showRootCategory && !parentCategoryId && (
+              <NavigationContainer
+                category={{
+                  id: null,
+                  color: "gray",
+                  emoji: " ",
+                  name: t("screens.categorySelector.noParentCategory"),
+                  hasChildren: false,
+                  parentCategoryId: null,
+                }}
+                currentCategoryId={originalCategoryId ?? undefined}
+                onPress={props.onCategorySelect}
+              />
+            )}
+            {categories.map((category) => (
+              <NavigationContainer
+                key={category.id}
+                category={category}
+                currentCategoryId={originalCategoryId ?? undefined}
+                onPress={async (category) =>
+                  await props.onCategorySelect(category, originalCategoryId)
+                }
+                onNavigationPress={handleCategoryNavigate}
+              />
+            ))}
           </View>
-        ) : (
-          <ScrollView className='flex-1' showsVerticalScrollIndicator={false}>
-            <View className='gap-3 pb-6 px-4'>
-              {source === "form" && !parentCategoryId && (
-                <NavigationContainer
-                  category={{
-                    id: null,
-                    color: "gray",
-                    emoji: " ",
-                    name: t("screens.categorySelector.noParentCategory"),
-                    hasChildren: false,
-                    parentCategoryId: null,
-                  }}
-                  currentCategoryId={currentCategoryId}
-                  onPress={handleNoParentCategorySelect}
-                />
-              )}
-              {categories.map((category) => (
-                <NavigationContainer
-                  key={category.id}
-                  category={category}
-                  currentCategoryId={currentCategoryId}
-                  onPress={handleCategorySelect}
-                  onNavigationPress={handleCategoryNavigate}
-                />
-              ))}
-            </View>
-          </ScrollView>
-        )}
+        </ScrollView>
       </View>
     </SafeAreaView>
   )
