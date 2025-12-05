@@ -1,9 +1,8 @@
 import { colors } from "@/assets/colors"
 import Button from "@/components/buttons/Button"
 import DuoSwitch from "@/components/buttons/DuoSwitch"
-import AccountModal from "@/components/modal/AccountModal"
+import AccountModal, { Account } from "@/components/modal/AccountModal"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
-import type { Account } from "@/db/schemas/accounts"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { storage } from "@/utils/storage"
 import { Ionicons } from "@expo/vector-icons"
@@ -53,19 +52,33 @@ export default function SettingsScreen() {
     })
   }
 
+  async function handleOnAddAccount() {
+    router.push({
+      pathname: "/settings/accountForm",
+      params: {
+        accountId: -1,
+      },
+    })
+    setShowAccountModal(false)
+  }
+
+  async function handleOnSelectAccount(account: Account) {
+    router.push({
+      pathname: "/settings/accountForm",
+      params: {
+        accountId: account.id,
+      },
+    })
+    setShowAccountModal(false)
+  }
+
   return (
     <SafeAreaView className='flex-1 bg-background dark:bg-primary-950'>
       <AccountModal
         visible={showAccountModal}
         onClose={() => setShowAccountModal(false)}
-        onSelectAccount={(account: Account) => {
-          console.log("Selected account:", account)
-          setShowAccountModal(false)
-        }}
-        onAddAccount={() => {
-          console.log("Add new account")
-          setShowAccountModal(false)
-        }}
+        onSelectAccount={handleOnSelectAccount}
+        onAddAccount={handleOnAddAccount}
       />
 
       <ScrollView className='mx-4'>

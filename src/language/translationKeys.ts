@@ -71,6 +71,7 @@ export type TranslationKey =
   | "screens.settings.english"
   | "screens.settings.manage"
   | "screens.settings.manageCategories"
+  | "screens.settings.manageAccounts"
   | "screens.settings.german"
   | "screens.categoryForm.title.create"
   | "screens.categoryForm.title.update"

@@ -14,7 +14,7 @@ import {
   View,
 } from "react-native"
 
-type Account = {
+export type Account = {
   id: number
   name: string
   balance: number

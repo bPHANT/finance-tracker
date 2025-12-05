@@ -1,8 +1,6 @@
 import type { CustomColorKeys } from "@/assets/colors"
 import Button from "@/components/buttons/Button"
-import DuoSwitch from "@/components/buttons/DuoSwitch"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
-import FieldTitle from "@/components/input/FieldTitle"
 import TextField from "@/components/input/TextField"
 import ColorModal from "@/components/modal/ColorModal"
 import EmojiModal from "@/components/modal/EmojiModal"
@@ -20,7 +18,6 @@ type AccountFormDataCreate = {
   color: CustomColorKeys
   emoji: string
   balance: number
-  balanceType: "positive" | "negative"
 }
 
 type AccountFormDataUpdate = AccountFormDataCreate & {
@@ -38,9 +35,6 @@ export default function AccountFormScreen() {
   const [accountColor, setAccountColor] = useState<CustomColorKeys>("gray")
   const [accountEmoji, setAccountEmoji] = useState("💰")
   const [balance, setBalance] = useState<string>("0")
-  const [balanceType, setBalanceType] = useState<"positive" | "negative">(
-    "positive"
-  )
 
   const mode = params.accountId === "-1" ? "create" : "update"
 
@@ -48,15 +42,12 @@ export default function AccountFormScreen() {
     setAccountId(params.accountId ? Number(params.accountId) : 0)
     if (!accountId || accountId === -1) return
 
-    // TODO: Implement get single account query
     const accountResult = await getAccount({ id: accountId })
     if (accountResult) {
       setAccountName(accountResult.name)
       setAccountColor(accountResult.color as CustomColorKeys)
       setAccountEmoji(accountResult.emoji)
-      const accountBalance = accountResult.balance
-      setBalance(Math.abs(accountBalance).toString())
-      setBalanceType(accountBalance >= 0 ? "positive" : "negative")
+      setBalance(accountResult.balance.toString())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountId])
@@ -75,16 +66,15 @@ export default function AccountFormScreen() {
   }
 
   async function handleBalanceChange(value: string) {
-    // Only allow numbers and decimal point
-    const cleanedValue = value.replace(/[^0-9.]/g, "")
+    // Allow minus sign only at the start, numbers, and decimal point
+    const cleanedValue = value.replace(/[^0-9.-]/g, "")
+    // Ensure minus is only at the start
+    const parts = cleanedValue.split("-")
+    if (parts.length > 2 || (parts.length === 2 && parts[0] !== "")) return
     // Ensure only one decimal point
-    const parts = cleanedValue.split(".")
-    if (parts.length > 2) return
+    const decimalParts = cleanedValue.split(".")
+    if (decimalParts.length > 2) return
     setBalance(cleanedValue)
-  }
-
-  async function handleBalanceTypeChange(type: "positive" | "negative") {
-    setBalanceType(type)
   }
 
   async function handleSubmit() {
@@ -93,9 +83,7 @@ export default function AccountFormScreen() {
       return
     }
 
-    const numericBalance = parseFloat(balance) || 0
-    const finalBalance =
-      balanceType === "negative" ? -numericBalance : numericBalance
+    const finalBalance = parseFloat(balance) || 0
 
     if (mode === "create") {
       const accountData: AccountFormDataCreate = {
@@ -103,7 +91,6 @@ export default function AccountFormScreen() {
         color: accountColor,
         emoji: accountEmoji,
         balance: finalBalance,
-        balanceType,
       }
       console.log("Creating account:", accountData)
       // TODO: Implement createAccount
@@ -116,7 +103,6 @@ export default function AccountFormScreen() {
         color: accountColor,
         emoji: accountEmoji,
         balance: finalBalance,
-        balanceType,
       }
       console.log("Updating account:", accountData)
       // TODO: Implement updateAccount
@@ -184,15 +170,6 @@ export default function AccountFormScreen() {
                 title={t("screens.accountForm.emoji")}
                 onPress={() => setEmojiModalOpen(true)}
                 arrowRight
-              />
-            </View>
-
-            <View className='gap-1'>
-              <FieldTitle title={t("screens.accountForm.balanceType")} />
-              <DuoSwitch
-                value={balanceType === "negative"}
-                onChange={handleBalanceTypeChange}
-                options={["positive", "negative"]}
               />
             </View>
 
