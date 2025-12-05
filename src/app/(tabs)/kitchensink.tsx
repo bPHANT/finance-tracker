@@ -4,18 +4,26 @@ import { Pressable, ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import CircularButton from "@/components/buttons/CircularButton"
+import Button from "@/components/buttons/Button"
 import BudgetContainer from "@/components/containers/BudgetContainer"
 import TransactionRow from "@/components/containers/TransactionGroupContainer"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
 import AlertModal from "@/components/modal/AlertModal"
+import AccountModal from "@/components/modal/AccountModal"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import BalanceCard from "@/components/widgets/BalanceWidget"
+import { useDb } from "@/db"
+import { accountTable, type Account } from "@/db/schemas/accounts"
+import { eq } from "drizzle-orm"
+import { useEffect } from "react"
 
 export default function KitchensinkScreen() {
   const router = useRouter()
+  const db = useDb()
 
   const [showErrorAlert, setShowErrorAlert] = useState(false)
   const [showConfirmAlert, setShowConfirmAlert] = useState(false)
+  const [showAccountModal, setShowAccountModal] = useState(false)
 
   return (
     <>
@@ -38,6 +46,20 @@ export default function KitchensinkScreen() {
         }}
         onCancel={() => setShowConfirmAlert(false)}
       />
+
+      <AccountModal
+        visible={showAccountModal}
+        onClose={() => setShowAccountModal(false)}
+        onSelectAccount={(account) => {
+          console.log("Selected account:", account)
+          setShowAccountModal(false)
+        }}
+        onAddAccount={() => {
+          console.log("Add new account")
+          setShowAccountModal(false)
+        }}
+      />
+
       <SafeAreaView className='bg-gray-100 dark:bg-primary-950 flex-1'>
         <ScrollView>
           <ScreenTitle title='Kitchensink' />
@@ -117,6 +139,19 @@ export default function KitchensinkScreen() {
                     Confirm Alert
                   </Text>
                 </Pressable>
+              </View>
+
+              {/* Account Modal Button */}
+              <View className='mx-6 flex-col gap-2 mt-6'>
+                <Text className='text-gray-900 dark:text-gray-100'>
+                  Account Modal
+                </Text>
+                <Button
+                  title='Manage Accounts'
+                  onPress={() => setShowAccountModal(true)}
+                  arrowRight
+                  textLeft
+                />
               </View>
             </View>
           </ScrollView>

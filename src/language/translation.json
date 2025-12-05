@@ -309,6 +309,10 @@
         "en": "Manage categories",
         "de": "Kategorien verwalten"
       },
+      "manageAccounts": {
+        "en": "Manage accounts",
+        "de": "Konten verwalten"
+      },
       "german": {
         "en": "German",
         "de": "Deutsch"
