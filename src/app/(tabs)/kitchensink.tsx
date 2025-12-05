@@ -3,19 +3,15 @@ import React, { useState } from "react"
 import { Pressable, ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
+import { default as Button } from "@/components/buttons/Button"
 import CircularButton from "@/components/buttons/CircularButton"
-import Button from "@/components/buttons/Button"
 import BudgetContainer from "@/components/containers/BudgetContainer"
-import TransactionRow from "@/components/containers/TransactionGroupContainer"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
-import AlertModal from "@/components/modal/AlertModal"
 import AccountModal from "@/components/modal/AccountModal"
+import AlertModal from "@/components/modal/AlertModal"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import BalanceCard from "@/components/widgets/BalanceWidget"
 import { useDb } from "@/db"
-import { accountTable, type Account } from "@/db/schemas/accounts"
-import { eq } from "drizzle-orm"
-import { useEffect } from "react"
 
 export default function KitchensinkScreen() {
   const router = useRouter()
@@ -80,20 +76,6 @@ export default function KitchensinkScreen() {
                 />
               </View>
 
-              <TransactionRow
-                name='Kino - UCI Dresden'
-                amount='-16.5'
-                emoji='🎬'
-                color='blue'
-              />
-
-              <TransactionRow
-                name='Laptop verkauft'
-                amount='1000'
-                emoji='💻'
-                color='gray'
-              />
-
               <View className='mx-6 flex-col gap-2 mt-4'>
                 <Text className='text-gray-900 dark:text-gray-100'>
                   BalanceWidget
@@ -141,16 +123,26 @@ export default function KitchensinkScreen() {
                 </Pressable>
               </View>
 
-              {/* Account Modal Button */}
-              <View className='mx-6 flex-col gap-2 mt-6'>
-                <Text className='text-gray-900 dark:text-gray-100'>
-                  Account Modal
-                </Text>
+              {/* Account Form Demo Buttons */}
+              <View className='mx-6 flex-row gap-2 mt-6'>
                 <Button
-                  title='Manage Accounts'
-                  onPress={() => setShowAccountModal(true)}
-                  arrowRight
-                  textLeft
+                  onPress={() =>
+                    router.push({
+                      pathname: "/settings/accountForm",
+                      params: { accountId: "-1" },
+                    })
+                  }
+                  title='Create Account'
+                />
+
+                <Button
+                  onPress={() =>
+                    router.push({
+                      pathname: "/settings/accountForm",
+                      params: { accountId: "1" },
+                    })
+                  }
+                  title='Edit Account'
                 />
               </View>
             </View>

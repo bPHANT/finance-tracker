@@ -358,6 +358,46 @@
         "de": "Kein Kategoriename angegeben!"
       }
     },
+    "accountForm": {
+      "title": {
+        "create": {
+          "en": "Create Account",
+          "de": "Konto erstellen"
+        },
+        "update": {
+          "en": "Update Account",
+          "de": "Konto bearbeiten"
+        }
+      },
+      "name": {
+        "en": "Name",
+        "de": "Name"
+      },
+      "color": {
+        "en": "Color",
+        "de": "Farbe"
+      },
+      "emoji": {
+        "en": "Emoji",
+        "de": "Emoji"
+      },
+      "balanceType": {
+        "en": "Balance Type",
+        "de": "Saldo-Typ"
+      },
+      "balance": {
+        "en": "Balance",
+        "de": "Saldo"
+      },
+      "create": {
+        "en": "Create",
+        "de": "Erstellen"
+      },
+      "alertNoName": {
+        "en": "Please enter an account name",
+        "de": "Bitte geben Sie einen Kontonamen ein"
+      }
+    },
     "budgetForm": {
       "title": {
         "create": {
