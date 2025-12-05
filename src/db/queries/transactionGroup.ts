@@ -19,12 +19,13 @@ export default function useTransactionGroup() {
     name,
     note,
     date,
+    accountId,
     transactions,
   }: {
     name?: string
     note?: string
     date: Date
-    //TODO add account id
+    accountId: number
     transactions: {
       amount: number
       term: string
@@ -50,31 +51,13 @@ export default function useTransactionGroup() {
       }
 
       return await db.transaction(async (tx) => {
-        const accountResult = await tx
-          .select()
-          .from(accountTable)
-          .where(eq(accountTable.name, "Default"))
-          .limit(1)
-
-        if (accountResult.length === 0) {
-          throw new Error(
-            "Default account not found. Please ensure the database is properly initialized."
-          )
-        }
-
-        const account = accountResult[0]
-
-        if (!account.id) {
-          throw new Error("Default account ID is null")
-        }
-
         const transactionGroupResult = await tx
           .insert(transactionGroupTable)
           .values({
             name,
             note,
             date,
-            accountId: account.id,
+            accountId,
           })
           .returning()
 
@@ -373,6 +356,13 @@ export default function useTransactionGroup() {
             name: transactionGroupTable.name,
             note: transactionGroupTable.note,
             date: transactionGroupTable.date,
+          },
+          account: {
+            id: accountTable.id,
+            name: accountTable.name,
+            balance: accountTable.balance,
+            color: accountTable.color,
+            emoji: accountTable.emoji,
           },
           transaction: {
             id: transactionTable.id,
