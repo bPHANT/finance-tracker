@@ -1,13 +1,11 @@
 import { CustomColorKeys } from "@/assets/colors"
-import AccountModal from "@/components/modal/AccountModal"
+import AccountModal, { Account } from "@/components/modal/AccountModal"
 import {
   Transaction,
   TransactionFormData,
 } from "@/components/screens/transactionForm"
 import TransactionGroupFormScreen from "@/components/screens/transactionGroupForm"
-import useAccounts from "@/db/queries/accounts"
 import useTransactionGroup from "@/db/queries/transactionGroup"
-import type { Account } from "@/db/schemas/accounts"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { calculateTotalAmount, dateFromString } from "@/utils/helper"
 import { storage } from "@/utils/storage"
@@ -19,11 +17,12 @@ export default function TransactionGroupFormFromTransactions() {
   const { t } = useTypedTranslation()
   const params = useLocalSearchParams()
 
-  const [transactionGroupId] = useState(() => Number(params.transactionGroupId))
+  const [transactionGroupId, setTransactionGroupId] = useState(() =>
+    Number(params.transactionGroupId)
+  )
 
   const { get: getTransactionGroup, update: updateTransactionGroup } =
     useTransactionGroup()
-  const { getMany: getAccounts } = useAccounts()
 
   const [name, setTitle] = useState("")
   const [date, setDate] = useState(new Date())
@@ -40,6 +39,7 @@ export default function TransactionGroupFormFromTransactions() {
       setTitle(result.name ?? "")
       setDate(result.date ?? new Date())
       setNote(result.note ?? "")
+      setSelectedAccount(result.account as Account)
 
       setTransactions(
         result.transactions.map((t) => ({
@@ -54,21 +54,14 @@ export default function TransactionGroupFormFromTransactions() {
           },
         }))
       )
-
-      // Lade Account wenn vorhanden
-      if (result.transactions.length > 0 && result.transactions[0].accountId) {
-        const accounts = await getAccounts()
-        const account = accounts?.find(
-          (acc) => acc.id === result.transactions[0].accountId
-        )
-        if (account) {
-          setSelectedAccount(account)
-        }
-      }
     }
     fetchGroup()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactionGroupId])
+
+  useEffect(() => {
+    setTransactionGroupId(Number(params.transactionGroupId))
+  }, [params.transactionGroupId])
 
   useEffect(() => {
     const loadTransaction = async () => {
@@ -154,6 +147,7 @@ export default function TransactionGroupFormFromTransactions() {
       name,
       note,
       date,
+      accountId: selectedAccount.id,
       transactions: transactionData,
     })
 
@@ -170,7 +164,7 @@ export default function TransactionGroupFormFromTransactions() {
       <AccountModal
         visible={showAccountModal}
         onClose={() => setShowAccountModal(false)}
-        onSelectAccount={(account) => {
+        onSelectAccount={async (account) => {
           setSelectedAccount(account)
           setShowAccountModal(false)
         }}

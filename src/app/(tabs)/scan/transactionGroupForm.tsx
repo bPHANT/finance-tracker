@@ -68,7 +68,7 @@ export default function TransactionGroupFormScreenFromScan() {
 
   useEffect(() => {
     const loadDefaultAccount = async () => {
-      const accounts = await getAccounts()
+      const accounts = (await getAccounts()) as Account[]
       if (accounts && accounts.length > 0) {
         setSelectedAccount(accounts[0])
       }
@@ -201,6 +201,7 @@ export default function TransactionGroupFormScreenFromScan() {
       note,
       date,
       transactions: transactionData,
+      accountId: selectedAccount.id,
     })
 
     if (result) {

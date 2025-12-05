@@ -419,6 +419,7 @@ export default function useTransactionGroup() {
 
       return {
         ...rows[0].group,
+        account: rows[0].account,
         totalAmount, // Summe
         transactions, // Transactions
       }
@@ -439,12 +440,14 @@ export default function useTransactionGroup() {
     name,
     note,
     date,
+    accountId,
     transactions,
   }: {
     id: number
     name?: string
     note?: string
     date: Date
+    accountId: number
     transactions: {
       amount: number
       term: string
@@ -474,7 +477,7 @@ export default function useTransactionGroup() {
         // Update transaction group
         await tx
           .update(transactionGroupTable)
-          .set({ name, note, date })
+          .set({ name, note, date, accountId })
           .where(eq(transactionGroupTable.id, id))
 
         // Delete all existing transactions for this group

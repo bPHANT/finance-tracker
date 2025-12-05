@@ -19,7 +19,7 @@ export type Account = {
   id: number
   name: string
   balance: number
-  color: string
+  color: CustomColorKeys
   emoji: string
 }
 
@@ -44,7 +44,7 @@ export default function AccountModal({
 
   useEffect(() => {
     const loadAccounts = async () => {
-      const result = await getAccounts()
+      const result = (await getAccounts()) as Account[]
       if (result) {
         setAccounts(result)
       }
