@@ -283,7 +283,7 @@ export default function useTransactionGroup() {
                 const category = categoryLookup[group.topLevelCategoryId]
 
                 if (!category) {
-                  console.log(
+                  console.error(
                     `Category not found for ID ${group.topLevelCategoryId} in group ${group.id}`
                   )
                 }

@@ -27,7 +27,7 @@ type Category = {
 type Transaction = {
   name: string
   specific?: string
-  amount: string
+  amount: number
   category: Category
 }
 
@@ -98,7 +98,7 @@ export default function TransactionGroupFormScreenFromScan() {
             return {
               name: transaction.term,
               specific: transaction.specific || "",
-              amount: transaction.amount.toString(),
+              amount: transaction.amount,
               category: category,
             }
           })
@@ -113,6 +113,8 @@ export default function TransactionGroupFormScreenFromScan() {
       const data = (await storage.getObject("inputData")) as any
       const transaction = (await storage.getObject("inputTransaction")) as any
 
+      console.log(JSON.stringify(data))
+      console.log(JSON.stringify(transaction))
       if (data) {
         setTitle(data.title || "")
         setNote(data.note || "")
@@ -121,7 +123,7 @@ export default function TransactionGroupFormScreenFromScan() {
         const storedTransactions = data.transactions || []
 
         if (transaction) {
-          if (transaction.idx !== undefined) {
+          if (transaction.idx >= 0) {
             const updatedTransactions = [...storedTransactions]
             updatedTransactions[transaction.idx] = {
               name: transaction.name,
@@ -144,11 +146,6 @@ export default function TransactionGroupFormScreenFromScan() {
         } else {
           setTransactions(storedTransactions)
         }
-
-        await storage.remove("inputData")
-        await storage.remove("inputTransaction")
-      } else if (transaction) {
-        await storage.remove("inputTransaction")
       }
     }
 
@@ -159,12 +156,11 @@ export default function TransactionGroupFormScreenFromScan() {
       setTransactions([])
     }
 
-    if (params.loadFromStorage === "1") loadAiData()
-    else if (params.loadFromStorage === "2") loadStoredData()
+    if (params.action === "loadAiData") loadAiData()
+    else if (params.action === "loadTransactionData") loadStoredData()
     else clearData()
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.loadFromStorage, params.refresh])
+  }, [params.action, params.refresh])
 
   const handleSubmit = async () => {
     if (name.trim() === "" || transactions.length === 0) {
@@ -173,13 +169,13 @@ export default function TransactionGroupFormScreenFromScan() {
     }
 
     const transactionData = transactions.map((transaction) => ({
-      amount: parseFloat(transaction.amount),
+      amount: transaction.amount,
       term: transaction.name,
       categoryId: transaction.category.id,
     }))
 
     await createTransactionGroup({
-      name: name,
+      name,
       note,
       date,
       transactions: transactionData,
@@ -195,31 +191,33 @@ export default function TransactionGroupFormScreenFromScan() {
 
   const handleAddTransaction = async () => {
     await storage.setObject("inputData", {
-      title: name,
+      name,
       note,
       date,
       transactions,
     })
-    await storage.remove("inputTransaction")
     router.push("/scan/transactionForm")
   }
 
-  const handleEditTransaction = async (index: number) => {
+  const handleUpdateTransaction = async (index: number) => {
     const transaction = transactions[index]
     await storage.setObject("inputData", {
-      title: name,
+      name,
       note,
       date,
       transactions,
     })
-    await storage.setObject("inputTransaction", {
+    await storage.setObject("transactionFormData", {
       ...transaction,
       idx: index,
     })
-    router.push({
+    router.replace({
       pathname: "/scan/transactionForm",
       params: {
+        load: "transaction",
+        type: "update",
         transactionIndex: index,
+        refresh: Date.now(),
       },
     })
   }
@@ -239,7 +237,7 @@ export default function TransactionGroupFormScreenFromScan() {
       onTitleChange={async (value) => setTitle(value)}
       onDateChange={async (value) => setDate(await dateFromString(value))}
       onNoteChange={async (value) => setNote(value)}
-      onEdit={handleEditTransaction}
+      onEdit={handleUpdateTransaction}
       onDelete={handleDeleteTransaction}
       onAdd={handleAddTransaction}
       onSubmit={handleSubmit}

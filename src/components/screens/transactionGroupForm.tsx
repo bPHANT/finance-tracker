@@ -20,8 +20,8 @@ type Category = {
 export type Transaction = {
   name: string
   specific?: string
-  amount: string
-  category: Category
+  amount: number
+  category: Category | null
 }
 
 type TransactionGroupFormProps = {
@@ -106,7 +106,7 @@ export default function TransactionGroupFormScreen(
             <View key={index}>
               <TransactionContainer
                 name={transaction.name}
-                amount={transaction.amount}
+                amount={transaction.amount.toString()}
                 specific={transaction.specific}
                 category={transaction.category}
                 onEdit={async () => props.onEdit(index)}

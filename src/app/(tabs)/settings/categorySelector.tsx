@@ -19,14 +19,14 @@ export default function CategorySelectorScreenFromSettings() {
         return
       }
       router.push({
-        pathname: "/(tabs)/settings/categoryForm",
+        pathname: "/settings/categoryForm",
         params: {
           categoryId: category.id,
         },
       })
     } else if (source === "form") {
       router.replace({
-        pathname: "/(tabs)/settings/categoryForm",
+        pathname: "/settings/categoryForm",
         params: {
           categoryId: originalCategoryId,
           source: "parentSelection",
@@ -36,7 +36,14 @@ export default function CategorySelectorScreenFromSettings() {
     }
   }
 
-  async function handleOnAdd() {}
+  async function handleOnAdd() {
+    router.push({
+      pathname: "/settings/categoryForm",
+      params: {
+        categoryId: -1,
+      },
+    })
+  }
 
   return (
     <CategorySelectorScreen

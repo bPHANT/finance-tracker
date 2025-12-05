@@ -2,11 +2,7 @@ import { Transaction } from "@/components/screens/transactionGroupForm"
 
 export function calculateTotalAmount(transactions: Transaction[]) {
   return transactions
-    .reduce(
-      (sum, transaction: Transaction) =>
-        sum + parseFloat(transaction.amount || "0"),
-      0
-    )
+    .reduce((sum, transaction: Transaction) => sum + transaction.amount, 0)
     .toFixed(2)
 }
 

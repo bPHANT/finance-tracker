@@ -1,10 +1,13 @@
 import { CustomColorKeys } from "@/assets/colors"
-import TransactionGroupFormScreen, {
+import {
   Transaction,
-} from "@/components/screens/transactionGroupForm"
+  TransactionFormData,
+} from "@/components/screens/transactionForm"
+import TransactionGroupFormScreen from "@/components/screens/transactionGroupForm"
 import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { calculateTotalAmount, dateFromString } from "@/utils/helper"
+import { storage } from "@/utils/storage"
 import { router, useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
 import { Alert, Keyboard } from "react-native"
@@ -23,9 +26,6 @@ export default function TransactionGroupFormFromTransactions() {
   const [note, setNote] = useState("")
   const [transactions, setTransactions] = useState<Transaction[]>([])
 
-  // -------------------------
-  //  Lädt bestehende Gruppe
-  // -------------------------
   useEffect(() => {
     const fetchGroup = async () => {
       const result = await getTransactionGroup({ id: transactionGroupId })
@@ -37,8 +37,9 @@ export default function TransactionGroupFormFromTransactions() {
 
       setTransactions(
         result.transactions.map((t) => ({
+          idx: t.id,
           name: t.name,
-          amount: t.amount.toString(),
+          amount: t.amount,
           category: {
             id: t.categoryId,
             name: t.categoryName,
@@ -52,70 +53,72 @@ export default function TransactionGroupFormFromTransactions() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactionGroupId])
 
-  // -----------------------------------------
-  // return Transaction
-  // -----------------------------------------
   useEffect(() => {
-    if (!params.newTransaction) return
+    const loadTransaction = async () => {
+      const transactionData = (await storage.getObject(
+        "formTransaction"
+      )) as Transaction
 
-    try {
-      const tx = JSON.parse(params.newTransaction as string)
-      setTransactions((prev) => [...prev, tx])
-    } catch (e) {
-      console.error("Fehler beim Lesen von newTransaction:", e)
+      if (params.action === "updateTransaction") {
+        setTransactions((prev) =>
+          prev.map((t, i) =>
+            i === transactionData?.idx
+              ? {
+                  idx: transactionData.idx,
+                  name: transactionData.name,
+                  amount: transactionData.amount,
+                  category: transactionData.category,
+                }
+              : t
+          )
+        )
+      } else if (params.action === "createTransaction" && transactionData) {
+        setTransactions([
+          ...transactions,
+          {
+            idx: transactionData.idx,
+            name: transactionData.name,
+            amount: transactionData.amount,
+            category: transactionData.category,
+          },
+        ])
+      }
     }
 
-    // Parameter delete
-    router.setParams({ newTransaction: undefined })
-  }, [params.newTransaction])
+    loadTransaction()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.action, params.update])
 
-  // -----------------------------------------
-  // Bearbeitete Transaktion wurde zurückgegeben
-  // -----------------------------------------
-  useEffect(() => {
-    if (!params.updatedTransaction) return
-
-    try {
-      const { index, data } = JSON.parse(params.updatedTransaction as string)
-      setTransactions((prev) => prev.map((t, i) => (i === index ? data : t)))
-    } catch (e) {
-      console.error("Fehler beim Lesen von updatedTransaction:", e)
-    }
-
-    router.setParams({ updatedTransaction: undefined })
-  }, [params.updatedTransaction])
-
-  // -------------------------
-  //     Aktionen
-  // -------------------------
-
-  // Add
   const handleAddTransaction = async () => {
     router.push({
       pathname: "/transactions/transactionForm",
-      params: { addToGroup: transactionGroupId },
+      params: { type: "create", refresh: Date.now() },
     })
   }
 
-  // Transaktion change
-  const handleEditTransaction = async (index: number) => {
-    const tx = transactions[index]
+  const handleUpdateTransaction = async (index: number) => {
+    const transaction = transactions[index]
+    await storage.setObject("transactionFormData", {
+      ...transaction,
+      idx: index, // Store the array index, not the database id
+      amount: Math.abs(transaction.amount).toString(),
+      type: transaction.amount < 0 ? "expense" : "income",
+    } as TransactionFormData)
 
     router.push({
       pathname: "/transactions/transactionForm",
       params: {
-        editIndex: index.toString(),
-        editData: JSON.stringify(tx),
+        load: "transaction",
+        type: "update",
+        refresh: Date.now(),
       },
     })
   }
 
-  // Transaktion delete
   const handleDeleteTransaction = async (index: number) => {
     setTransactions((prev) => prev.filter((_, i) => i !== index))
   }
 
-  //  Update
   const handleUpdate = async () => {
     if (name.trim() === "" || transactions.length === 0) {
       Alert.alert(t("common.error"), t("screens.input.errors.missingData"))
@@ -123,9 +126,9 @@ export default function TransactionGroupFormFromTransactions() {
     }
 
     const transactionData = transactions.map((transaction) => ({
-      amount: parseFloat(transaction.amount),
+      amount: transaction.amount,
       term: transaction.name,
-      categoryId: transaction.category.id,
+      categoryId: transaction.category!.id,
     }))
 
     const result = await updateTransactionGroup({
@@ -156,7 +159,7 @@ export default function TransactionGroupFormFromTransactions() {
       onTitleChange={async (v) => setTitle(v)}
       onDateChange={async (v) => setDate(await dateFromString(v))}
       onNoteChange={async (v) => setNote(v)}
-      onEdit={handleEditTransaction}
+      onEdit={handleUpdateTransaction}
       onDelete={handleDeleteTransaction}
       onAdd={handleAddTransaction}
       onSubmit={handleUpdate}

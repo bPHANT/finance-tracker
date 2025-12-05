@@ -1,6 +1,5 @@
 import { CategoryWithChildrenCheck } from "@/components/containers/NavigationContainer"
 import CategorySelectorScreen from "@/components/screens/categorySelector"
-import { storage } from "@/utils/storage"
 import { useLocalSearchParams, useRouter } from "expo-router"
 export default function CategorySelectorScreenFromScan() {
   const params = useLocalSearchParams()
@@ -17,8 +16,15 @@ export default function CategorySelectorScreenFromScan() {
   }
 
   async function handleOnCategorySelect(category: CategoryWithChildrenCheck) {
-    await storage.setObject("inputCategory", category)
-    router.replace("/scan/transactionForm")
+    router.replace({
+      pathname: "/scan/transactionForm",
+      params: {
+        load: "category",
+        type: params.transactionFormType,
+        categoryId: category.id,
+        refresh: Date.now(),
+      },
+    })
   }
 
   return (

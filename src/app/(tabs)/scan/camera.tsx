@@ -65,7 +65,7 @@ export default function CameraScreen() {
         router.replace({
           pathname: "/scan/transactionGroupForm",
           params: {
-            loadFromStorage: 1,
+            action: "loadAiData",
           },
         })
       } catch (error) {
