@@ -1,6 +1,6 @@
 import { colors, CustomColorKeys } from "@/assets/colors"
 import { Ionicons } from "@expo/vector-icons"
-import { Text, TouchableOpacity, useColorScheme } from "react-native"
+import { Text, TouchableOpacity } from "react-native"
 import EmojiWithBackground from "../display/EmojiWithBackground"
 
 type CategoryTouchableProps = {
@@ -14,9 +14,6 @@ type CategoryTouchableProps = {
 export default function CategoryTouchable(props: CategoryTouchableProps) {
   const color = props.color ?? "gray"
   const emoji = props.emoji ?? " "
-
-  const scheme = useColorScheme()
-  const iconColor = scheme === "dark" ? colors.gray[50] : colors.gray[900]
 
   return (
     <TouchableOpacity
