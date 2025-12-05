@@ -343,6 +343,70 @@
         "en": "No category name defined!",
         "de": "Kein Kategoriename angegeben!"
       }
+    },
+    "budgetForm": {
+      "title": {
+        "create": {
+          "en": "Create Budget",
+          "de": "Budget erstellen"
+        },
+        "update": {
+          "en": "Update Budget",
+          "de": "Budget bearbeiten"
+        }
+      },
+      "name": {
+        "en": "Name",
+        "de": "Name"
+      },
+      "amount": {
+        "en": "Amount",
+        "de": "Betrag"
+      },
+      "period": {
+        "en": "Period",
+        "de": "Zeitraum"
+      },
+      "start": {
+        "en": "Start Date",
+        "de": "Startdatum"
+      },
+      "end": {
+        "en": "End Date",
+        "de": "Enddatum"
+      },
+      "color": {
+        "en": "Color",
+        "de": "Farbe"
+      },
+      "emoji": {
+        "en": "Emoji",
+        "de": "Emoji"
+      },
+      "create": {
+        "en": "Create",
+        "de": "Erstellen"
+      },
+      "categories": {
+        "en": "Categories",
+        "de": "Kategorien"
+      },
+      "addCategory": {
+        "en": "Add Category",
+        "de": "Kategorie hinzufügen"
+      },
+      "noCategories": {
+        "en": "No categories linked",
+        "de": "Keine Kategorien verknüpft"
+      },
+      "alertNoName": {
+        "en": "No budget name defined!",
+        "de": "Kein Budgetname angegeben!"
+      },
+      "alertNoAmount": {
+        "en": "No amount defined!",
+        "de": "Kein Betrag angegeben!"
+      }
     }
   }
 }

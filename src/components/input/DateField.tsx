@@ -1,8 +1,8 @@
-import React, { useState } from "react"
-import { Platform, Pressable, Text, View, Modal } from "react-native"
-import DateTimePicker from "@react-native-community/datetimepicker"
-import FieldTitle from "./FieldTitle"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
+import DateTimePicker from "@react-native-community/datetimepicker"
+import React, { useState } from "react"
+import { Modal, Platform, Pressable, Text, View } from "react-native"
+import FieldTitle from "./FieldTitle"
 
 type DateInputProps = {
   title: string
@@ -30,7 +30,7 @@ export default function DateField(props: DateInputProps) {
   }
 
   return (
-    <View>
+    <View className='gap-1'>
       <FieldTitle title={props.title} />
 
       <Pressable
