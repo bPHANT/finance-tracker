@@ -211,7 +211,7 @@ export default function TransactionGroupFormScreenFromScan() {
       ...transaction,
       idx: index,
     })
-    router.replace({
+    router.push({
       pathname: "/scan/transactionForm",
       params: {
         load: "transaction",
