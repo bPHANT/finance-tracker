@@ -13,20 +13,13 @@ import { View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import { SafeAreaView } from "react-native-safe-area-context"
 
-type AccountFormDataCreate = {
-  name: string
-  color: CustomColorKeys
-  emoji: string
-  balance: number
-}
-
-type AccountFormDataUpdate = AccountFormDataCreate & {
-  id: number
-}
-
 export default function AccountFormScreen() {
   const { t } = useTypedTranslation()
-  const { get: getAccount } = useAccounts()
+  const {
+    get: getAccount,
+    create: createAccount,
+    update: updateAccount,
+  } = useAccounts()
 
   const params = useLocalSearchParams()
 
@@ -86,30 +79,37 @@ export default function AccountFormScreen() {
     const finalBalance = parseFloat(balance) || 0
 
     if (mode === "create") {
-      const accountData: AccountFormDataCreate = {
+      const result = await createAccount({
         name: accountName,
         color: accountColor,
         emoji: accountEmoji,
         balance: finalBalance,
+      })
+
+      if (result) {
+        console.log("Account created:", result)
+        router.back()
+      } else {
+        alert("Failed to create account")
       }
-      console.log("Creating account:", accountData)
-      // TODO: Implement createAccount
-      // await createAccount(accountData)
     } else {
       if (!accountId) return
-      const accountData: AccountFormDataUpdate = {
+
+      const result = await updateAccount({
         id: accountId,
         name: accountName,
         color: accountColor,
         emoji: accountEmoji,
         balance: finalBalance,
-      }
-      console.log("Updating account:", accountData)
-      // TODO: Implement updateAccount
-      // await updateAccount(accountData)
-    }
+      })
 
-    router.back()
+      if (result) {
+        console.log("Account updated:", result)
+        router.back()
+      } else {
+        alert("Failed to update account")
+      }
+    }
   }
 
   return (
