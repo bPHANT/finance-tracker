@@ -398,6 +398,20 @@
         "de": "Bitte geben Sie einen Kontonamen ein"
       }
     },
+    "accountModal": {
+      "title": {
+        "en": "Accounts",
+        "de": "Konten"
+      },
+      "close": {
+        "en": "Close",
+        "de": "Schließen"
+      },
+      "empty": {
+        "en": "No accounts available",
+        "de": "Keine Konten vorhanden"
+      }
+    },
     "budgetForm": {
       "title": {
         "create": {

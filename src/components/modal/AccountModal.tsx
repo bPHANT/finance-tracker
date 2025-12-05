@@ -1,6 +1,7 @@
 import type { CustomColorKeys } from "@/assets/colors"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
 import useAccounts from "@/db/queries/accounts"
+import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { Ionicons } from "@expo/vector-icons"
 import { useColorScheme } from "nativewind"
 import React, { useEffect, useState } from "react"
@@ -35,6 +36,7 @@ export default function AccountModal({
   onSelectAccount,
   onAddAccount,
 }: Props) {
+  const { t } = useTypedTranslation()
   const { colorScheme } = useColorScheme()
   const isLight = colorScheme === "light"
   const { getMany: getAccounts, loading } = useAccounts()
@@ -80,7 +82,7 @@ export default function AccountModal({
               isLight ? "text-gray-950" : "text-gray-50"
             }`}
           >
-            Konten
+            {t("screens.accountModal.title")}
           </Text>
 
           <View className='flex-row items-center gap-3'>
@@ -94,7 +96,7 @@ export default function AccountModal({
 
             <TouchableOpacity onPress={onClose} hitSlop={12}>
               <Text className={`${isLight ? "text-gray-950" : "text-gray-50"}`}>
-                Schließen
+                {t("screens.accountModal.close")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -120,7 +122,7 @@ export default function AccountModal({
                     isLight ? "text-gray-500" : "text-gray-400"
                   }`}
                 >
-                  Keine Konten vorhanden
+                  {t("screens.accountModal.empty")}
                 </Text>
               </View>
             }
