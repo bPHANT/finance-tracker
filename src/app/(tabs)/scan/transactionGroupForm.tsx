@@ -264,10 +264,6 @@ export default function TransactionGroupFormScreenFromScan() {
           setSelectedAccount(account)
           setShowAccountModal(false)
         }}
-        onAddAccount={() => {
-          console.log("Add new account")
-          setShowAccountModal(false)
-        }}
       />
 
       <TransactionGroupFormScreen

@@ -168,10 +168,6 @@ export default function TransactionGroupFormFromTransactions() {
           setSelectedAccount(account)
           setShowAccountModal(false)
         }}
-        onAddAccount={() => {
-          console.log("Add new account")
-          setShowAccountModal(false)
-        }}
       />
 
       <TransactionGroupFormScreen

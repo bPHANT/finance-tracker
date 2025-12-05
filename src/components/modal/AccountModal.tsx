@@ -27,7 +27,7 @@ type Props = {
   visible: boolean
   onClose: () => void
   onSelectAccount: (account: Account) => void
-  onAddAccount: () => void
+  onAddAccount?: () => void
 }
 
 export default function AccountModal({
@@ -86,13 +86,15 @@ export default function AccountModal({
           </Text>
 
           <View className='flex-row items-center gap-3'>
-            <TouchableOpacity onPress={onAddAccount} hitSlop={12}>
-              <Ionicons
-                name='add'
-                size={28}
-                color={isLight ? "#1f2937" : "#f9fafb"}
-              />
-            </TouchableOpacity>
+            {onAddAccount && (
+              <TouchableOpacity onPress={onAddAccount} hitSlop={12}>
+                <Ionicons
+                  name='add'
+                  size={28}
+                  color={isLight ? "#1f2937" : "#f9fafb"}
+                />
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity onPress={onClose} hitSlop={12}>
               <Text className={`${isLight ? "text-gray-950" : "text-gray-50"}`}>
