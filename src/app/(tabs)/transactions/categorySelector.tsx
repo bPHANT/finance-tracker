@@ -2,33 +2,39 @@ import { CategoryWithChildrenCheck } from "@/components/containers/NavigationCon
 import CategorySelectorScreen from "@/components/screens/categorySelector"
 import { router, useLocalSearchParams } from "expo-router"
 
-export default function CategorySelectorScreenFromBudget() {
+export default function CategorySelectorScreenFromTransactions() {
   const params = useLocalSearchParams()
+
+  const currentCategoryId = params.currentCategoryId
+    ? params.currentCategoryId === "null"
+      ? null
+      : Number(params.currentCategoryId)
+    : null
 
   async function handleOnCategorySelect(category: CategoryWithChildrenCheck) {
     router.replace({
-      pathname: "/budget/budgetForm",
+      pathname: "/transactions/transactionForm",
       params: {
-        source: "categorySelection",
-        budgetId: params.budgetId,
-        selectedCategoryId: category.id,
+        load: "category",
+        categoryId: category.id,
+        type: params.transactionFormType,
       },
     })
   }
 
   async function handleOnCancel() {
     router.replace({
-      pathname: "/budget/budgetForm",
+      pathname: "/transactions/transactionForm",
       params: {
-        source: "categorySelection",
-        budgetId: params.budgetId,
+        load: "transaction",
+        type: params.transactionFormType,
       },
     })
   }
 
   return (
     <CategorySelectorScreen
-      currentCategoryId={null}
+      currentCategoryId={currentCategoryId}
       parentCategoryId={null}
       navigationPath={[]}
       onCategorySelect={handleOnCategorySelect}

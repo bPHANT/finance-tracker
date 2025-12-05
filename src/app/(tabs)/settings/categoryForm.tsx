@@ -157,7 +157,12 @@ export default function CategoryFormScreen() {
     }
 
     router.dismissTo("/settings")
-    router.push("/settings/categorySelector")
+    router.push({
+      pathname: "/settings/categorySelector",
+      params: {
+        source: "select",
+      },
+    })
   }
 
   return (

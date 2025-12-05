@@ -18,7 +18,7 @@ export type CategoryWithChildrenCheck = Category & {
 
 type NavigationContainerProps = {
   category: CategoryWithChildrenCheck
-  currentCategoryId: number
+  currentCategoryId?: number
   onPress: (category: CategoryWithChildrenCheck) => Promise<void>
   onNavigationPress?: (category: CategoryWithChildrenCheck) => Promise<void>
 }

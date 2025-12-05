@@ -57,7 +57,7 @@ export default function BudgetScreen() {
           icon='add'
           onPress={() =>
             router.push({
-              pathname: "/(tabs)/budget/[budgetId]",
+              pathname: "/(tabs)/budget/budgetForm",
               params: { budgetId: "-1" },
             })
           }
@@ -79,7 +79,7 @@ export default function BudgetScreen() {
             emoji={budget.emoji}
             onPress={() =>
               router.push({
-                pathname: "/(tabs)/budget/[budgetId]",
+                pathname: "/(tabs)/budget/budgetForm",
                 params: { budgetId: budget.id.toString() },
               })
             }

@@ -41,6 +41,15 @@ export default function SettingsScreen() {
     storage.setString("appearance", colorScheme === "dark" ? "light" : "dark")
   }
 
+  async function handleOnManageCategories() {
+    router.push({
+      pathname: "/settings/categorySelector",
+      params: {
+        source: "select",
+      },
+    })
+  }
+
   return (
     <SafeAreaView className='flex-1 bg-background dark:bg-primary-950'>
       <ScrollView className='mx-4'>
@@ -53,7 +62,7 @@ export default function SettingsScreen() {
             </Text>
             <Button
               title={t("screens.settings.manageCategories")}
-              onPress={() => router.push("/settings/categorySelector")}
+              onPress={handleOnManageCategories}
               arrowRight
               textLeft
             />

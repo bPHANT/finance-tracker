@@ -194,10 +194,9 @@ export default function BudgetFormScreen() {
     })
 
     router.push({
-      pathname: "/(tabs)/budget/categorySelector",
+      pathname: "/budget/categorySelector",
       params: {
-        source: "budgetForm",
-        currentCategoryId: budgetId?.toString(),
+        budgetId: budgetId?.toString(),
       },
     })
   }

@@ -7,11 +7,11 @@ import { forwardRef, useImperativeHandle } from "react"
 import { Alert, Text, TouchableOpacity, View } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated"
+import { scheduleOnRN } from "react-native-worklets"
 
 export type TransactionGroupContainerProps = {
   name: string
@@ -19,9 +19,10 @@ export type TransactionGroupContainerProps = {
   color: CustomColorKeys
   emoji: string
   rounded?: "top" | "bottom" | "full"
-  id?: number
+  id: number
   onDelete?: (id: number) => void
   onSwipeOpen?: () => void
+  onPress?: (id: number) => void
 }
 
 export type TransactionGroupContainerRef = {
@@ -71,13 +72,17 @@ const TransactionGroupContainer = forwardRef<
   }
 
   const onSwipeOpen = () => {
-    runOnJS(props.onSwipeOpen ?? (() => {}))()
+    props.onSwipeOpen?.()
   }
 
-  const gestureHandler = Gesture.Pan()
+  const onPressHandler = () => {
+    props.onPress?.(props.id)
+  }
+
+  const gestureHandlerPan = Gesture.Pan()
     .onStart(() => {
       if (!isOpen.value) {
-        runOnJS(onSwipeOpen)()
+        scheduleOnRN(onSwipeOpen)
       }
     })
     .onUpdate((event) => {
@@ -95,6 +100,10 @@ const TransactionGroupContainer = forwardRef<
         isOpen.value = false
       }
     })
+
+  const gestureHandlerPress = Gesture.Tap().onEnd(() => {
+    scheduleOnRN(onPressHandler)
+  })
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
@@ -138,7 +147,9 @@ const TransactionGroupContainer = forwardRef<
           </TouchableOpacity>
         </Animated.View>
 
-        <GestureDetector gesture={gestureHandler}>
+        <GestureDetector
+          gesture={Gesture.Exclusive(gestureHandlerPan, gestureHandlerPress)}
+        >
           <Animated.View style={animatedStyle}>
             <TransactionContent />
           </Animated.View>

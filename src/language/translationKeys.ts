@@ -2,6 +2,7 @@
 export type TranslationKey =
   | "common.error"
   | "common.cancel"
+  | "common.update"
   | "common.delete"
   | "common.deleteTransaction"
   | "common.deleteTransactionConfirmation"
@@ -13,6 +14,7 @@ export type TranslationKey =
   | "screens.home.currentBalance"
   | "screens.home.lastTransactions"
   | "screens.transactions.title"
+  | "screens.transactionGroupForm.title"
   | "screens.bubbles.title"
   | "screens.camera.title"
   | "screens.camera.waiting_permission"

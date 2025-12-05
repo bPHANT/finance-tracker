@@ -9,7 +9,7 @@ import { router, useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
 import { Keyboard } from "react-native"
 
-export default function TransactionFormScreenFromScan() {
+export default function TransactionFormScreenFromTransactions() {
   const params = useLocalSearchParams()
 
   const { get: getCategory } = useCategory()
@@ -25,13 +25,12 @@ export default function TransactionFormScreenFromScan() {
 
   useEffect(() => {
     const loadData = async () => {
-      console.log("refresh")
       if (loadTransaction || loadCategory) {
         const savedFormData = (await storage.getObject(
           "transactionFormData"
         )) as TransactionFormData
 
-        if (loadCategory && savedFormData && categoryId) {
+        if (loadCategory && savedFormData) {
           const categoryResult = (await getCategory({
             id: categoryId,
           })) as TransactionFormCategory
@@ -39,7 +38,7 @@ export default function TransactionFormScreenFromScan() {
             ...savedFormData,
             category: categoryResult,
           })
-        } else if (savedFormData) {
+        } else {
           setTransaction(savedFormData)
         }
       } else {
@@ -55,13 +54,12 @@ export default function TransactionFormScreenFromScan() {
 
     loadData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadTransaction, loadCategory, categoryId, params.refresh])
+  }, [loadCategory, loadTransaction, categoryId, params.refresh])
 
   async function handleOnCancel() {
-    await storage.remove("inputTransaction")
     router.replace({
-      pathname: "/scan/transactionGroupForm",
-      params: { action: "loadTransactionData", refresh: Date.now().toString() },
+      pathname: "/transactions/transactionGroupForm",
+      params: { loadFromStorage: "2", refresh: Date.now().toString() },
     })
   }
 
@@ -69,7 +67,7 @@ export default function TransactionFormScreenFromScan() {
     await storage.setObject("transactionFormData", currentFormData)
 
     router.push({
-      pathname: `/scan/categorySelector`,
+      pathname: `/transactions/categorySelector`,
       params: {
         currentCategoryId: currentFormData?.category?.id ?? -1,
         transactionFormType: isUpdate ? "update" : "create",
@@ -80,14 +78,24 @@ export default function TransactionFormScreenFromScan() {
   async function handleOnSubmit(transactionData: Transaction) {
     Keyboard.dismiss()
 
-    await storage.setObject("inputTransaction", transactionData)
-    router.replace({
-      pathname: "/scan/transactionGroupForm",
-      params: {
-        action: "loadTransactionData",
-        refresh: Date.now(),
-      },
-    })
+    await storage.setObject("formTransaction", transactionData)
+    if (isUpdate) {
+      router.replace({
+        pathname: "/transactions/transactionGroupForm",
+        params: {
+          action: "updateTransaction",
+          update: Date.now(),
+        },
+      })
+    } else {
+      router.replace({
+        pathname: "/transactions/transactionGroupForm",
+        params: {
+          action: "createTransaction",
+          update: Date.now(),
+        },
+      })
+    }
   }
 
   return (

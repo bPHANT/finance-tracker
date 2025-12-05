@@ -8,6 +8,10 @@
       "en": "Cancel",
       "de": "Abbrechen"
     },
+    "update": {
+      "en": "Update",
+      "de": "Aktualisieren"
+    },
     "delete": {
       "en": "Delete",
       "de": "Löschen"
@@ -56,6 +60,12 @@
       "title": {
         "en": "Transactions",
         "de": "Transaktionen"
+      }
+    },
+    "transactionGroupForm": {
+      "title": {
+        "en": "Transaction Group",
+        "de": "Transaktionsgruppe"
       }
     },
     "bubbles": {

@@ -18,6 +18,11 @@ export default function TransactionLayout() {
         activeIcon: "albums",
         inactiveIcon: "albums-outline",
       }}
+      invisibleTabs={[
+        "transactionGroupForm",
+        "transactionForm",
+        "categorySelector",
+      ]}
     />
   )
 }

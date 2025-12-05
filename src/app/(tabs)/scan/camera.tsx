@@ -63,9 +63,9 @@ export default function CameraScreen() {
         setIsProcessing(true)
         await categorizePicture(photo, categories)
         router.replace({
-          pathname: "/scan/input",
+          pathname: "/scan/transactionGroupForm",
           params: {
-            loadFromStorage: 1,
+            action: "loadAiData",
           },
         })
       } catch (error) {
