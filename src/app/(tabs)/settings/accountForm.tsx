@@ -87,7 +87,6 @@ export default function AccountFormScreen() {
       })
 
       if (result) {
-        console.log("Account created:", result)
         router.back()
       } else {
         alert("Failed to create account")
@@ -104,7 +103,6 @@ export default function AccountFormScreen() {
       })
 
       if (result) {
-        console.log("Account updated:", result)
         router.back()
       } else {
         alert("Failed to update account")
