@@ -63,7 +63,9 @@ CREATE TABLE `transactionGroups` (
 	`name` text,
 	`note` text,
 	`date` integer NOT NULL,
-	`imagePath` text
+	`accountId` integer NOT NULL,
+	`imagePath` text,
+	FOREIGN KEY (`accountId`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `transactions` (
@@ -73,9 +75,7 @@ CREATE TABLE `transactions` (
 	`name` text NOT NULL,
 	`amount` real NOT NULL,
 	`categoryTermId` integer NOT NULL,
-	`accountId` integer NOT NULL,
 	`transactionGroupId` integer NOT NULL,
 	FOREIGN KEY (`categoryTermId`) REFERENCES `categoryTerms`(`id`) ON UPDATE no action ON DELETE no action,
-	FOREIGN KEY (`accountId`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`transactionGroupId`) REFERENCES `transactionGroups`(`id`) ON UPDATE no action ON DELETE cascade
 );

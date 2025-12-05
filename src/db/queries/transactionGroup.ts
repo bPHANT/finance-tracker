@@ -50,12 +50,31 @@ export default function useTransactionGroup() {
       }
 
       return await db.transaction(async (tx) => {
+        const accountResult = await tx
+          .select()
+          .from(accountTable)
+          .where(eq(accountTable.name, "Default"))
+          .limit(1)
+
+        if (accountResult.length === 0) {
+          throw new Error(
+            "Default account not found. Please ensure the database is properly initialized."
+          )
+        }
+
+        const account = accountResult[0]
+
+        if (!account.id) {
+          throw new Error("Default account ID is null")
+        }
+
         const transactionGroupResult = await tx
           .insert(transactionGroupTable)
           .values({
             name,
             note,
             date,
+            accountId: account.id,
           })
           .returning()
 
@@ -113,24 +132,6 @@ export default function useTransactionGroup() {
           categoryTermResults.push(categoryTermResult[0])
         }
 
-        const accountResult = await tx
-          .select()
-          .from(accountTable)
-          .where(eq(accountTable.name, "Default"))
-          .limit(1)
-
-        if (accountResult.length === 0) {
-          throw new Error(
-            "Default account not found. Please ensure the database is properly initialized."
-          )
-        }
-
-        const account = accountResult[0]
-
-        if (!account.id) {
-          throw new Error("Default account ID is null")
-        }
-
         const transactionValues = transactions.map((transaction, index) => {
           const categoryTermResult = categoryTermResults[index]
           if (!categoryTermResult || !categoryTermResult.id) {
@@ -144,7 +145,6 @@ export default function useTransactionGroup() {
             amount: transaction.amount,
             categoryTermId: categoryTermResult.id,
             transactionGroupId: transactionGroupResult[0].id,
-            accountId: account.id,
           }
         })
 
@@ -402,7 +402,7 @@ export default function useTransactionGroup() {
         )
         .innerJoin(
           accountTable,
-          eq(transactionTable.accountId, accountTable.id)
+          eq(transactionGroupTable.accountId, accountTable.id)
         )
         .where(eq(transactionGroupTable.id, id))
 
@@ -543,24 +543,6 @@ export default function useTransactionGroup() {
           categoryTermResults.push(categoryTermResult[0])
         }
 
-        const accountResult = await tx
-          .select()
-          .from(accountTable)
-          .where(eq(accountTable.name, "Default"))
-          .limit(1)
-
-        if (accountResult.length === 0) {
-          throw new Error(
-            "Default account not found. Please ensure the database is properly initialized."
-          )
-        }
-
-        const account = accountResult[0]
-
-        if (!account.id) {
-          throw new Error("Default account ID is null")
-        }
-
         const transactionValues = transactions.map((transaction, index) => {
           const categoryTermResult = categoryTermResults[index]
           if (!categoryTermResult || !categoryTermResult.id) {
@@ -574,7 +556,6 @@ export default function useTransactionGroup() {
             amount: transaction.amount,
             categoryTermId: categoryTermResult.id,
             transactionGroupId: id,
-            accountId: account.id,
           }
         })
 

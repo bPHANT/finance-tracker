@@ -121,51 +121,6 @@ export default function CategorySelectorScreen(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parentCategoryId])
 
-  // const handleCategorySelect = async (category: CategoryWithChildrenCheck) => {
-  //   if (!category.id) {
-  //     console.log("Error while Selection: No category.id")
-  //     return
-  //   }
-  //   if (source === "settings") {
-  //     router.push({
-  //       pathname: "/(tabs)/settings/[categoryId]",
-  //       params: {
-  //         categoryId: category.id.toString(),
-  //       },
-  //     })
-  //   } else if (source === "form") {
-  //     router.replace({
-  //       pathname: "/(tabs)/settings/[categoryId]",
-  //       params: {
-  //         categoryId: currentCategoryId.toString(),
-  //         source: "parentSelection",
-  //         selectedParentId: category.id.toString(),
-  //       },
-  //     })
-  //   } else if (source === "scan" || source === "transactions") {
-  //     await storage.setObject("inputCategory", category)
-  //     const pathname =
-  //       source === "scan"
-  //         ? "/scan/transactionForm"
-  //         : "/transactions/transactionForm"
-  //     router.replace({
-  //       pathname,
-  //       params: { transactionIndex: transactionIndex },
-  //     })
-  //   }
-  // }
-
-  // const handleNoParentCategorySelect = async () => {
-  //   router.push({
-  //     pathname: "/settings/[categoryId]",
-  //     params: {
-  //       categoryId: currentCategoryId.toString(),
-  //       source: "parentSelection",
-  //       selectedParentId: "-1",
-  //     },
-  //   })
-  // }
-
   async function handleCategoryNavigate(category: CategoryWithChildrenCheck) {
     if (!category.id) return
     setParentCategoryId(category.id)
