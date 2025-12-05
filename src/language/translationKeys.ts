@@ -26,6 +26,8 @@ export type TranslationKey =
   | "screens.input.title"
   | "screens.input.name"
   | "screens.input.date"
+  | "screens.input.account"
+  | "screens.input.selectAccount"
   | "screens.input.note"
   | "screens.input.sum"
   | "screens.input.transactions"

@@ -2,7 +2,9 @@ import { CustomColorKeys } from "@/assets/colors"
 import Button from "@/components/buttons/Button"
 import FunctionalButton from "@/components/buttons/FunctionalButton"
 import TransactionContainer from "@/components/containers/TransactionContainer"
+import AccountTouchable from "@/components/input/AccountTouchable"
 import DateField from "@/components/input/DateField"
+import FieldTitle from "@/components/input/FieldTitle"
 import TextField from "@/components/input/TextField"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
@@ -11,6 +13,13 @@ import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 type Category = {
+  id: number
+  name: string
+  color: CustomColorKeys
+  emoji: string
+}
+
+type Account = {
   id: number
   name: string
   color: CustomColorKeys
@@ -30,6 +39,8 @@ type TransactionGroupFormProps = {
   onTitleChange: (value: string) => Promise<void>
   date: Date
   onDateChange: (value: string) => Promise<void>
+  account?: Account | null
+  onAccountPress: () => Promise<void>
   note: string
   onNoteChange: (value: string) => Promise<void>
   amount: string
@@ -68,6 +79,14 @@ export default function TransactionGroupFormScreen(
             date={props.date}
             onChangeDate={props.onDateChange}
           />
+
+          <View>
+            <FieldTitle title={t("screens.input.account")} />
+            <AccountTouchable
+              title={props.account?.name ?? t("screens.input.selectAccount")}
+              onPress={props.onAccountPress}
+            />
+          </View>
 
           <TextField
             title={t("screens.input.note")}

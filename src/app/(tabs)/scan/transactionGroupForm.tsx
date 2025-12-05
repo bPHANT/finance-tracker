@@ -1,5 +1,7 @@
 import { CustomColorKeys } from "@/assets/colors"
+import AccountModal, { Account } from "@/components/modal/AccountModal"
 import TransactionGroupFormScreen from "@/components/screens/transactionGroupForm"
+import useAccounts from "@/db/queries/accounts"
 import useCategory from "@/db/queries/category"
 import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
@@ -42,8 +44,11 @@ export default function TransactionGroupFormScreenFromScan() {
   const [note, setNote] = useState("")
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [date, setDate] = useState(new Date())
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
+  const [showAccountModal, setShowAccountModal] = useState(false)
 
   const { getMany: getCategories } = useCategory()
+  const { getMany: getAccounts } = useAccounts()
   const { create: createTransactionGroup } = useTransactionGroup()
 
   useFocusEffect(
@@ -60,6 +65,17 @@ export default function TransactionGroupFormScreenFromScan() {
       return () => subscription.remove()
     }, [])
   )
+
+  useEffect(() => {
+    const loadDefaultAccount = async () => {
+      const accounts = await getAccounts()
+      if (accounts && accounts.length > 0) {
+        setSelectedAccount(accounts[0])
+      }
+    }
+    loadDefaultAccount()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     const loadAiData = async () => {
@@ -161,7 +177,7 @@ export default function TransactionGroupFormScreenFromScan() {
   }, [params.action, params.refresh])
 
   const handleSubmit = async () => {
-    if (name.trim() === "" || transactions.length === 0) {
+    if (name.trim() === "" || transactions.length === 0 || !selectedAccount) {
       Alert.alert(t("common.error"), t("screens.input.errors.missingData"))
       return
     }
@@ -170,6 +186,7 @@ export default function TransactionGroupFormScreenFromScan() {
       amount: transaction.amount,
       term: transaction.name,
       categoryId: transaction.category.id,
+      accountId: selectedAccount.id!,
     }))
 
     console.log("Creating transaction group:", {
@@ -238,21 +255,38 @@ export default function TransactionGroupFormScreenFromScan() {
   }
 
   return (
-    <TransactionGroupFormScreen
-      title={t("screens.input.title")}
-      name={name}
-      date={date}
-      note={note}
-      amount={calculateTotalAmount(transactions)}
-      transactions={transactions}
-      onTitleChange={async (value) => setTitle(value)}
-      onDateChange={async (value) => setDate(await dateFromString(value))}
-      onNoteChange={async (value) => setNote(value)}
-      onEdit={handleUpdateTransaction}
-      onDelete={handleDeleteTransaction}
-      onAdd={handleAddTransaction}
-      onSubmit={handleSubmit}
-      submitText={t("common.save")}
-    />
+    <>
+      <AccountModal
+        visible={showAccountModal}
+        onClose={() => setShowAccountModal(false)}
+        onSelectAccount={(account) => {
+          setSelectedAccount(account)
+          setShowAccountModal(false)
+        }}
+        onAddAccount={() => {
+          console.log("Add new account")
+          setShowAccountModal(false)
+        }}
+      />
+
+      <TransactionGroupFormScreen
+        title={t("screens.input.title")}
+        name={name}
+        date={date}
+        account={selectedAccount}
+        onAccountPress={async () => setShowAccountModal(true)}
+        note={note}
+        amount={calculateTotalAmount(transactions)}
+        transactions={transactions}
+        onTitleChange={async (value) => setTitle(value)}
+        onDateChange={async (value) => setDate(await dateFromString(value))}
+        onNoteChange={async (value) => setNote(value)}
+        onEdit={handleUpdateTransaction}
+        onDelete={handleDeleteTransaction}
+        onAdd={handleAddTransaction}
+        onSubmit={handleSubmit}
+        submitText={t("common.save")}
+      />
+    </>
   )
 }

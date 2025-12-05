@@ -119,6 +119,14 @@
         "en": "Date",
         "de": "Datum"
       },
+      "account": {
+        "en": "Account",
+        "de": "Konto"
+      },
+      "selectAccount": {
+        "en": "Select Account",
+        "de": "Konto auswählen"
+      },
       "note": {
         "en": "Note",
         "de": "Notiz"

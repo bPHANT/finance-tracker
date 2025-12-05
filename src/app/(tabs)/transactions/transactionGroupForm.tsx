@@ -1,10 +1,13 @@
 import { CustomColorKeys } from "@/assets/colors"
+import AccountModal from "@/components/modal/AccountModal"
 import {
   Transaction,
   TransactionFormData,
 } from "@/components/screens/transactionForm"
 import TransactionGroupFormScreen from "@/components/screens/transactionGroupForm"
+import useAccounts from "@/db/queries/accounts"
 import useTransactionGroup from "@/db/queries/transactionGroup"
+import type { Account } from "@/db/schemas/accounts"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { calculateTotalAmount, dateFromString } from "@/utils/helper"
 import { storage } from "@/utils/storage"
@@ -20,11 +23,14 @@ export default function TransactionGroupFormFromTransactions() {
 
   const { get: getTransactionGroup, update: updateTransactionGroup } =
     useTransactionGroup()
+  const { getMany: getAccounts } = useAccounts()
 
   const [name, setTitle] = useState("")
   const [date, setDate] = useState(new Date())
   const [note, setNote] = useState("")
   const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
+  const [showAccountModal, setShowAccountModal] = useState(false)
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -48,6 +54,17 @@ export default function TransactionGroupFormFromTransactions() {
           },
         }))
       )
+
+      // Lade Account wenn vorhanden
+      if (result.transactions.length > 0 && result.transactions[0].accountId) {
+        const accounts = await getAccounts()
+        const account = accounts?.find(
+          (acc) => acc.id === result.transactions[0].accountId
+        )
+        if (account) {
+          setSelectedAccount(account)
+        }
+      }
     }
     fetchGroup()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -120,7 +137,7 @@ export default function TransactionGroupFormFromTransactions() {
   }
 
   const handleUpdate = async () => {
-    if (name.trim() === "" || transactions.length === 0) {
+    if (name.trim() === "" || transactions.length === 0 || !selectedAccount) {
       Alert.alert(t("common.error"), t("screens.input.errors.missingData"))
       return
     }
@@ -129,6 +146,7 @@ export default function TransactionGroupFormFromTransactions() {
       amount: transaction.amount,
       term: transaction.name,
       categoryId: transaction.category!.id,
+      accountId: selectedAccount.id!,
     }))
 
     const result = await updateTransactionGroup({
@@ -148,22 +166,39 @@ export default function TransactionGroupFormFromTransactions() {
   }
 
   return (
-    <TransactionGroupFormScreen
-      title={t("screens.transactionGroupForm.title")}
-      name={name}
-      date={date}
-      note={note}
-      amount={calculateTotalAmount(transactions)}
-      transactions={transactions}
-      submitText={t("common.update")}
-      onTitleChange={async (v) => setTitle(v)}
-      onDateChange={async (v) => setDate(await dateFromString(v))}
-      onNoteChange={async (v) => setNote(v)}
-      onEdit={handleUpdateTransaction}
-      onDelete={handleDeleteTransaction}
-      onAdd={handleAddTransaction}
-      onSubmit={handleUpdate}
-      onBack={async () => router.replace("/transactions")}
-    />
+    <>
+      <AccountModal
+        visible={showAccountModal}
+        onClose={() => setShowAccountModal(false)}
+        onSelectAccount={(account) => {
+          setSelectedAccount(account)
+          setShowAccountModal(false)
+        }}
+        onAddAccount={() => {
+          console.log("Add new account")
+          setShowAccountModal(false)
+        }}
+      />
+
+      <TransactionGroupFormScreen
+        title={t("screens.transactionGroupForm.title")}
+        name={name}
+        date={date}
+        account={selectedAccount}
+        onAccountPress={async () => setShowAccountModal(true)}
+        note={note}
+        amount={calculateTotalAmount(transactions)}
+        transactions={transactions}
+        submitText={t("common.update")}
+        onTitleChange={async (v) => setTitle(v)}
+        onDateChange={async (v) => setDate(await dateFromString(v))}
+        onNoteChange={async (v) => setNote(v)}
+        onEdit={handleUpdateTransaction}
+        onDelete={handleDeleteTransaction}
+        onAdd={handleAddTransaction}
+        onSubmit={handleUpdate}
+        onBack={async () => router.replace("/transactions")}
+      />
+    </>
   )
 }
