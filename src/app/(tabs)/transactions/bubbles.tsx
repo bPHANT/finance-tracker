@@ -13,7 +13,11 @@ import { BackHandler } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function BubbleScreen() {
-  const { getManyWithAmount: getCategories, hasChildren, get } = useCategory()
+  const {
+    getManyWithAmount: getCategories,
+    hasChildrenWithTransactions: hasChildren,
+    get,
+  } = useCategory()
   const { getByCategoryId } = useTransaction()
   const getCategoriesRef = useRef(getCategories)
   getCategoriesRef.current = getCategories
@@ -63,33 +67,40 @@ export default function BubbleScreen() {
           parentId: parentCategoryId,
         })
 
-        const boxData: BoxData[] = categories
-          .filter((cat) => {
-            const amount =
-              typeof cat.totalAmount === "number"
-                ? cat.totalAmount
-                : parseFloat(cat.totalAmount)
-            return amount !== 0
-          })
-          .map((cat) => {
-            const amount =
-              typeof cat.totalAmount === "number"
-                ? cat.totalAmount
-                : parseFloat(cat.totalAmount)
-            return {
-              id: cat.id,
-              name: cat.name,
-              emoji: cat.emoji,
-              value: Math.abs(amount),
-              displayAmount: amount,
-              color: colors.custom[cat.color as CustomColorKeys],
-            }
-          })
+        const boxData: BoxData[] = await Promise.all(
+          categories
+            .filter((cat) => {
+              const amount =
+                typeof cat.totalAmount === "number"
+                  ? cat.totalAmount
+                  : parseFloat(cat.totalAmount)
+              return amount !== 0
+            })
+            .map(async (cat) => {
+              const amount =
+                typeof cat.totalAmount === "number"
+                  ? cat.totalAmount
+                  : parseFloat(cat.totalAmount)
+              const categoryHasChildren = await hasChildren({
+                categoryId: cat.id,
+              })
+              return {
+                id: cat.id,
+                name: cat.name,
+                emoji: cat.emoji,
+                value: Math.abs(amount),
+                displayAmount: amount,
+                color: colors.custom[cat.color as CustomColorKeys],
+                hasChildren: categoryHasChildren,
+              }
+            })
+        )
 
         setData(boxData)
       }
 
       fetchData()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [parentCategoryId])
   )
 
