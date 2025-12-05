@@ -14,6 +14,7 @@ export interface BoxData {
   value: number
   displayAmount?: number
   color: string
+  hasChildren?: boolean
 }
 
 interface TreemapBoxProps {
@@ -58,13 +59,14 @@ export function TreemapBox({
 
   // Determine if box is large enough to show text
   const showText = width > 100
+  const isSlimHeight = height < 60
   const labelFontSize = Math.max(12, Math.min(width / 8, 18))
   const emojiSize = showText
     ? labelFontSize
     : Math.max(20, Math.min(width / 3, 40))
 
   const handlePress = () => {
-    if (onPress) {
+    if (onPress && item.hasChildren === true) {
       onPress(item.id)
     }
   }
@@ -77,8 +79,14 @@ export function TreemapBox({
 
   return (
     <AnimatedPressable
-      className='p-3 justify-center items-center border border-white/30 active:opacity-80'
-      onPress={handlePress}
+      className={`p-3 border border-white/30 ${
+        item.hasChildren === true ? "active:opacity-80" : ""
+      } ${
+        showText && isSlimHeight
+          ? "flex-row justify-start items-center gap-1"
+          : "justify-center items-center"
+      }`}
+      onPress={item.hasChildren === true ? handlePress : undefined}
       onLongPress={handleLongPress}
       style={[
         animatedStyle,
@@ -88,30 +96,34 @@ export function TreemapBox({
       ]}
     >
       {showText ? (
-        <>
-          <Text
-            className='text-white font-bold text-center mb-1'
-            style={{
-              fontSize: labelFontSize,
-            }}
-            numberOfLines={2}
-          >
-            {" "}
-            {item.emoji} {item.name}
-          </Text>
-          <Text
-            className='text-white font-semibold'
-            style={{
-              fontSize: Math.max(10, Math.min(width / 10, 16)),
-            }}
-          >
-            {item.displayAmount !== undefined
-              ? `${item.displayAmount < 0 ? "-" : ""}${Math.abs(
-                  item.displayAmount
-                ).toFixed(2)}€`
-              : `${item.value.toFixed(2)}€`}
-          </Text>
-        </>
+        isSlimHeight ? (
+          <></>
+        ) : (
+          <>
+            <Text
+              className='text-white font-bold text-center mb-1'
+              style={{
+                fontSize: labelFontSize,
+              }}
+              numberOfLines={2}
+            >
+              {" "}
+              {item.emoji} {item.name}
+            </Text>
+            <Text
+              className='text-white font-semibold'
+              style={{
+                fontSize: Math.max(10, Math.min(width / 10, 16)),
+              }}
+            >
+              {item.displayAmount !== undefined
+                ? `${item.displayAmount < 0 ? "-" : ""}${Math.abs(
+                    item.displayAmount
+                  ).toFixed(2)}€`
+                : `${item.value.toFixed(2)}€`}
+            </Text>
+          </>
+        )
       ) : (
         <Text
           style={{

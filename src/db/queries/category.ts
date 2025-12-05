@@ -304,6 +304,58 @@ export default function useCategory() {
     }
   }
 
+  const hasChildrenWithTransactions = async ({
+    categoryId,
+  }: {
+    categoryId: number
+  }) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const childrenWithTransactions = await db
+        .select({ id: categoryTable.id })
+        .from(categoryTable)
+        .innerJoin(
+          categoryTermTable,
+          eq(categoryTermTable.categoryId, categoryTable.id)
+        )
+        .innerJoin(
+          transactionTable,
+          eq(transactionTable.categoryTermId, categoryTermTable.id)
+        )
+        .where(eq(categoryTable.parentCategoryId, categoryId))
+        .limit(1)
+
+      if (childrenWithTransactions.length > 0) {
+        return true
+      }
+
+      const allChildren = await db
+        .select({ id: categoryTable.id })
+        .from(categoryTable)
+        .where(eq(categoryTable.parentCategoryId, categoryId))
+
+      for (const child of allChildren) {
+        const childHasTransactions = await hasChildrenWithTransactions({
+          categoryId: child.id,
+        })
+        if (childHasTransactions) {
+          return true
+        }
+      }
+
+      return false
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error checking if category has children:", error)
+      return false
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const getManyWithAmount = async ({
     parentId,
     from,
@@ -420,6 +472,7 @@ export default function useCategory() {
     getManyAsJson,
     getByParentId,
     hasChildren,
+    hasChildrenWithTransactions,
     getManyWithAmount,
     error,
     loading,
