@@ -15,6 +15,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
+import Button from "@/components/buttons/Button"
+import * as ImagePicker from "expo-image-picker";
 
 export default function CameraScreen() {
   const { colorScheme } = useColorScheme()
@@ -76,6 +78,50 @@ export default function CameraScreen() {
     }
   }
 
+  async function openGallery() {
+    // Open image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      base64: true,
+      quality: 1,
+    })
+
+    if (result.canceled) return
+
+    const asset = result.assets[0]
+
+    if (!asset.base64) {
+      alert("Dieses Foto konnte nicht verarbeitet werden. Bitte wähle ein anderes Bild.")
+      return
+    }
+
+    // Build camera-like photo object
+    const photo = {
+      base64: asset.base64,
+      width: asset.width,
+      height: asset.height,
+    }
+
+    try {
+      setIsProcessing(true)
+
+      // Process image using AI (same workflow as camera)
+      await categorizePicture(photo, categories)
+
+      // Navigate to transaction form with AI-loaded data
+      router.replace({
+        pathname: "/scan/transactionGroupForm",
+        params: {
+          action: "loadAiData",
+        },
+      })
+    } catch (error) {
+      alert(error)
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
   useEffect(() => {
     const loadCategories = async () => {
       const categoriesResult = await getCategoriesAsJson()
@@ -130,6 +176,14 @@ export default function CameraScreen() {
             height: windowWidth / 4.5,
           }}
         />
+        <View 
+          style={{ position: "absolute", bottom: 50, right: 20 }}>
+          <Button
+            title="Galerie"
+            icon="image-outline"
+            onPress={openGallery}
+          />
+        </View>
       </View>
     )
   } // Process View
