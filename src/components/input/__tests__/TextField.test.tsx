@@ -1,29 +1,29 @@
+import { render } from "@testing-library/react-native"
 import React from "react"
-import renderer from "react-test-renderer"
 import TextField from "../TextField"
 
 describe("TextField Component", () => {
   it("renders correctly with title", () => {
-    const tree = renderer.create(<TextField title='Name' />).toJSON()
-    expect(tree).toMatchSnapshot()
+    const { getByText } = render(<TextField title='Name' />)
+    expect(getByText("Name")).toBeTruthy()
   })
 
   it("renders with value", () => {
-    const tree = renderer
-      .create(<TextField title='Amount' value='100.50' />)
-      .toJSON()
-    expect(tree).toMatchSnapshot()
+    const { getByDisplayValue } = render(
+      <TextField title='Amount' value='100.50' />
+    )
+    expect(getByDisplayValue("100.50")).toBeTruthy()
   })
 
   it("renders with placeholder", () => {
-    const tree = renderer
-      .create(<TextField title='Description' placeholder='Enter description' />)
-      .toJSON()
-    expect(tree).toMatchSnapshot()
+    const { getByPlaceholderText } = render(
+      <TextField title='Description' placeholder='Enter description' />
+    )
+    expect(getByPlaceholderText("Enter description")).toBeTruthy()
   })
 
   it("renders with balance prop", () => {
-    const tree = renderer.create(<TextField title='Balance' balance />).toJSON()
-    expect(tree).toMatchSnapshot()
+    const { getByText } = render(<TextField title='Balance' balance />)
+    expect(getByText("Balance")).toBeTruthy()
   })
 })

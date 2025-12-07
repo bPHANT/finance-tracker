@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`TextField Component renders correctly with title 1`] = `null`;
-
-exports[`TextField Component renders with balance prop 1`] = `null`;
-
-exports[`TextField Component renders with placeholder 1`] = `null`;
-
-exports[`TextField Component renders with value 1`] = `null`;
