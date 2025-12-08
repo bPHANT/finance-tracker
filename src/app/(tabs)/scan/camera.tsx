@@ -53,6 +53,26 @@ export default function CameraScreen() {
     }, [])
   )
 
+  async function processAndNavigate(photo: any) {
+    try {
+      setIsProcessing(true)
+
+      // Process image using AI
+      await categorizePicture(photo, categories)
+
+      // Navigate to transaction form
+      router.replace({
+        pathname: "/scan/transactionGroupForm",
+        params: { action: "loadAiData" },
+      })
+    } catch (error) {
+      alert(error)
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+
   async function takePicture() {
     if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync({
@@ -61,27 +81,14 @@ export default function CameraScreen() {
         skipProcessing: true,
       })
 
-      try {
-        setIsProcessing(true)
-        await categorizePicture(photo, categories)
-        router.replace({
-          pathname: "/scan/transactionGroupForm",
-          params: {
-            action: "loadAiData",
-          },
-        })
-      } catch (error) {
-        alert(error)
-      } finally {
-        setIsProcessing(false)
-      }
+      await processAndNavigate(photo)
     }
   }
 
   async function openGallery() {
     // Open image picker
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       base64: true,
       quality: 1,
     })
@@ -91,35 +98,19 @@ export default function CameraScreen() {
     const asset = result.assets[0]
 
     if (!asset.base64) {
-      alert("Dieses Foto konnte nicht verarbeitet werden. Bitte wähle ein anderes Bild.")
+      alert(t("screens.camera.gallery_error"))
       return
     }
 
-    // Build camera-like photo object
     const photo = {
       base64: asset.base64,
       width: asset.width,
       height: asset.height,
+      uri: asset.uri,  
+      format: "jpg" as "jpg",
     }
 
-    try {
-      setIsProcessing(true)
-
-      // Process image using AI (same workflow as camera)
-      await categorizePicture(photo, categories)
-
-      // Navigate to transaction form with AI-loaded data
-      router.replace({
-        pathname: "/scan/transactionGroupForm",
-        params: {
-          action: "loadAiData",
-        },
-      })
-    } catch (error) {
-      alert(error)
-    } finally {
-      setIsProcessing(false)
-    }
+    await processAndNavigate(photo)
   }
 
   useEffect(() => {
@@ -176,10 +167,9 @@ export default function CameraScreen() {
             height: windowWidth / 4.5,
           }}
         />
-        <View 
-          style={{ position: "absolute", bottom: 50, right: 20 }}>
+        <View className="absolute bottom-12 right-5">
           <Button
-            title="Galerie"
+            title={t("screens.camera.gallery")}
             icon="image-outline"
             onPress={openGallery}
           />
