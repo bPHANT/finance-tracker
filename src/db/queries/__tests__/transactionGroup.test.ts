@@ -308,7 +308,7 @@ describe("useTransactionGroup - getMany", () => {
       return secondSelectMock
     })
 
-    const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {})
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {})
 
     const { getMany } = useTransactionGroup()
     const result = await getMany()
