@@ -61,10 +61,11 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@testing-library/react-native": "^13.3.3",
     "@types/date-fns": "^2.5.3",
     "@types/jest": "29.5.14",
     "@types/react": "~19.1.10",
-    "drizzle-orm": "^0.43.1",
+    "drizzle-orm": "^0.45.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "jest": "~29.7.0",
