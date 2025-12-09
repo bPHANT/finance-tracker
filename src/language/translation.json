@@ -352,6 +352,16 @@
       "alertNoName": {
         "en": "No category name defined!",
         "de": "Kein Kategoriename angegeben!"
+      },
+      "confirmDelete": {
+        "title" : {
+            "en": "Warning!",
+            "de": "Achtung!"
+        },
+        "message" : {
+            "en": "Are you sure you want to delete this category?",
+            "de": "Sind Sie sicher, dass Sie diese Kategorie löschen möchten?"
+        }
       }
     },
     "budgetForm": {

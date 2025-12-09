@@ -3,6 +3,7 @@ import Button from "@/components/buttons/Button"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
 import CategoryTouchable from "@/components/input/CategoryTouchable"
 import FieldTitle from "@/components/input/FieldTitle"
+import AlertModal from "@/components/modal/AlertModal"
 import TextField from "@/components/input/TextField"
 import ColorModal from "@/components/modal/ColorModal"
 import EmojiModal from "@/components/modal/EmojiModal"
@@ -48,6 +49,15 @@ export default function CategoryFormScreen() {
     emoji: string
   } | null>(null)
   const mode = params.categoryId === "-1" ? "create" : "update"
+  
+  const [confirmState, setConfirmState] = useState<{
+    visible: boolean
+    type: "error" | "confirm"
+    title?: string
+    message: string
+    onConfirm: () => void
+    onCancel: () => void
+  } | null>(null)
 
   const fetchCategory = useCallback(async () => {
     setCategoryId(params.categoryId ? Number(params.categoryId) : 0)
@@ -168,11 +178,21 @@ export default function CategoryFormScreen() {
 
   async function handleDelete() {
     if (!categoryId) return
-
-    // TO DO ! INSERT ALERT !
     
-    await deleteCategory(categoryId)
-    router.dismissTo("/settings")
+    setConfirmState({
+      visible: true,
+      type: "confirm",
+      title: t("screens.categoryForm.confirmDelete.title"),
+      message: t("screens.categoryForm.confirmDelete.message"),
+      onConfirm: async () => {
+        await deleteCategory(categoryId)
+        setConfirmState(null)
+        router.dismissTo("/settings")
+      },
+      onCancel: () => {
+        setConfirmState(null)
+      },
+    })
   }
 
   return (
@@ -265,6 +285,19 @@ export default function CategoryFormScreen() {
                 functional="cancel"
               />
             )}
+
+          {confirmState && (
+            <AlertModal
+              visible={confirmState.visible}
+              type={confirmState.type}
+              title={confirmState.title}
+              message={confirmState.message}
+              onConfirm={confirmState.onConfirm}
+              onCancel={confirmState.onCancel}
+            />      
+          )}      
+
+
           </View>
         </ScrollView>
       </SafeAreaView>
