@@ -91,8 +91,6 @@ export default function TransactionGroupFormFromTransactions() {
         "transactionGroupData"
       )) as TransactionGroupFormData
 
-      console.log(formData)
-
       if (!formData || !formData.id) return
       setTransactionGroupId(formData.id)
       setName(formData.name)
@@ -177,11 +175,6 @@ export default function TransactionGroupFormFromTransactions() {
   }
 
   const handleUpdate = async () => {
-    console.log(
-      "handleUpdate called with transactionGroupId:",
-      transactionGroupId
-    )
-
     if (name.trim() === "" || transactions.length === 0 || !selectedAccount) {
       Alert.alert(t("common.error"), t("screens.input.errors.missingData"))
       return

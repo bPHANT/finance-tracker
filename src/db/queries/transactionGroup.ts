@@ -509,7 +509,6 @@ export default function useTransactionGroup() {
   }) => {
     setLoading(true)
     setError(null)
-    console.log(id, name, note, date, accountId, transactions)
     try {
       if (!transactions || transactions.length === 0) {
         throw new Error("No transactions provided")

@@ -164,7 +164,6 @@ export default function TransactionGroupFormScreenFromScan() {
     }
 
     const clearData = async () => {
-      console.log("cleared")
       setTitle("")
       setNote("")
       setDate(new Date())
