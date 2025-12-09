@@ -130,7 +130,7 @@ export default function TransactionGroupFormScreenFromScan() {
       const transaction = (await storage.getObject("inputTransaction")) as any
 
       if (data) {
-        setTitle(data.title || "")
+        setTitle(data.name || "")
         setNote(data.note || "")
         setDate(data.date ? new Date(data.date) : new Date())
 
@@ -164,6 +164,7 @@ export default function TransactionGroupFormScreenFromScan() {
     }
 
     const clearData = async () => {
+      console.log("cleared")
       setTitle("")
       setNote("")
       setDate(new Date())
@@ -189,13 +190,6 @@ export default function TransactionGroupFormScreenFromScan() {
       accountId: selectedAccount.id!,
     }))
 
-    console.log("Creating transaction group:", {
-      name,
-      note,
-      date,
-      transactions: transactionData,
-    })
-
     const result = await createTransactionGroup({
       name,
       note,
@@ -205,7 +199,6 @@ export default function TransactionGroupFormScreenFromScan() {
     })
 
     if (result) {
-      console.log("Transaction group created successfully:", result)
       Keyboard.dismiss()
       router.push("/transactions")
 
@@ -214,6 +207,7 @@ export default function TransactionGroupFormScreenFromScan() {
       setTransactions([])
     } else {
       console.error("Failed to create transaction group")
+      //FIXME translation and our modal
       Alert.alert(t("common.error"), "Failed to create transaction group")
     }
   }
