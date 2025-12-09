@@ -8,8 +8,8 @@ import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { calculateTotalAmount, dateFromString } from "@/utils/helper"
 import { storage } from "@/utils/storage"
-import { router, useLocalSearchParams } from "expo-router"
-import { useEffect, useState } from "react"
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
+import { useCallback, useEffect, useState } from "react"
 import { Alert, Keyboard } from "react-native"
 
 export default function TransactionGroupFormFromTransactions() {
@@ -26,32 +26,35 @@ export default function TransactionGroupFormFromTransactions() {
   const [note, setNote] = useState("")
   const [transactions, setTransactions] = useState<Transaction[]>([])
 
-  useEffect(() => {
-    const fetchGroup = async () => {
-      const result = await getTransactionGroup({ id: transactionGroupId })
-      if (!result) return
+  const fetchTransactionGroup = useCallback(async () => {
+    const result = await getTransactionGroup({ id: transactionGroupId })
+    if (!result) return
 
-      setTitle(result.name ?? "")
-      setDate(result.date ?? new Date())
-      setNote(result.note ?? "")
+    setTitle(result.name ?? "")
+    setDate(result.date ?? new Date())
+    setNote(result.note ?? "")
 
-      setTransactions(
-        result.transactions.map((t) => ({
-          idx: t.id,
-          name: t.name,
-          amount: t.amount,
-          category: {
-            id: t.categoryId,
-            name: t.categoryName,
-            emoji: t.categoryEmoji ?? "",
-            color: t.categoryColor as CustomColorKeys,
-          },
-        }))
-      )
-    }
-    fetchGroup()
+    setTransactions(
+      result.transactions.map((t) => ({
+        idx: t.id,
+        name: t.name,
+        amount: t.amount,
+        category: {
+          id: t.categoryId,
+          name: t.categoryName,
+          emoji: t.categoryEmoji ?? "",
+          color: t.categoryColor as CustomColorKeys,
+        },
+      }))
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactionGroupId])
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchTransactionGroup()
+    }, [fetchTransactionGroup])
+  )
 
   useEffect(() => {
     const loadTransaction = async () => {
