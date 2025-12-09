@@ -17,9 +17,17 @@ export default function TransactionGroupFormFromTransactions() {
   const { t } = useTypedTranslation()
   const params = useLocalSearchParams()
 
-  const [transactionGroupId, setTransactionGroupId] = useState(() =>
-    Number(params.transactionGroupId)
-  )
+  const [transactionGroupId, setTransactionGroupId] = useState(() => {
+    const id = Number(params.transactionGroupId)
+    if (isNaN(id) || id <= 0) {
+      console.error(
+        "Invalid initial transactionGroupId:",
+        params.transactionGroupId
+      )
+      return 0
+    }
+    return id
+  })
 
   const { get: getTransactionGroup, update: updateTransactionGroup } =
     useTransactionGroup()
@@ -33,6 +41,11 @@ export default function TransactionGroupFormFromTransactions() {
 
   useEffect(() => {
     const fetchGroup = async () => {
+      if (!transactionGroupId || isNaN(transactionGroupId)) {
+        console.error("Invalid transactionGroupId:", transactionGroupId)
+        return
+      }
+
       const result = await getTransactionGroup({ id: transactionGroupId })
       if (!result) return
 
@@ -60,7 +73,16 @@ export default function TransactionGroupFormFromTransactions() {
   }, [transactionGroupId])
 
   useEffect(() => {
-    setTransactionGroupId(Number(params.transactionGroupId))
+    console.log("id", params.transactionGroupId)
+    const id = Number(params.transactionGroupId)
+    if (!isNaN(id) && id > 0) {
+      setTransactionGroupId(id)
+    } else {
+      console.error(
+        "Invalid transactionGroupId from params:",
+        params.transactionGroupId
+      )
+    }
   }, [params.transactionGroupId])
 
   useEffect(() => {
@@ -130,8 +152,26 @@ export default function TransactionGroupFormFromTransactions() {
   }
 
   const handleUpdate = async () => {
+    console.log(
+      "handleUpdate called with transactionGroupId:",
+      transactionGroupId
+    )
+
     if (name.trim() === "" || transactions.length === 0 || !selectedAccount) {
       Alert.alert(t("common.error"), t("screens.input.errors.missingData"))
+      return
+    }
+
+    if (
+      !transactionGroupId ||
+      isNaN(transactionGroupId) ||
+      transactionGroupId <= 0
+    ) {
+      console.error(
+        "Invalid transactionGroupId in handleUpdate:",
+        transactionGroupId
+      )
+      Alert.alert(t("common.error"), "Invalid transaction group ID")
       return
     }
 

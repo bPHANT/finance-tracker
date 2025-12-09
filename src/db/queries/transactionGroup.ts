@@ -131,12 +131,27 @@ export default function useTransactionGroup() {
           }
         })
 
-        return tx.insert(transactionTable).values(transactionValues).returning()
+        const result = await tx
+          .insert(transactionTable)
+          .values(transactionValues)
+          .returning()
+
+        // Update account balance
+        const totalAmount = transactions.reduce((sum, t) => sum + t.amount, 0)
+        await tx
+          .update(accountTable)
+          .set({
+            balance: sql`${accountTable.balance} + ${totalAmount}`,
+          })
+          .where(eq(accountTable.id, accountId))
+
+        return result
       })
     } catch (err) {
       const error =
         err instanceof Error ? err : new Error("Unknown error occurred")
       setError(error)
+      console.error("Error creating transaction group:", error)
       return null
     } finally {
       setLoading(false)
@@ -323,18 +338,56 @@ export default function useTransactionGroup() {
 
     try {
       await db.transaction(async (tx) => {
-        await tx
-          .delete(transactionTable)
-          .where(eq(transactionTable.transactionGroupId, id))
-
-        await tx
-          .delete(transactionGroupTable)
+        // Get transactions and account info before deletion
+        const groupData = await tx
+          .select({
+            accountId: transactionGroupTable.accountId,
+            amount: transactionTable.amount,
+          })
+          .from(transactionGroupTable)
+          .innerJoin(
+            transactionTable,
+            eq(transactionTable.transactionGroupId, transactionGroupTable.id)
+          )
           .where(eq(transactionGroupTable.id, id))
+
+        if (groupData.length > 0) {
+          const accountId = groupData[0].accountId
+          const totalAmount = groupData.reduce((sum, t) => sum + t.amount, 0)
+
+          // Delete transactions
+          await tx
+            .delete(transactionTable)
+            .where(eq(transactionTable.transactionGroupId, id))
+
+          // Delete transaction group
+          await tx
+            .delete(transactionGroupTable)
+            .where(eq(transactionGroupTable.id, id))
+
+          // Update account balance (subtract the amount)
+          await tx
+            .update(accountTable)
+            .set({
+              balance: sql`${accountTable.balance} - ${totalAmount}`,
+            })
+            .where(eq(accountTable.id, accountId))
+        } else {
+          // If no transactions found, just delete the group
+          await tx
+            .delete(transactionTable)
+            .where(eq(transactionTable.transactionGroupId, id))
+
+          await tx
+            .delete(transactionGroupTable)
+            .where(eq(transactionGroupTable.id, id))
+        }
       })
     } catch (err) {
       const error =
         err instanceof Error ? err : new Error("Unknown error occurred")
       setError(error)
+      console.error("Error deleting transaction group:", error)
       throw new Error(
         `Failed to delete transaction group with id ${id}: ${error.message}`
       )
@@ -456,7 +509,7 @@ export default function useTransactionGroup() {
   }) => {
     setLoading(true)
     setError(null)
-
+    console.log(id, name, note, date, accountId, transactions)
     try {
       if (!transactions || transactions.length === 0) {
         throw new Error("No transactions provided")
@@ -474,6 +527,26 @@ export default function useTransactionGroup() {
       }
 
       return await db.transaction(async (tx) => {
+        // Get old transactions and account info
+        const oldGroupData = await tx
+          .select({
+            accountId: transactionGroupTable.accountId,
+            amount: transactionTable.amount,
+          })
+          .from(transactionGroupTable)
+          .innerJoin(
+            transactionTable,
+            eq(transactionTable.transactionGroupId, transactionGroupTable.id)
+          )
+          .where(eq(transactionGroupTable.id, id))
+
+        const oldAccountId =
+          oldGroupData.length > 0 ? oldGroupData[0].accountId : null
+        const oldTotalAmount = oldGroupData.reduce(
+          (sum, t) => sum + t.amount,
+          0
+        )
+
         // Update transaction group
         await tx
           .update(transactionGroupTable)
@@ -552,12 +625,59 @@ export default function useTransactionGroup() {
           }
         })
 
-        return tx.insert(transactionTable).values(transactionValues).returning()
+        const result = await tx
+          .insert(transactionTable)
+          .values(transactionValues)
+          .returning()
+
+        // Calculate new total amount
+        const newTotalAmount = transactions.reduce(
+          (sum, t) => sum + t.amount,
+          0
+        )
+
+        // Update account balances
+        if (oldAccountId && oldAccountId !== accountId) {
+          // Account changed - remove from old account and add to new account
+          await tx
+            .update(accountTable)
+            .set({
+              balance: sql`${accountTable.balance} - ${oldTotalAmount}`,
+            })
+            .where(eq(accountTable.id, oldAccountId))
+
+          await tx
+            .update(accountTable)
+            .set({
+              balance: sql`${accountTable.balance} + ${newTotalAmount}`,
+            })
+            .where(eq(accountTable.id, accountId))
+        } else if (oldAccountId === accountId) {
+          // Same account - update with difference
+          const difference = newTotalAmount - oldTotalAmount
+          await tx
+            .update(accountTable)
+            .set({
+              balance: sql`${accountTable.balance} + ${difference}`,
+            })
+            .where(eq(accountTable.id, accountId))
+        } else {
+          // No old account (shouldn't happen, but handle it)
+          await tx
+            .update(accountTable)
+            .set({
+              balance: sql`${accountTable.balance} + ${newTotalAmount}`,
+            })
+            .where(eq(accountTable.id, accountId))
+        }
+
+        return result
       })
     } catch (err) {
       const error =
         err instanceof Error ? err : new Error("Unknown error occurred")
       setError(error)
+      console.error("Error updating transaction group:", error)
       return null
     } finally {
       setLoading(false)
