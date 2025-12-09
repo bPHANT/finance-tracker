@@ -1,5 +1,5 @@
 import type { CustomColorKeys } from "@/assets/colors"
-import { eq } from "drizzle-orm"
+import { eq, sum } from "drizzle-orm"
 import { useState } from "react"
 import { useDb } from ".."
 import { accountTable } from "../schemas"
@@ -139,9 +139,33 @@ export default function useAccounts() {
     }
   }
 
+  const getTotalBalance = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const result = await db
+        .select({
+          total: sum(accountTable.balance),
+        })
+        .from(accountTable)
+
+      const totalBalance = result[0]?.total ?? "0"
+      return parseFloat(totalBalance).toFixed(2)
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error calculating total balance:", error)
+      return "0.00"
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     get,
     getMany,
+    getTotalBalance,
     create,
     update,
     error,
