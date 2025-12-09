@@ -13,6 +13,14 @@ import { router, useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
 import { Alert, Keyboard } from "react-native"
 
+type TransactionGroupFormData = {
+  id: number
+  name: string
+  date: string
+  note: string
+  selectedAccount: Account
+}
+
 export default function TransactionGroupFormFromTransactions() {
   const { t } = useTypedTranslation()
   const params = useLocalSearchParams()
@@ -32,24 +40,29 @@ export default function TransactionGroupFormFromTransactions() {
   const { get: getTransactionGroup, update: updateTransactionGroup } =
     useTransactionGroup()
 
-  const [name, setTitle] = useState("")
+  const [name, setName] = useState("")
   const [date, setDate] = useState(new Date())
   const [note, setNote] = useState("")
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
+
   const [showAccountModal, setShowAccountModal] = useState(false)
 
   useEffect(() => {
     const fetchGroup = async () => {
-      if (!transactionGroupId || isNaN(transactionGroupId)) {
-        console.error("Invalid transactionGroupId:", transactionGroupId)
+      if (!transactionGroupId) {
+        return
+      }
+
+      if (isNaN(transactionGroupId)) {
+        console.error("Invalid transaction group id!")
         return
       }
 
       const result = await getTransactionGroup({ id: transactionGroupId })
       if (!result) return
 
-      setTitle(result.name ?? "")
+      setName(result.name ?? "")
       setDate(result.date ?? new Date())
       setNote(result.note ?? "")
       setSelectedAccount(result.account as Account)
@@ -70,23 +83,23 @@ export default function TransactionGroupFormFromTransactions() {
     }
     fetchGroup()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transactionGroupId])
-
-  useEffect(() => {
-    console.log("id", params.transactionGroupId)
-    const id = Number(params.transactionGroupId)
-    if (!isNaN(id) && id > 0) {
-      setTransactionGroupId(id)
-    } else {
-      console.error(
-        "Invalid transactionGroupId from params:",
-        params.transactionGroupId
-      )
-    }
   }, [params.transactionGroupId])
 
   useEffect(() => {
     const loadTransaction = async () => {
+      const formData = (await storage.getObject(
+        "transactionGroupData"
+      )) as TransactionGroupFormData
+
+      console.log(formData)
+
+      if (!formData || !formData.id) return
+      setTransactionGroupId(formData.id)
+      setName(formData.name)
+      setDate(await dateFromString(formData.date))
+      setNote(formData.note)
+      setSelectedAccount(formData.selectedAccount)
+
       const transactionData = (await storage.getObject(
         "formTransaction"
       )) as Transaction
@@ -119,9 +132,20 @@ export default function TransactionGroupFormFromTransactions() {
 
     loadTransaction()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.action, params.update])
+  }, [params.action, params.refresh])
 
-  const handleAddTransaction = async () => {
+  async function saveFormData() {
+    await storage.setObject("transactionGroupData", {
+      id: transactionGroupId,
+      name,
+      date,
+      note,
+      selectedAccount,
+    })
+  }
+
+  async function handleAddTransaction() {
+    saveFormData()
     router.push({
       pathname: "/transactions/transactionForm",
       params: { type: "create", refresh: Date.now() },
@@ -129,6 +153,7 @@ export default function TransactionGroupFormFromTransactions() {
   }
 
   const handleUpdateTransaction = async (index: number) => {
+    saveFormData()
     const transaction = transactions[index]
     await storage.setObject("transactionFormData", {
       ...transaction,
@@ -220,7 +245,7 @@ export default function TransactionGroupFormFromTransactions() {
         amount={calculateTotalAmount(transactions)}
         transactions={transactions}
         submitText={t("common.update")}
-        onTitleChange={async (v) => setTitle(v)}
+        onTitleChange={async (v) => setName(v)}
         onDateChange={async (v) => setDate(await dateFromString(v))}
         onNoteChange={async (v) => setNote(v)}
         onEdit={handleUpdateTransaction}
