@@ -11,11 +11,9 @@ import AccountModal from "@/components/modal/AccountModal"
 import AlertModal from "@/components/modal/AlertModal"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import BalanceCard from "@/components/widgets/BalanceWidget"
-import { useDb } from "@/db"
 
 export default function KitchensinkScreen() {
   const router = useRouter()
-  const db = useDb()
 
   const [showErrorAlert, setShowErrorAlert] = useState(false)
   const [showConfirmAlert, setShowConfirmAlert] = useState(false)
