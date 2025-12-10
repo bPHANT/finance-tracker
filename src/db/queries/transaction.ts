@@ -1,7 +1,12 @@
-import { useDb } from ".."
+import { eq, inArray, sum } from "drizzle-orm"
 import { useState } from "react"
-import { transactionTable } from "../schemas"
-import { sum } from "drizzle-orm"
+import { useDb } from ".."
+import {
+  categoryTable,
+  categoryTermTable,
+  transactionGroupTable,
+  transactionTable,
+} from "../schemas"
 
 export default function useTransaction() {
   const db = useDb()
@@ -52,9 +57,57 @@ export default function useTransaction() {
     }
   }
 
+  const getByCategoryId = async ({ categoryId }: { categoryId: number }) => {
+    setLoading(true)
+    setError(null)
+    try {
+      // Get all category IDs including children
+      const allCategories = await db.select().from(categoryTable)
+      const getCategoryWithChildren = (id: number): number[] => {
+        const children = allCategories.filter(
+          (cat) => cat.parentCategoryId === id
+        )
+        return [
+          id,
+          ...children.flatMap((child) => getCategoryWithChildren(child.id)),
+        ]
+      }
+      const categoryIds = getCategoryWithChildren(categoryId)
+
+      const result = await db
+        .select({
+          id: transactionTable.id,
+          name: transactionTable.name,
+          amount: transactionTable.amount,
+          groupName: transactionGroupTable.name,
+          groupDate: transactionGroupTable.date,
+        })
+        .from(transactionTable)
+        .innerJoin(
+          transactionGroupTable,
+          eq(transactionTable.transactionGroupId, transactionGroupTable.id)
+        )
+        .innerJoin(
+          categoryTermTable,
+          eq(transactionTable.categoryTermId, categoryTermTable.id)
+        )
+        .where(inArray(categoryTermTable.categoryId, categoryIds))
+
+      return result
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      return []
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     getTotalAmount,
     getMany,
+    getByCategoryId,
     error,
     loading,
   }

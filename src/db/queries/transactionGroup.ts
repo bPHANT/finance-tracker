@@ -283,7 +283,7 @@ export default function useTransactionGroup() {
                 const category = categoryLookup[group.topLevelCategoryId]
 
                 if (!category) {
-                  console.log(
+                  console.error(
                     `Category not found for ID ${group.topLevelCategoryId} in group ${group.id}`
                   )
                 }
@@ -360,10 +360,242 @@ export default function useTransactionGroup() {
     }
   }
 
+  const get = async ({ id }: { id: number }) => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      // Abfrage aus Datenbank
+      const rows = await db
+        .select({
+          group: {
+            id: transactionGroupTable.id,
+            name: transactionGroupTable.name,
+            note: transactionGroupTable.note,
+            date: transactionGroupTable.date,
+          },
+          transaction: {
+            id: transactionTable.id,
+            name: transactionTable.name,
+            amount: transactionTable.amount,
+            categoryTermId: categoryTermTable.id,
+            categoryTerm: categoryTermTable.term,
+            categoryId: categoryTable.id,
+            categoryName: categoryTable.name,
+            categoryEmoji: categoryTable.emoji,
+            categoryColor: categoryTable.color,
+          },
+        })
+        .from(transactionGroupTable)
+        .innerJoin(
+          //leftJoin damit TransactionsGroups ohne Einträge angezeigt werden können sinnvoll?
+          transactionTable,
+          eq(transactionTable.transactionGroupId, transactionGroupTable.id)
+        )
+        .innerJoin(
+          categoryTermTable,
+          eq(transactionTable.categoryTermId, categoryTermTable.id)
+        )
+        .innerJoin(
+          categoryTable,
+          eq(categoryTermTable.categoryId, categoryTable.id)
+        )
+        .innerJoin(
+          accountTable,
+          eq(transactionTable.accountId, accountTable.id)
+        )
+        .where(eq(transactionGroupTable.id, id))
+
+      // Edgecase falls keine Einträge gefunden werden (sollte igentlich nicht passieren)
+      if (rows.length === 0) {
+        setLoading(false)
+        return null
+      }
+
+      // Mapped Liste der Transactions
+      const transactions = rows.map((r) => ({
+        id: r.transaction.id,
+        name: r.transaction.name,
+        amount: r.transaction.amount,
+        categoryTerm: r.transaction.categoryTerm,
+        categoryId: r.transaction.categoryId,
+        categoryName: r.transaction.categoryName,
+        categoryEmoji: r.transaction.categoryEmoji,
+        categoryColor: r.transaction.categoryColor,
+      }))
+
+      // Bildet Summe amount aus Transactions
+      const totalAmount = transactions.reduce((s, t) => s + t.amount, 0)
+
+      return {
+        ...rows[0].group,
+        totalAmount, // Summe
+        transactions, // Transactions
+      }
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      console.error("Error fetching transactionGroup:", error)
+      setError(error)
+      setLoading(false)
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const update = async ({
+    id,
+    name,
+    note,
+    date,
+    transactions,
+  }: {
+    id: number
+    name?: string
+    note?: string
+    date: Date
+    transactions: {
+      amount: number
+      term: string
+      categoryId: number
+    }[]
+  }) => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      if (!transactions || transactions.length === 0) {
+        throw new Error("No transactions provided")
+      }
+
+      for (const transaction of transactions) {
+        if (!transaction.categoryId) {
+          throw new Error(
+            `Missing categoryId for transaction: ${transaction.term}`
+          )
+        }
+        if (!transaction.amount || isNaN(transaction.amount)) {
+          throw new Error(`Invalid amount for transaction: ${transaction.term}`)
+        }
+      }
+
+      return await db.transaction(async (tx) => {
+        // Update transaction group
+        await tx
+          .update(transactionGroupTable)
+          .set({ name, note, date })
+          .where(eq(transactionGroupTable.id, id))
+
+        // Delete all existing transactions for this group
+        await tx
+          .delete(transactionTable)
+          .where(eq(transactionTable.transactionGroupId, id))
+
+        // Create category terms and new transactions
+        const categoryTermResults: {
+          id: number
+          categoryId: number
+          term: string
+        }[] = []
+
+        for (const transaction of transactions) {
+          let category = await tx
+            .select()
+            .from(categoryTable)
+            .where(eq(categoryTable.id, transaction.categoryId))
+            .limit(1)
+            .then((res) => res[0])
+
+          if (!category) {
+            const categoryResult = await tx
+              .insert(categoryTable)
+              .values({
+                id: transaction.categoryId,
+                name: "Uncategorized",
+                color: "gray",
+                emoji: "❓",
+              })
+              .returning()
+            category = categoryResult[0]
+          }
+
+          const categoryTermResult = await tx
+            .insert(categoryTermTable)
+            .values({
+              term: transaction.term,
+              categoryId: category.id,
+            })
+            .onConflictDoUpdate({
+              target: [categoryTermTable.term, categoryTermTable.categoryId],
+              set: {
+                term: transaction.term,
+                categoryId: category.id,
+              },
+            })
+            .returning()
+
+          if (!categoryTermResult || categoryTermResult.length === 0) {
+            throw new Error(
+              `Failed to create category term for: ${transaction.term}`
+            )
+          }
+          categoryTermResults.push(categoryTermResult[0])
+        }
+
+        const accountResult = await tx
+          .select()
+          .from(accountTable)
+          .where(eq(accountTable.name, "Default"))
+          .limit(1)
+
+        if (accountResult.length === 0) {
+          throw new Error(
+            "Default account not found. Please ensure the database is properly initialized."
+          )
+        }
+
+        const account = accountResult[0]
+
+        if (!account.id) {
+          throw new Error("Default account ID is null")
+        }
+
+        const transactionValues = transactions.map((transaction, index) => {
+          const categoryTermResult = categoryTermResults[index]
+          if (!categoryTermResult || !categoryTermResult.id) {
+            throw new Error(
+              `Missing category term for transaction at index ${index}`
+            )
+          }
+
+          return {
+            name: transaction.term,
+            amount: transaction.amount,
+            categoryTermId: categoryTermResult.id,
+            transactionGroupId: id,
+            accountId: account.id,
+          }
+        })
+
+        return tx.insert(transactionTable).values(transactionValues).returning()
+      })
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     create,
+    update,
     getMany,
     remove,
+    get,
     error,
     loading,
   }

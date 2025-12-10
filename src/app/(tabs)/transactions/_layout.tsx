@@ -15,9 +15,14 @@ export default function TransactionLayout() {
       rightTab={{
         title: t("screens.bubbles.title"),
         name: "bubbles",
-        activeIcon: "color-filter",
-        inactiveIcon: "color-filter-outline",
+        activeIcon: "albums",
+        inactiveIcon: "albums-outline",
       }}
+      invisibleTabs={[
+        "transactionGroupForm",
+        "transactionForm",
+        "categorySelector",
+      ]}
     />
   )
 }

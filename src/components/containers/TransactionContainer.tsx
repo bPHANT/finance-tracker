@@ -11,9 +11,9 @@ type TransactionContainerProps = {
     name: string
     color: CustomColorKeys
     emoji: string
-  }
-  onEdit?: () => void
-  onDelete?: () => void
+  } | null
+  onEdit?: () => Promise<void>
+  onDelete?: () => Promise<void>
 }
 
 export default function TransactionContainer(props: TransactionContainerProps) {
@@ -26,7 +26,7 @@ export default function TransactionContainer(props: TransactionContainerProps) {
     blue: "text-custom-blue",
     pink: "text-custom-pink",
     green: "text-custom-green",
-  }[props.category.color]
+  }[props.category?.color ?? "gray"]
 
   const balanceColor = props.amount.startsWith("-")
     ? "text-balance-red dark:text-balance-red-dark"
@@ -35,13 +35,13 @@ export default function TransactionContainer(props: TransactionContainerProps) {
   return (
     <View className='flex-row justify-between items-center bg-gray-50 dark:bg-primary-800 rounded-xl p-4 gap-4'>
       <EmojiWithBackground
-        color={props.category.color}
-        emoji={props.category.emoji}
+        color={props.category?.color ?? "gray"}
+        emoji={props.category?.emoji ?? " "}
         size='s'
       />
       <View className='flex-col flex-1'>
         <Text className={`text-info flex-wrap ${categoryColor}`}>
-          {props.category.name}
+          {props.category?.name ?? ""}
         </Text>
         <Text className='text-base font-semibold flex-wrap text-gray-950 dark:text-gray-100'>
           {props.name}

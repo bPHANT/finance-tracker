@@ -1,11 +1,12 @@
 import { CustomColorKeys } from "@/assets/colors"
-import { and, eq, inArray, isNull } from "drizzle-orm"
+import { and, eq, gte, inArray, isNull, lte, sum } from "drizzle-orm"
 import { alias } from "drizzle-orm/sqlite-core"
 import { useState } from "react"
 import { useDb } from ".."
 import { categoryTable } from "../schemas/categories"
 import { categoryTermTable } from "../schemas/categoryTerms"
-
+import { transactionGroupTable } from "../schemas/transactionGroups"
+import { transactionTable } from "../schemas/transactions"
 
 type CategoryWithChildren = {
   id: number
@@ -303,6 +304,164 @@ export default function useCategory() {
     }
   }
 
+  const hasChildrenWithTransactions = async ({
+    categoryId,
+  }: {
+    categoryId: number
+  }) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const childrenWithTransactions = await db
+        .select({ id: categoryTable.id })
+        .from(categoryTable)
+        .innerJoin(
+          categoryTermTable,
+          eq(categoryTermTable.categoryId, categoryTable.id)
+        )
+        .innerJoin(
+          transactionTable,
+          eq(transactionTable.categoryTermId, categoryTermTable.id)
+        )
+        .where(eq(categoryTable.parentCategoryId, categoryId))
+        .limit(1)
+
+      if (childrenWithTransactions.length > 0) {
+        return true
+      }
+
+      const allChildren = await db
+        .select({ id: categoryTable.id })
+        .from(categoryTable)
+        .where(eq(categoryTable.parentCategoryId, categoryId))
+
+      for (const child of allChildren) {
+        const childHasTransactions = await hasChildrenWithTransactions({
+          categoryId: child.id,
+        })
+        if (childHasTransactions) {
+          return true
+        }
+      }
+
+      return false
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error checking if category has children:", error)
+      return false
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getManyWithAmount = async ({
+    parentId,
+    from,
+    to,
+  }: {
+    parentId?: number | null
+    from?: Date
+    to?: Date
+  }) => {
+    setLoading(true)
+    setError(null)
+    try {
+      // Helper function to get all descendant category IDs
+      const getDescendantIds = (
+        categoryId: number,
+        allCategories: { id: number; parentCategoryId: number | null }[]
+      ): number[] => {
+        const directChildren = allCategories.filter(
+          (cat) => cat.parentCategoryId === categoryId
+        )
+        const descendants = [categoryId]
+        for (const child of directChildren) {
+          descendants.push(...getDescendantIds(child.id, allCategories))
+        }
+        return descendants
+      }
+
+      // Get all categories to build hierarchy
+      const allCategories = await db
+        .select({
+          id: categoryTable.id,
+          parentCategoryId: categoryTable.parentCategoryId,
+        })
+        .from(categoryTable)
+
+      // Get categories matching the parentId filter
+      const targetCategories = await db
+        .select({
+          id: categoryTable.id,
+          name: categoryTable.name,
+          color: categoryTable.color,
+          emoji: categoryTable.emoji,
+          parentCategoryId: categoryTable.parentCategoryId,
+        })
+        .from(categoryTable)
+        .where(
+          parentId === null || parentId === undefined
+            ? isNull(categoryTable.parentCategoryId)
+            : eq(categoryTable.parentCategoryId, parentId)
+        )
+
+      // For each target category, calculate total including descendants
+      const results = await Promise.all(
+        targetCategories.map(async (category) => {
+          const descendantIds = getDescendantIds(category.id, allCategories)
+
+          const dateConditions = []
+          if (from) {
+            dateConditions.push(gte(transactionGroupTable.date, from))
+          }
+          if (to) {
+            dateConditions.push(lte(transactionGroupTable.date, to))
+          }
+
+          const whereConditions = [
+            inArray(categoryTable.id, descendantIds),
+            ...dateConditions,
+          ]
+
+          const amountResult = await db
+            .select({
+              totalAmount: sum(transactionTable.amount),
+            })
+            .from(categoryTable)
+            .leftJoin(
+              categoryTermTable,
+              eq(categoryTable.id, categoryTermTable.categoryId)
+            )
+            .leftJoin(
+              transactionTable,
+              eq(categoryTermTable.id, transactionTable.categoryTermId)
+            )
+            .leftJoin(
+              transactionGroupTable,
+              eq(transactionTable.transactionGroupId, transactionGroupTable.id)
+            )
+            .where(and(...whereConditions))
+
+          return {
+            ...category,
+            totalAmount: amountResult[0]?.totalAmount ?? 0,
+          }
+        })
+      )
+
+      return results
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error fetching categories with amount:", error)
+      return []
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const remove = async (categoryId: number) => {
     setLoading(true)
@@ -340,9 +499,7 @@ export default function useCategory() {
           .set({ parentCategoryId: parentId })
           .where(eq(categoryTable.parentCategoryId, categoryId))
 
-        await tx
-          .delete(categoryTable)
-          .where(eq(categoryTable.id, categoryId))
+        await tx.delete(categoryTable).where(eq(categoryTable.id, categoryId))
       })
     } catch (err) {
       const error =
@@ -354,8 +511,6 @@ export default function useCategory() {
     }
   }
 
-
-
   return {
     create,
     update,
@@ -365,6 +520,8 @@ export default function useCategory() {
     getManyAsJson,
     getByParentId,
     hasChildren,
+    hasChildrenWithTransactions,
+    getManyWithAmount,
     remove,
     error,
     loading,

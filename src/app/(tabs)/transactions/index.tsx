@@ -5,7 +5,7 @@ import TransactionGroupList, {
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
-import { useFocusEffect } from "expo-router"
+import { router, useFocusEffect } from "expo-router"
 import { useCallback, useState } from "react"
 import { BackHandler, ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -53,7 +53,8 @@ export default function TransactionsScreen() {
         })),
       }))
     )
-  }, [getTransactionGroups])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useFocusEffect(
     useCallback(() => {
@@ -97,6 +98,12 @@ export default function TransactionsScreen() {
                 <TransactionGroupList
                   groups={grouped.groups}
                   onDelete={handleDeleteTransactionGroup}
+                  onPress={(id) => {
+                    router.push({
+                      pathname: "/transactions/transactionGroupForm",
+                      params: { transactionGroupId: id },
+                    })
+                  }}
                 />
               </View>
             ))}

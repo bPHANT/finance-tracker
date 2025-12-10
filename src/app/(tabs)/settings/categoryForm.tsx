@@ -4,6 +4,7 @@ import EmojiWithBackground from "@/components/display/EmojiWithBackground"
 import CategoryTouchable from "@/components/input/CategoryTouchable"
 import FieldTitle from "@/components/input/FieldTitle"
 import TextField from "@/components/input/TextField"
+import AlertModal from "@/components/modal/AlertModal"
 import ColorModal from "@/components/modal/ColorModal"
 import EmojiModal from "@/components/modal/EmojiModal"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
@@ -31,7 +32,7 @@ export default function CategoryFormScreen() {
     getWithParent: getCategoryWithParent,
     create: createCategory,
     update: updateCategory,
-    remove: deleteCategory
+    remove: deleteCategory,
   } = useCategory()
 
   const params = useLocalSearchParams()
@@ -48,6 +49,15 @@ export default function CategoryFormScreen() {
     emoji: string
   } | null>(null)
   const mode = params.categoryId === "-1" ? "create" : "update"
+
+  const [confirmState, setConfirmState] = useState<{
+    visible: boolean
+    type: "error" | "confirm"
+    title?: string
+    message: string
+    onConfirm: () => void
+    onCancel: () => void
+  } | null>(null)
 
   const fetchCategory = useCallback(async () => {
     setCategoryId(params.categoryId ? Number(params.categoryId) : 0)
@@ -158,16 +168,31 @@ export default function CategoryFormScreen() {
     }
 
     router.dismissTo("/settings")
-    router.push("/settings/categorySelector")
+    router.push({
+      pathname: "/settings/categorySelector",
+      params: {
+        source: "select",
+      },
+    })
   }
 
   async function handleDelete() {
     if (!categoryId) return
 
-    // TO DO ! INSERT ALERT !
-    
-    await deleteCategory(categoryId)
-    router.dismissTo("/settings")
+    setConfirmState({
+      visible: true,
+      type: "confirm",
+      title: t("screens.categoryForm.confirmDelete.title"),
+      message: t("screens.categoryForm.confirmDelete.message"),
+      onConfirm: async () => {
+        await deleteCategory(categoryId)
+        setConfirmState(null)
+        router.dismissTo("/settings")
+      },
+      onCancel: () => {
+        setConfirmState(null)
+      },
+    })
   }
 
   return (
@@ -257,7 +282,18 @@ export default function CategoryFormScreen() {
               <Button
                 title={t("common.delete")}
                 onPress={handleDelete}
-                functional="cancel"
+                functional='cancel'
+              />
+            )}
+
+            {confirmState && (
+              <AlertModal
+                visible={confirmState.visible}
+                type={confirmState.type}
+                title={confirmState.title}
+                message={confirmState.message}
+                onConfirm={confirmState.onConfirm}
+                onCancel={confirmState.onCancel}
               />
             )}
           </View>

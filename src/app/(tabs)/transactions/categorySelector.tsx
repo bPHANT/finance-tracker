@@ -1,9 +1,9 @@
 import { CategoryWithChildrenCheck } from "@/components/containers/NavigationContainer"
 import CategorySelectorScreen from "@/components/screens/categorySelector"
-import { useLocalSearchParams, useRouter } from "expo-router"
-export default function CategorySelectorScreenFromScan() {
+import { router, useLocalSearchParams } from "expo-router"
+
+export default function CategorySelectorScreenFromTransactions() {
   const params = useLocalSearchParams()
-  const router = useRouter()
 
   const currentCategoryId = params.currentCategoryId
     ? params.currentCategoryId === "null"
@@ -11,18 +11,23 @@ export default function CategorySelectorScreenFromScan() {
       : Number(params.currentCategoryId)
     : null
 
-  async function handleOnCancel() {
-    router.replace("/scan/transactionForm")
-  }
-
   async function handleOnCategorySelect(category: CategoryWithChildrenCheck) {
     router.replace({
-      pathname: "/scan/transactionForm",
+      pathname: "/transactions/transactionForm",
       params: {
         load: "category",
-        type: params.transactionFormType,
         categoryId: category.id,
-        refresh: Date.now(),
+        type: params.transactionFormType,
+      },
+    })
+  }
+
+  async function handleOnCancel() {
+    router.replace({
+      pathname: "/transactions/transactionForm",
+      params: {
+        load: "transaction",
+        type: params.transactionFormType,
       },
     })
   }
@@ -32,8 +37,8 @@ export default function CategorySelectorScreenFromScan() {
       currentCategoryId={currentCategoryId}
       parentCategoryId={null}
       navigationPath={[]}
-      onCancel={handleOnCancel}
       onCategorySelect={handleOnCategorySelect}
+      onCancel={handleOnCancel}
     />
   )
 }

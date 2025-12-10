@@ -8,6 +8,10 @@
       "en": "Cancel",
       "de": "Abbrechen"
     },
+    "update": {
+      "en": "Update",
+      "de": "Aktualisieren"
+    },
     "delete": {
       "en": "Delete",
       "de": "Löschen"
@@ -58,10 +62,16 @@
         "de": "Transaktionen"
       }
     },
+    "transactionGroupForm": {
+      "title": {
+        "en": "Transaction Group",
+        "de": "Transaktionsgruppe"
+      }
+    },
     "bubbles": {
       "title": {
-        "en": "Bubbles",
-        "de": "Bubbles"
+        "en": "Boxes",
+        "de": "Boxen"
       }
     },
     "camera": {
@@ -124,6 +134,22 @@
       "noTransactions": {
         "en": "No transactions added yet",
         "de": "Noch keine Transaktionen hinzugefügt"
+      },
+      "transactionCount": {
+        "en": "transaction",
+        "de": "Transaktion"
+      },
+      "transactionCountPlural": {
+        "en": "transactions",
+        "de": "Transaktionen"
+      },
+      "noTransactionsFound": {
+        "en": "No transactions found",
+        "de": "Keine Transaktionen gefunden"
+      },
+      "unnamedGroup": {
+        "en": "Unnamed Group",
+        "de": "Unbenannte Gruppe"
       },
       "add": {
         "en": "Add",
@@ -326,6 +352,80 @@
       "alertNoName": {
         "en": "No category name defined!",
         "de": "Kein Kategoriename angegeben!"
+      },
+      "confirmDelete": {
+        "title" : {
+            "en": "Warning!",
+            "de": "Achtung!"
+        },
+        "message" : {
+            "en": "Are you sure you want to delete this category?",
+            "de": "Sind Sie sicher, dass Sie diese Kategorie löschen möchten?"
+        }
+      }
+    },
+    "budgetForm": {
+      "title": {
+        "create": {
+          "en": "Create Budget",
+          "de": "Budget erstellen"
+        },
+        "update": {
+          "en": "Update Budget",
+          "de": "Budget bearbeiten"
+        }
+      },
+      "name": {
+        "en": "Name",
+        "de": "Name"
+      },
+      "amount": {
+        "en": "Amount",
+        "de": "Betrag"
+      },
+      "period": {
+        "en": "Period",
+        "de": "Zeitraum"
+      },
+      "start": {
+        "en": "Start Date",
+        "de": "Startdatum"
+      },
+      "end": {
+        "en": "End Date",
+        "de": "Enddatum"
+      },
+      "color": {
+        "en": "Color",
+        "de": "Farbe"
+      },
+      "emoji": {
+        "en": "Emoji",
+        "de": "Emoji"
+      },
+      "create": {
+        "en": "Create",
+        "de": "Erstellen"
+      },
+      "categories": {
+        "en": "Categories",
+        "de": "Kategorien"
+      },
+      "addCategory": {
+        "en": "Add Category",
+        "de": "Kategorie hinzufügen"
+      },
+      "noCategories": {
+        "en": "No categories linked",
+        "de": "Keine Kategorien verknüpft"
+      },
+      "alertNoName": {
+        "en": "No budget name defined!",
+        "de": "Kein Budgetname angegeben!"
+      },
+      "alertNoAmount": {
+        "en": "No amount defined!",
+        "de": "Kein Betrag angegeben!"
       }
     }
   }
