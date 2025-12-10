@@ -17,17 +17,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: src/package-lock.json
 
       - name: Install dependencies
         working-directory: ./src
         run: npm ci
 
-      - name: Run tests
+      - name: Run Type-Check
         working-directory: ./src
-        run: npm test --if-present
+        run: npm run type-check
 
       - name: Run Expo lint
         working-directory: ./src
-        run: npx expo lint
+        run: npm run lint
+
+      - name: Run tests
+        working-directory: ./src
+        run: npm test --if-present

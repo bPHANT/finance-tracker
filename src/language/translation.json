@@ -90,6 +90,14 @@
       "processing_description": {
         "en": "Please wait while we analyze your receipt",
         "de": "Bitte warten Sie, während wir Ihren Beleg analysieren"
+      },
+      "gallery_error": {
+        "en": "This photo could not be processed. Please choose another image.",
+        "de": "Dieses Foto konnte nicht verarbeitet werden. Bitte wähle ein anderes Bild."
+      },
+      "gallery": {
+        "en": "Gallery",
+        "de": "Galerie"
       }
     },
     "categorySelector": {
