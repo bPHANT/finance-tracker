@@ -20,6 +20,8 @@ export type TranslationKey =
   | "screens.camera.waiting_permission"
   | "screens.camera.processing"
   | "screens.camera.processing_description"
+  | "screens.camera.gallery_error"
+  | "screens.camera.gallery"
   | "screens.categorySelector.title"
   | "screens.categorySelector.loading"
   | "screens.categorySelector.noParentCategory"
