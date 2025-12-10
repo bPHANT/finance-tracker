@@ -37,3 +37,8 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# API keys (secret)
+app/(tabs)/scan/GEMINI_API_KEY.js
+api/*
+!api/*.d.ts

@@ -5,7 +5,6 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 import CircularButton from "@/components/buttons/CircularButton"
 import BudgetContainer from "@/components/containers/BudgetContainer"
-import TransactionRow from "@/components/containers/TransactionGroupContainer"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
 import AlertModal from "@/components/modal/AlertModal"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
@@ -57,20 +56,6 @@ export default function KitchensinkScreen() {
                   onPress={() => router.replace("/home")}
                 />
               </View>
-
-              <TransactionRow
-                name='Kino - UCI Dresden'
-                amount='-16.5'
-                emoji='🎬'
-                color='blue'
-              />
-
-              <TransactionRow
-                name='Laptop verkauft'
-                amount='1000'
-                emoji='💻'
-                color='gray'
-              />
 
               <View className='mx-6 flex-col gap-2 mt-4'>
                 <Text className='text-gray-900 dark:text-gray-100'>

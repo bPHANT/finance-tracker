@@ -4,5 +4,3 @@
 .DS_Store
 *~
 .vscode
-src/app/(tabs)/scan/GEMINI_API_KEY.js
-src/api
