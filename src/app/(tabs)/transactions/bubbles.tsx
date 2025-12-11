@@ -69,31 +69,39 @@ export default function BubbleScreen() {
 
         const boxData: BoxData[] = await Promise.all(
           categories
-            .filter((cat) => {
+            .filter((cat: { totalAmount: number | string }) => {
               const amount =
                 typeof cat.totalAmount === "number"
                   ? cat.totalAmount
                   : parseFloat(cat.totalAmount)
               return amount !== 0
             })
-            .map(async (cat) => {
-              const amount =
-                typeof cat.totalAmount === "number"
-                  ? cat.totalAmount
-                  : parseFloat(cat.totalAmount)
-              const categoryHasChildren = await hasChildren({
-                categoryId: cat.id,
-              })
-              return {
-                id: cat.id,
-                name: cat.name,
-                emoji: cat.emoji,
-                value: Math.abs(amount),
-                displayAmount: amount,
-                color: colors.custom[cat.color as CustomColorKeys],
-                hasChildren: categoryHasChildren,
+            .map(
+              async (cat: {
+                id: number
+                name: string
+                emoji: string
+                color: string
+                totalAmount: number | string
+              }) => {
+                const amount =
+                  typeof cat.totalAmount === "number"
+                    ? cat.totalAmount
+                    : parseFloat(cat.totalAmount)
+                const categoryHasChildren = await hasChildren({
+                  categoryId: cat.id,
+                })
+                return {
+                  id: cat.id,
+                  name: cat.name,
+                  emoji: cat.emoji,
+                  value: Math.abs(amount),
+                  displayAmount: amount,
+                  color: colors.custom[cat.color as CustomColorKeys],
+                  hasChildren: categoryHasChildren,
+                }
               }
-            })
+            )
         )
 
         setData(boxData)

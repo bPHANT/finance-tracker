@@ -9,8 +9,8 @@ import useTransactionGroup from "@/db/queries/transactionGroup"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { calculateTotalAmount, dateFromString } from "@/utils/helper"
 import { storage } from "@/utils/storage"
-import { router, useLocalSearchParams } from "expo-router"
-import { useEffect, useState } from "react"
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
+import { useCallback, useEffect, useState } from "react"
 import { Alert, Keyboard } from "react-native"
 
 type TransactionGroupFormData = {
@@ -48,42 +48,45 @@ export default function TransactionGroupFormFromTransactions() {
 
   const [showAccountModal, setShowAccountModal] = useState(false)
 
-  useEffect(() => {
-    const fetchGroup = async () => {
-      if (!transactionGroupId) {
-        return
-      }
-
-      if (isNaN(transactionGroupId)) {
-        console.error("Invalid transaction group id!")
-        return
-      }
-
-      const result = await getTransactionGroup({ id: transactionGroupId })
-      if (!result) return
-
-      setName(result.name ?? "")
-      setDate(result.date ?? new Date())
-      setNote(result.note ?? "")
-      setSelectedAccount(result.account as Account)
-
-      setTransactions(
-        result.transactions.map((t) => ({
-          idx: t.id,
-          name: t.name,
-          amount: t.amount,
-          category: {
-            id: t.categoryId,
-            name: t.categoryName,
-            emoji: t.categoryEmoji ?? "",
-            color: t.categoryColor as CustomColorKeys,
-          },
-        }))
-      )
+  const fetchTransactionGroup = useCallback(async () => {
+    if (!transactionGroupId) {
+      return
     }
-    fetchGroup()
+
+    if (isNaN(transactionGroupId)) {
+      console.error("Invalid transaction group id!")
+      return
+    }
+
+    const result = await getTransactionGroup({ id: transactionGroupId })
+    if (!result) return
+
+    setName(result.name ?? "")
+    setDate(result.date ?? new Date())
+    setNote(result.note ?? "")
+    setSelectedAccount(result.account as Account)
+
+    setTransactions(
+      result.transactions.map((t) => ({
+        idx: t.id,
+        name: t.name,
+        amount: t.amount,
+        category: {
+          id: t.categoryId,
+          name: t.categoryName,
+          emoji: t.categoryEmoji ?? "",
+          color: t.categoryColor as CustomColorKeys,
+        },
+      }))
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.transactionGroupId])
+  }, [transactionGroupId])
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchTransactionGroup()
+    }, [fetchTransactionGroup])
+  )
 
   useEffect(() => {
     const loadTransaction = async () => {

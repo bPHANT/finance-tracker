@@ -86,6 +86,8 @@ export type TranslationKey =
   | "screens.categoryForm.parentCategory"
   | "screens.categoryForm.noParentCategory"
   | "screens.categoryForm.alertNoName"
+  | "screens.categoryForm.confirmDelete.title"
+  | "screens.categoryForm.confirmDelete.message"
   | "screens.accountForm.title.create"
   | "screens.accountForm.title.update"
   | "screens.accountForm.name"
