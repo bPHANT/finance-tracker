@@ -127,6 +127,14 @@
         "en": "Date",
         "de": "Datum"
       },
+      "account": {
+        "en": "Account",
+        "de": "Konto"
+      },
+      "selectAccount": {
+        "en": "Select Account",
+        "de": "Konto auswählen"
+      },
       "note": {
         "en": "Note",
         "de": "Notiz"
@@ -317,6 +325,10 @@
         "en": "Manage categories",
         "de": "Kategorien verwalten"
       },
+      "manageAccounts": {
+        "en": "Manage accounts",
+        "de": "Konten verwalten"
+      },
       "german": {
         "en": "German",
         "de": "Deutsch"
@@ -360,6 +372,60 @@
       "alertNoName": {
         "en": "No category name defined!",
         "de": "Kein Kategoriename angegeben!"
+      }
+    },
+    "accountForm": {
+      "title": {
+        "create": {
+          "en": "Create Account",
+          "de": "Konto erstellen"
+        },
+        "update": {
+          "en": "Update Account",
+          "de": "Konto bearbeiten"
+        }
+      },
+      "name": {
+        "en": "Name",
+        "de": "Name"
+      },
+      "color": {
+        "en": "Color",
+        "de": "Farbe"
+      },
+      "emoji": {
+        "en": "Emoji",
+        "de": "Emoji"
+      },
+      "balanceType": {
+        "en": "Balance Type",
+        "de": "Saldo-Typ"
+      },
+      "balance": {
+        "en": "Balance",
+        "de": "Saldo"
+      },
+      "create": {
+        "en": "Create",
+        "de": "Erstellen"
+      },
+      "alertNoName": {
+        "en": "Please enter an account name",
+        "de": "Bitte geben Sie einen Kontonamen ein"
+      }
+    },
+    "accountModal": {
+      "title": {
+        "en": "Accounts",
+        "de": "Konten"
+      },
+      "close": {
+        "en": "Close",
+        "de": "Schließen"
+      },
+      "empty": {
+        "en": "No accounts available",
+        "de": "Keine Konten vorhanden"
       }
     },
     "budgetForm": {

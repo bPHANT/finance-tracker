@@ -1,8 +1,7 @@
-import { sqliteTable, real, integer, text } from "drizzle-orm/sqlite-core"
 import { relations, sql } from "drizzle-orm"
-import { accountTable } from "./accounts"
-import { transactionGroupTable } from "./transactionGroups"
+import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core"
 import { categoryTermTable } from "./categoryTerms"
+import { transactionGroupTable } from "./transactionGroups"
 
 export const transactionTable = sqliteTable("transactions", {
   id: integer().primaryKey({
@@ -19,9 +18,7 @@ export const transactionTable = sqliteTable("transactions", {
   categoryTermId: integer()
     .notNull()
     .references(() => categoryTermTable.id),
-  accountId: integer()
-    .notNull()
-    .references(() => accountTable.id),
+
   transactionGroupId: integer()
     .notNull()
     .references(() => transactionGroupTable.id, { onDelete: "cascade" }),
@@ -31,10 +28,6 @@ export const transactionRelations = relations(transactionTable, ({ one }) => ({
   categoryTerm: one(categoryTermTable, {
     fields: [transactionTable.categoryTermId],
     references: [categoryTermTable.id],
-  }),
-  account: one(accountTable, {
-    fields: [transactionTable.accountId],
-    references: [accountTable.id],
   }),
   transactionGroup: one(transactionGroupTable, {
     fields: [transactionTable.transactionGroupId],

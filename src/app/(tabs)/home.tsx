@@ -1,5 +1,5 @@
 import CircularButton from "@/components/buttons/CircularButton"
-import useTransaction from "@/db/queries/transaction"
+import useAccounts from "@/db/queries/accounts"
 import useTransactionGroup from "@/db/queries/transactionGroup"
 import { router, useFocusEffect } from "expo-router"
 import { useCallback, useState } from "react"
@@ -9,16 +9,16 @@ import { SafeAreaView } from "react-native-safe-area-context"
 export default function HomeScreen() {
   const { error } = useTransactionGroup()
 
-  const { getTotalAmount } = useTransaction()
+  const { getTotalBalance } = useAccounts()
 
-  const [totalAmount, setTotalAmount] = useState<string>("0")
+  const [totalBalance, setTotalBalance] = useState<string>("0.00")
 
-  const fetchTotalAmount = useCallback(async () => {
+  const fetchTotalBalance = useCallback(async () => {
     try {
-      const totalAmountResult = await getTotalAmount()
-      setTotalAmount(totalAmountResult ?? "0")
+      const totalBalanceResult = await getTotalBalance()
+      setTotalBalance(totalBalanceResult ?? "0.00")
     } catch (err) {
-      console.error("Failed to fetch totalAmount:", err)
+      console.error("Failed to fetch total balance:", err)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -40,8 +40,8 @@ export default function HomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchTotalAmount()
-    }, [fetchTotalAmount])
+      fetchTotalBalance()
+    }, [fetchTotalBalance])
   )
 
   return (
@@ -61,7 +61,7 @@ export default function HomeScreen() {
         </View>
         <View className='bg-primary-600 dark:bg-primary-800 p-4 rounded-lg'>
           <Text className='text-gray-50 text-base text-center'>
-            {totalAmount} €
+            {totalBalance} €
           </Text>
         </View>
         {/* <Button
