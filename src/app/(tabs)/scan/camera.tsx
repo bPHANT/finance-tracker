@@ -1,8 +1,10 @@
 import { colors } from "@/assets/colors"
+import Button from "@/components/buttons/Button"
 import useCategory from "@/db/queries/category"
 import { useAi } from "@/utils/ai"
 import { useIsFocused } from "@react-navigation/native"
 import { CameraType, CameraView, useCameraPermissions } from "expo-camera"
+import * as ImagePicker from "expo-image-picker"
 import { router, useFocusEffect } from "expo-router"
 import { useColorScheme } from "nativewind"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -51,6 +53,25 @@ export default function CameraScreen() {
     }, [])
   )
 
+  async function processAndNavigate(photo: any) {
+    try {
+      setIsProcessing(true)
+
+      // Process image using AI
+      await categorizePicture(photo, categories)
+
+      // Navigate to transaction form
+      router.replace({
+        pathname: "/scan/transactionGroupForm",
+        params: { action: "loadAiData" },
+      })
+    } catch (error) {
+      alert(error)
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
   async function takePicture() {
     if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync({
@@ -59,21 +80,36 @@ export default function CameraScreen() {
         skipProcessing: true,
       })
 
-      try {
-        setIsProcessing(true)
-        await categorizePicture(photo, categories)
-        router.replace({
-          pathname: "/scan/transactionGroupForm",
-          params: {
-            action: "loadAiData",
-          },
-        })
-      } catch (error) {
-        alert(error)
-      } finally {
-        setIsProcessing(false)
-      }
+      await processAndNavigate(photo)
     }
+  }
+
+  async function openGallery() {
+    // Open image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      base64: true,
+      quality: 1,
+    })
+
+    if (result.canceled) return
+
+    const asset = result.assets[0]
+
+    if (!asset.base64) {
+      alert(t("screens.camera.gallery_error"))
+      return
+    }
+
+    const photo = {
+      base64: asset.base64,
+      width: asset.width,
+      height: asset.height,
+      uri: asset.uri,
+      format: "jpg",
+    }
+
+    await processAndNavigate(photo)
   }
 
   useEffect(() => {
@@ -130,6 +166,13 @@ export default function CameraScreen() {
             height: windowWidth / 4.5,
           }}
         />
+        <View className='absolute bottom-12 right-5'>
+          <Button
+            title={t("screens.camera.gallery")}
+            icon='image-outline'
+            onPress={openGallery}
+          />
+        </View>
       </View>
     )
   } // Process View

@@ -1,13 +1,14 @@
 import { colors } from "@/assets/colors"
 import Button from "@/components/buttons/Button"
 import DuoSwitch from "@/components/buttons/DuoSwitch"
+import AccountModal, { Account } from "@/components/modal/AccountModal"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { storage } from "@/utils/storage"
 import { Ionicons } from "@expo/vector-icons"
 import { router, useFocusEffect } from "expo-router"
 import { useColorScheme } from "nativewind"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { BackHandler, Text, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -15,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 export default function SettingsScreen() {
   const { colorScheme, toggleColorScheme } = useColorScheme()
   const { t, i18n } = useTypedTranslation()
+  const [showAccountModal, setShowAccountModal] = useState(false)
 
   useFocusEffect(
     useCallback(() => {
@@ -50,8 +52,35 @@ export default function SettingsScreen() {
     })
   }
 
+  async function handleOnAddAccount() {
+    router.push({
+      pathname: "/settings/accountForm",
+      params: {
+        accountId: -1,
+      },
+    })
+    setShowAccountModal(false)
+  }
+
+  async function handleOnSelectAccount(account: Account) {
+    router.push({
+      pathname: "/settings/accountForm",
+      params: {
+        accountId: account.id,
+      },
+    })
+    setShowAccountModal(false)
+  }
+
   return (
     <SafeAreaView className='flex-1 bg-background dark:bg-primary-950'>
+      <AccountModal
+        visible={showAccountModal}
+        onClose={() => setShowAccountModal(false)}
+        onSelectAccount={handleOnSelectAccount}
+        onAddAccount={handleOnAddAccount}
+      />
+
       <ScrollView className='mx-4'>
         <ScreenTitle title={t("screens.settings.title")} />
 
@@ -63,6 +92,12 @@ export default function SettingsScreen() {
             <Button
               title={t("screens.settings.manageCategories")}
               onPress={handleOnManageCategories}
+              arrowRight
+              textLeft
+            />
+            <Button
+              title={t("screens.settings.manageAccounts")}
+              onPress={() => setShowAccountModal(true)}
               arrowRight
               textLeft
             />

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "052370c4-0d46-4032-9d30-0506088ecdbf",
+  "id": "eb606890-d820-4a38-8b48-d693a58adcbc",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accounts": {
@@ -435,6 +435,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "accountId": {
+          "name": "accountId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "imagePath": {
           "name": "imagePath",
           "type": "text",
@@ -444,7 +451,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "transactionGroups_accountId_accounts_id_fk": {
+          "name": "transactionGroups_accountId_accounts_id_fk",
+          "tableFrom": "transactionGroups",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "accountId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -496,13 +517,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "accountId": {
-          "name": "accountId",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "transactionGroupId": {
           "name": "transactionGroupId",
           "type": "integer",
@@ -519,19 +533,6 @@
           "tableTo": "categoryTerms",
           "columnsFrom": [
             "categoryTermId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "transactions_accountId_accounts_id_fk": {
-          "name": "transactions_accountId_accounts_id_fk",
-          "tableFrom": "transactions",
-          "tableTo": "accounts",
-          "columnsFrom": [
-            "accountId"
           ],
           "columnsTo": [
             "id"

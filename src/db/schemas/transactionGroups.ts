@@ -1,5 +1,6 @@
+import { relations, sql } from "drizzle-orm"
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
-import { sql } from "drizzle-orm"
+import { accountTable } from "./accounts"
 
 export const transactionGroupTable = sqliteTable("transactionGroups", {
   id: integer().primaryKey({
@@ -14,7 +15,20 @@ export const transactionGroupTable = sqliteTable("transactionGroups", {
   name: text(),
   note: text(),
   date: integer({ mode: "timestamp" }).notNull(),
+  accountId: integer()
+    .notNull()
+    .references(() => accountTable.id),
   imagePath: text(),
 })
+
+export const transactionGroupRelations = relations(
+  transactionGroupTable,
+  ({ one }) => ({
+    account: one(accountTable, {
+      fields: [transactionGroupTable.accountId],
+      references: [accountTable.id],
+    }),
+  })
+)
 
 export type TransactionGroup = typeof transactionGroupTable.$inferSelect

@@ -25,7 +25,6 @@ export default function TransactionFormScreenFromScan() {
 
   useEffect(() => {
     const loadData = async () => {
-      console.log("refresh")
       if (loadTransaction || loadCategory) {
         const savedFormData = (await storage.getObject(
           "transactionFormData"

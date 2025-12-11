@@ -86,11 +86,7 @@ export default function TransactionFormScreen(
   const handleSubmit = async () => {
     Keyboard.dismiss()
 
-    if (
-      !formData?.name.trim() ||
-      !formData?.amount.trim() ||
-      formData?.category?.id === -1
-    ) {
+    if (!formData?.name.trim() || formData?.category?.id === -1) {
       Alert.alert(t("common.error"), t("screens.transactionForm.fillAllFields"))
       return
     }
