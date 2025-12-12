@@ -22,7 +22,7 @@
     },
     "deleteTransactionConfirmation": {
       "en": "Are you sure you want to delete this transaction group?",
-      "de": "Sind Sie sicher, dass Sie diese Transaktionsgruppe löschen möchten?"
+      "de": "Bist du dir sicher, dass du diese Transaktionsgruppe löschen möchtest?"
     },
     "selectDate": {
       "en": "Select Date",
@@ -88,8 +88,8 @@
         "de": "Bild wird verarbeitet..."
       },
       "processing_description": {
-        "en": "Please wait while we analyze your receipt",
-        "de": "Bitte warten Sie, während wir Ihren Beleg analysieren"
+        "en": "Please wait a moment while we analyze your receipt.",
+        "de": "Bitte warte kurz, während wir deinen Beleg analysieren."
       },
       "gallery_error": {
         "en": "This photo could not be processed. Please choose another image.",
@@ -177,8 +177,8 @@
           "de": "Fehler beim Verarbeiten der Transaktionsdaten"
         },
         "missingData": {
-          "en": "Please fill in all required fields",
-          "de": "Bitte füllen Sie alle Pflichtfelder aus"
+          "en": "Please fill in all required fields.",
+          "de": "Bitte fülle alle Pflichtfelder aus."
         }
       }
     },
@@ -236,8 +236,8 @@
         "de": "Kategorie auswählen"
       },
       "categoryRequired": {
-        "en": "Please select a category",
-        "de": "Bitte wählen Sie eine Kategorie"
+        "en": "Please select a category.",
+        "de": "Bitte wähle eine Kategorie."
       },
       "addTransaction": {
         "en": "Add",
@@ -248,16 +248,16 @@
         "de": "Aktualisieren"
       },
       "fillAllFields": {
-        "en": "Please fill in all fields and select a category",
-        "de": "Bitte füllen Sie alle Felder aus und wählen Sie eine Kategorie"
+        "en": "Please fill in all fields and select a category.",
+        "de": "Bitte fülle alle Felder aus und wähle eine Kategorie."
       },
       "validAmount": {
-        "en": "Please enter a valid amount",
-        "de": "Bitte geben Sie einen gültigen Betrag ein"
+        "en": "Please enter a valid amount.",
+        "de": "Bitte gib einen gültigen Betrag ein."
       },
       "validCategory": {
-        "en": "Please select a valid category",
-        "de": "Bitte wählen Sie eine gültige Kategorie"
+        "en": "Please select a valid category.",
+        "de": "Bitte wähle eine gültige Kategorie."
       }
     },
     "budget": {
@@ -355,11 +355,11 @@
       },
       "noParentCategory": {
         "en": "No Parent Category",
-        "de": "Keine Übergeordnete Kategorie"
+        "de": "Keine übergeordnete Kategorie"
       },
       "alertNoName": {
-        "en": "No category name defined!",
-        "de": "Kein Kategoriename angegeben!"
+        "en": "No category name defined",
+        "de": "Kein Kategoriename angegeben"
       }
     },
     "budgetForm": {
