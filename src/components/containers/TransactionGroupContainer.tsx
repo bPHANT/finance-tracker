@@ -1,10 +1,11 @@
 import { CustomColorKeys } from "@/assets/colors"
 import AmountBadge from "@/components/display/AmountBadge"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
+import AlertModal from "@/components/modal/AlertModal"
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { Ionicons } from "@expo/vector-icons"
-import { forwardRef, useImperativeHandle } from "react"
-import { Alert, Text, TouchableOpacity, View } from "react-native"
+import { forwardRef, useImperativeHandle, useState } from "react"
+import { Text, TouchableOpacity, View } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import Animated, {
   useAnimatedStyle,
@@ -36,6 +37,7 @@ const TransactionGroupContainer = forwardRef<
   const { t } = useTypedTranslation()
   const translateX = useSharedValue(0)
   const isOpen = useSharedValue(false)
+  const [alertVisible, setAlertVisible] = useState(false)
 
   useImperativeHandle(ref, () => ({
     close: () => {
@@ -53,22 +55,13 @@ const TransactionGroupContainer = forwardRef<
 
   const handleDelete = () => {
     if (props.id && props.onDelete) {
-      Alert.alert(
-        t("common.deleteTransaction"),
-        t("common.deleteTransactionConfirmation"),
-        [
-          {
-            text: t("common.cancel"),
-            style: "cancel",
-          },
-          {
-            text: t("common.delete"),
-            style: "destructive",
-            onPress: () => props.onDelete!(props.id!),
-          },
-        ]
-      )
+      setAlertVisible(true)
     }
+  }
+
+  const executeDelete = () => {
+    setAlertVisible(false)
+    props.onDelete!(props.id!)
   }
 
   const onSwipeOpen = () => {
@@ -134,27 +127,37 @@ const TransactionGroupContainer = forwardRef<
 
   if (props.id && props.onDelete) {
     return (
-      <View className='relative overflow-hidden'>
-        <Animated.View
-          style={[deleteButtonStyle]}
-          className={`absolute right-0 top-0 bottom-0 w-20 bg-balance-red dark:bg-balance-red-dark flex-row items-center justify-center ${rounded}`}
-        >
-          <TouchableOpacity
-            onPress={handleDelete}
-            className='flex-1 items-center justify-center'
+      <>
+        <AlertModal
+          visible={alertVisible}
+          type='confirm'
+          title={t("common.deleteTransaction")}
+          message={t("common.deleteTransactionConfirmation")}
+          onConfirm={executeDelete}
+          onCancel={() => setAlertVisible(false)}
+        />
+        <View className='relative overflow-hidden'>
+          <Animated.View
+            style={[deleteButtonStyle]}
+            className={`absolute right-0 top-0 bottom-0 w-20 bg-balance-red dark:bg-balance-red-dark flex-row items-center justify-center ${rounded}`}
           >
-            <Ionicons name='trash-outline' size={24} color='white' />
-          </TouchableOpacity>
-        </Animated.View>
-
-        <GestureDetector
-          gesture={Gesture.Exclusive(gestureHandlerPan, gestureHandlerPress)}
-        >
-          <Animated.View style={animatedStyle}>
-            <TransactionContent />
+            <TouchableOpacity
+              onPress={handleDelete}
+              className='flex-1 items-center justify-center'
+            >
+              <Ionicons name='trash-outline' size={24} color='white' />
+            </TouchableOpacity>
           </Animated.View>
-        </GestureDetector>
-      </View>
+
+          <GestureDetector
+            gesture={Gesture.Exclusive(gestureHandlerPan, gestureHandlerPress)}
+          >
+            <Animated.View style={animatedStyle}>
+              <TransactionContent />
+            </Animated.View>
+          </GestureDetector>
+        </View>
+      </>
     )
   }
 
