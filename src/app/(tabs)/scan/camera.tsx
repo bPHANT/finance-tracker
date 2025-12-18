@@ -1,5 +1,5 @@
 import { colors } from "@/assets/colors"
-import Button from "@/components/buttons/Button"
+import { default as Button } from "@/components/buttons/Button"
 import useCategory from "@/db/queries/category"
 import { useAi } from "@/utils/ai"
 import { useIsFocused } from "@react-navigation/native"
