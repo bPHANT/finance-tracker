@@ -3,10 +3,11 @@ import React, { useState } from "react"
 import { Pressable, ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
+import { default as Button } from "@/components/buttons/Button"
 import CircularButton from "@/components/buttons/CircularButton"
 import BudgetContainer from "@/components/containers/BudgetContainer"
-import TransactionRow from "@/components/containers/TransactionGroupContainer"
 import EmojiWithBackground from "@/components/display/EmojiWithBackground"
+import AccountModal from "@/components/modal/AccountModal"
 import AlertModal from "@/components/modal/AlertModal"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
 import BalanceCard from "@/components/widgets/BalanceWidget"
@@ -16,6 +17,7 @@ export default function KitchensinkScreen() {
 
   const [showErrorAlert, setShowErrorAlert] = useState(false)
   const [showConfirmAlert, setShowConfirmAlert] = useState(false)
+  const [showAccountModal, setShowAccountModal] = useState(false)
 
   return (
     <>
@@ -38,6 +40,20 @@ export default function KitchensinkScreen() {
         }}
         onCancel={() => setShowConfirmAlert(false)}
       />
+
+      <AccountModal
+        visible={showAccountModal}
+        onClose={() => setShowAccountModal(false)}
+        onSelectAccount={(account) => {
+          console.log("Selected account:", account)
+          setShowAccountModal(false)
+        }}
+        onAddAccount={() => {
+          console.log("Add new account")
+          setShowAccountModal(false)
+        }}
+      />
+
       <SafeAreaView className='bg-gray-100 dark:bg-primary-950 flex-1'>
         <ScrollView>
           <ScreenTitle title='Kitchensink' />
@@ -57,20 +73,6 @@ export default function KitchensinkScreen() {
                   onPress={() => router.replace("/home")}
                 />
               </View>
-
-              <TransactionRow
-                name='Kino - UCI Dresden'
-                amount='-16.5'
-                emoji='🎬'
-                color='blue'
-              />
-
-              <TransactionRow
-                name='Laptop verkauft'
-                amount='1000'
-                emoji='💻'
-                color='gray'
-              />
 
               <View className='mx-6 flex-col gap-2 mt-4'>
                 <Text className='text-gray-900 dark:text-gray-100'>
@@ -117,6 +119,29 @@ export default function KitchensinkScreen() {
                     Confirm Alert
                   </Text>
                 </Pressable>
+              </View>
+
+              {/* Account Form Demo Buttons */}
+              <View className='mx-6 flex-row gap-2 mt-6'>
+                <Button
+                  onPress={() =>
+                    router.push({
+                      pathname: "/settings/accountForm",
+                      params: { accountId: "-1" },
+                    })
+                  }
+                  title='Create Account'
+                />
+
+                <Button
+                  onPress={() =>
+                    router.push({
+                      pathname: "/settings/accountForm",
+                      params: { accountId: "1" },
+                    })
+                  }
+                  title='Edit Account'
+                />
               </View>
             </View>
           </ScrollView>

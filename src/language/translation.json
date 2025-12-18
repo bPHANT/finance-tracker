@@ -127,6 +127,14 @@
         "en": "Date",
         "de": "Datum"
       },
+      "account": {
+        "en": "Account",
+        "de": "Konto"
+      },
+      "selectAccount": {
+        "en": "Select Account",
+        "de": "Konto auswählen"
+      },
       "note": {
         "en": "Note",
         "de": "Notiz"
@@ -316,6 +324,10 @@
       "manageCategories": {
         "en": "Manage categories",
         "de": "Kategorien verwalten"
+      },
+      "manageAccounts": {
+        "en": "Manage accounts",
+        "de": "Konten verwalten"
       },
       "german": {
         "en": "German",

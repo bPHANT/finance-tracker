@@ -59,7 +59,6 @@ export default function TransactionFormScreenFromTransactions() {
   async function handleOnCancel() {
     router.replace({
       pathname: "/transactions/transactionGroupForm",
-      params: { loadFromStorage: "2", refresh: Date.now().toString() },
     })
   }
 
@@ -84,7 +83,7 @@ export default function TransactionFormScreenFromTransactions() {
         pathname: "/transactions/transactionGroupForm",
         params: {
           action: "updateTransaction",
-          update: Date.now(),
+          refresh: Date.now(),
         },
       })
     } else {
@@ -92,7 +91,7 @@ export default function TransactionFormScreenFromTransactions() {
         pathname: "/transactions/transactionGroupForm",
         params: {
           action: "createTransaction",
-          update: Date.now(),
+          refresh: Date.now(),
         },
       })
     }

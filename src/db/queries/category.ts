@@ -463,6 +463,54 @@ export default function useCategory() {
     }
   }
 
+  const remove = async (categoryId: number) => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      await db.transaction(async (tx) => {
+        const [category] = await tx
+          .select({
+            id: categoryTable.id,
+            parentCategoryId: categoryTable.parentCategoryId,
+          })
+          .from(categoryTable)
+          .where(eq(categoryTable.id, categoryId))
+
+        if (!category) {
+          return
+        }
+
+        const parentId = category.parentCategoryId
+
+        if (parentId == null) {
+          throw new Error(
+            "Cannot delete root category without a parent category"
+          )
+        }
+
+        await tx
+          .update(categoryTermTable)
+          .set({ categoryId: parentId })
+          .where(eq(categoryTermTable.categoryId, categoryId))
+
+        await tx
+          .update(categoryTable)
+          .set({ parentCategoryId: parentId })
+          .where(eq(categoryTable.parentCategoryId, categoryId))
+
+        await tx.delete(categoryTable).where(eq(categoryTable.id, categoryId))
+      })
+    } catch (err) {
+      const error =
+        err instanceof Error ? err : new Error("Unknown error occurred")
+      setError(error)
+      console.error("Error deleting category:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     create,
     update,
@@ -474,6 +522,7 @@ export default function useCategory() {
     hasChildren,
     hasChildrenWithTransactions,
     getManyWithAmount,
+    remove,
     error,
     loading,
   }

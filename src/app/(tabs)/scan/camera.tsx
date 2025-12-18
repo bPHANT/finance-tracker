@@ -1,8 +1,10 @@
 import { colors } from "@/assets/colors"
+import { default as Button } from "@/components/buttons/Button"
 import useCategory from "@/db/queries/category"
 import { useAi } from "@/utils/ai"
 import { useIsFocused } from "@react-navigation/native"
 import { CameraType, CameraView, useCameraPermissions } from "expo-camera"
+import * as ImagePicker from "expo-image-picker"
 import { router, useFocusEffect } from "expo-router"
 import { useColorScheme } from "nativewind"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -15,8 +17,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import Button from "@/components/buttons/Button"
-import * as ImagePicker from "expo-image-picker";
 
 export default function CameraScreen() {
   const { colorScheme } = useColorScheme()
@@ -72,7 +72,6 @@ export default function CameraScreen() {
     }
   }
 
-
   async function takePicture() {
     if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync({
@@ -106,8 +105,8 @@ export default function CameraScreen() {
       base64: asset.base64,
       width: asset.width,
       height: asset.height,
-      uri: asset.uri,  
-      format: "jpg" as "jpg",
+      uri: asset.uri,
+      format: "jpg",
     }
 
     await processAndNavigate(photo)
@@ -167,10 +166,10 @@ export default function CameraScreen() {
             height: windowWidth / 4.5,
           }}
         />
-        <View className="absolute bottom-12 right-5">
+        <View className='absolute bottom-12 right-5'>
           <Button
             title={t("screens.camera.gallery")}
-            icon="image-outline"
+            icon='image-outline'
             onPress={openGallery}
           />
         </View>
