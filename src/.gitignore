@@ -42,3 +42,6 @@ app-example
 app/(tabs)/scan/GEMINI_API_KEY.js
 api/*
 !api/*.d.ts
+
+android
+ios

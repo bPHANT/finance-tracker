@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "spendex",
+    "name": "Spendex",
     "slug": "spendex",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,6 +12,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.se.spendex",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -40,6 +41,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0bcf884a-2a70-41b6-8798-af134b7a05fd"
+      }
     }
   }
 }
