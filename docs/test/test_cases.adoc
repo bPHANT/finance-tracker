@@ -1,14 +1,399 @@
 = Test Cases: {project-name}
-Vorname Nachname <email@domain.org>; Vorname2 Nachname2 <email2@domain.org>; Vorname3 Nachname3 <email3@domain.org>
-{localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
 
-
 == Allgemeine Informationen
+
+=== Testumgebung
+* *Framework:* Jest (Version 29+) mit React Native Testing Library
+* *Test Runner:* Jest mit Expo-Preset
+* *Sprache:* TypeScript/JavaScript
+* *CI/CD:* Lokale Ausführung, geplant für GitHub Actions
+
+=== Testausführung
+[cols="1,3"]
+|===
+|Kommando |Beschreibung
+
+|`npm test`
+|Führt alle Tests einmalig aus
+
+|`npm run test:watch`
+|Führt Tests im Watch-Modus aus (bei Dateiänderungen)
+
+|`npm run test:coverage`
+|Führt Tests aus und erstellt Coverage-Report
+|===
+
+=== Teststruktur
+Tests befinden sich in `__tests__/`-Ordnern neben den zu testenden Dateien:
+
+* `src/components/buttons/__tests__/` - Komponententests für Buttons
+* `src/components/input/__tests__/` - Komponententests für Input-Felder
+* `src/utils/__tests__/` - Tests für Hilfsfunktionen
+* `src/db/queries/__tests__/` - Tests für Datenbankabfragen
+
+== Testkonzept
+
+=== Testobjekte (Testpyramide)
+
+==== Unit Tests (Basis)
+Unit Tests bilden die Basis der Testpyramide und testen einzelne Funktionen und Komponenten isoliert.
+
+*Getestete Komponenten:*
+
+* *UI-Komponenten:* Button, TextField
+* *Utility-Funktionen:* calculateTotalAmount, dateFromString
+* *Datenbank-Queries:* Category, Transaction, TransactionGroup, Budget
+
+==== Integrationstests (geplant)
+* Integration von Komponenten mit Redux/Context
+* Datenbank-Operationen mit tatsächlichen Daten
+* API-Integration (Gemini AI)
+
+==== End-to-End Tests (geplant)
+* Vollständige User Flows
+* Navigation zwischen Screens
+* Komplette Transaktionserstellung
+
+=== Testmethoden
+
+==== Verwendete Testmethoden
+[cols="1,3"]
+|===
+|Methode |Beschreibung
+
+|*Render Tests*
+|Testen, ob Komponenten korrekt gerendert werden mit verschiedenen Props
+
+|*Interaction Tests*
+|Testen von Benutzerinteraktionen (Klicks, Eingaben)
+
+|*Unit Tests*
+|Testen isolierter Funktionen mit verschiedenen Eingabewerten
+
+|*Mocking*
+|Simulieren von Datenbankabfragen und externen Abhängigkeiten
+|===
+
+==== Test-Tools
+* *React Native Testing Library:* `render()`, `fireEvent`, `waitFor()`
+* *Jest Matchers:* `toBe()`, `toEqual()`, `toBeInstanceOf()`
+* *Jest Mocks:* `jest.fn()`, `jest.mock()`
+
+=== Testdurchführungsplanung
+
+==== Wann werden Tests durchgeführt?
+* *Bei Entwicklung:* Entwickler schreiben Tests parallel zur Implementierung
+* *Vor Commits:* Lokale Testausführung vor jedem Commit
+* *Bei Pull Requests:* Automatische Testausführung (geplant)
+* *Vor Releases:* Vollständiger Testlauf mit Coverage-Analyse
+
+==== Wer führt Tests durch?
+* *Entwickler:* Unit Tests während der Entwicklung
+* *Team:* Code Review mit Testüberprüfung
+* *CI/CD:* Automatisierte Tests (geplant)
 
 == Test Cases
 
-=== Test Case 01
+=== UI-Komponenten Tests
 
-=== Test Case 02
+Die UI-Komponenten werden mit React Native Testing Library getestet. Die Tests validieren das korrekte Rendering, die Interaktivität und verschiedene Darstellungsvarianten der Komponenten.
+
+*Getestete Komponenten:*
+
+* *Button* (`src/components/buttons/__tests__/Button.test.tsx`): 8 Tests
+** Rendering mit verschiedenen Props (title, icon, emoji, styling)
+** Interaktivität (onPress-Handler)
+** Verschiedene funktionale Varianten (submit, cancel)
+** Alignment-Optionen
+
+* *TextField* (`src/components/input/__tests__/TextField.test.tsx`): 4 Tests
+** Rendering mit Titel, Werten und Placeholder
+** Spezielle Formatierungen (Balance-Modus)
+
+*Testmethoden:* Render-Tests, Interaction-Tests mit `fireEvent`, Assertions mit `getByText`, `getByDisplayValue`
+
+==== Beispiel TC-01: Button - Interaktionstest
+[cols="1,3"]
+|===
+|ID |TC-01
+|Name |Button calls onPress when pressed
+|Beschreibung |Testet, ob der onPress-Handler beim Klicken aufgerufen wird
+|Vorbedingungen |Button-Komponente ist verfügbar
+|Testschritte |1. Erstelle Mock-Funktion +
+2. Rendere Button mit onPress-Mock +
+3. Simuliere Klick auf Button +
+4. Prüfe, ob Mock aufgerufen wurde
+|Erwartetes Ergebnis |onPress-Handler wird genau einmal aufgerufen
+|Tatsächliches Ergebnis | PASS
+|Testobjekt |`src/components/buttons/Button.tsx`
+|Testdatei |`src/components/buttons/__tests__/Button.test.tsx`
+|===
+
+==== Beispiel TC-02: TextField - Render mit Wert
+[cols="1,3"]
+|===
+|ID |TC-02
+|Name |TextField renders with value
+|Beschreibung |Testet, ob TextField mit vorgegebenem Wert korrekt gerendert wird
+|Vorbedingungen |TextField-Komponente ist verfügbar
+|Testschritte |1. Rendere TextField mit value="100.50" +
+2. Prüfe, ob Wert angezeigt wird
+|Erwartetes Ergebnis |TextField zeigt Wert "100.50" an
+|Tatsächliches Ergebnis | PASS
+|Testobjekt |`src/components/input/TextField.tsx`
+|Testdatei |`src/components/input/__tests__/TextField.test.tsx`
+|===
+
+=== Utility-Funktionen Tests
+
+Die Utility-Funktionen werden mit Jest Unit Tests getestet. Tests validieren die korrekte Berechnung, Formatierung und Fehlerbehandlung.
+
+*Getestete Funktionen:*
+
+* *calculateTotalAmount* (`src/utils/helper.ts`): 5 Tests
+** Berechnung positiver, negativer und gemischter Beträge
+** Handling von leeren Arrays
+** Korrekte Dezimalformatierung (immer 2 Stellen)
+
+* *dateFromString* (`src/utils/helper.ts`): 4 Tests
+** Konvertierung von validen Datums-Strings
+** Fallback auf aktuelles Datum bei undefined/null
+** Verarbeitung von ISO-Strings
+
+*Testmethoden:* Unit Tests mit verschiedenen Input-Szenarien, Edge-Case-Tests, Assertions mit Jest-Matchers
+
+==== Beispiel TC-03: calculateTotalAmount - Gemischte Beträge
+[cols="1,3"]
+|===
+|ID |TC-03
+|Name |Calculate total for mixed amounts
+|Beschreibung |Testet die Berechnung mit positiven und negativen Beträgen
+|Vorbedingungen |Helper-Funktion ist verfügbar
+|Testschritte |1. Erstelle Array mit gemischten Beträgen (50.0, -10.0, 25.5) +
+2. Rufe calculateTotalAmount auf +
+3. Prüfe Ergebnis
+|Erwartetes Ergebnis |"65.50"
+|Tatsächliches Ergebnis | PASS - "65.50"
+|Testobjekt |`src/utils/helper.ts`
+|Testdatei |`src/utils/__tests__/helper.test.ts`
+|===
+
+==== Beispiel TC-04: dateFromString - ISO String
+[cols="1,3"]
+|===
+|ID |TC-04
+|Name |Handles ISO date strings
+|Beschreibung |Testet die Verarbeitung von ISO-formatierten Datums-Strings
+|Vorbedingungen |Helper-Funktion ist verfügbar
+|Testschritte |1. Rufe dateFromString mit ISO-String "2025-12-07T10:30:00.000Z" auf +
+2. Prüfe, ob Datum korrekt konvertiert wird
+|Erwartetes Ergebnis |Date-Objekt mit korrektem ISO-String
+|Tatsächliches Ergebnis | PASS
+|Testobjekt |`src/utils/helper.ts`
+|Testdatei |`src/utils/__tests__/helper.test.ts`
+|===
+
+=== Datenbank-Query Tests
+
+Die Datenbank-Queries werden mit gemockten Datenbank-Operationen getestet. Tests validieren CRUD-Operationen, Fehlerbehandlung und Datenintegrität.
+
+*Getestete Query-Module:*
+
+* *Category Queries* (`src/db/queries/__tests__/category.test.ts`): 20+ Tests
+** CRUD-Operationen (get, getAll, create, update, delete)
+** Hierarchische Abfragen (getWithParent)
+** Fehlerbehandlung und Edge Cases
+
+* *Transaction Queries* (`src/db/queries/__tests__/transaction.test.ts`): 15+ Tests
+** Aggregation (getTotalAmount)
+** Filterung nach Datum und Kategorie
+** Batch-Operationen
+
+* *TransactionGroup Queries* (`src/db/queries/__tests__/transactionGroup.test.ts`): Tests vorhanden
+* *Budget Queries* (`src/db/queries/__tests__/budget.test.ts`): Tests vorhanden
+
+*Testmethoden:* Mocking mit Jest, State-Management-Tests, Error-Handling-Validierung
+
+==== Beispiel TC-05: Category Get - Fehlerbehandlung
+[cols="1,3"]
+|===
+|ID |TC-05
+|Name |Handle database errors gracefully
+|Beschreibung |Testet die Fehlerbehandlung bei Datenbankfehlern
+|Vorbedingungen |useCategory Hook ist verfügbar, Datenbank ist gemockt
+|Testschritte |1. Mocke Datenbank-Fehler +
+2. Rufe get() auf +
+3. Prüfe, ob Fehler behandelt wird
+|Erwartetes Ergebnis |null wird zurückgegeben, Fehler wird geloggt, setError wird aufgerufen
+|Tatsächliches Ergebnis | PASS
+|Testobjekt |`src/db/queries/category.ts`
+|Testdatei |`src/db/queries/__tests__/category.test.ts`
+|===
+
+==== Beispiel TC-06: Transaction getTotalAmount - Keine Transaktionen
+[cols="1,3"]
+|===
+|ID |TC-06
+|Name |Return 0.00 when no transactions exist
+|Beschreibung |Testet das Verhalten, wenn keine Transaktionen vorhanden sind
+|Vorbedingungen |useTransaction Hook ist verfügbar, Datenbank ist gemockt
+|Testschritte |1. Mocke Datenbank-Rückgabe mit totalAmount=null +
+2. Rufe getTotalAmount() auf +
+3. Prüfe Ergebnis
+|Erwartetes Ergebnis |"0.00"
+|Tatsächliches Ergebnis |  PASS
+|Testobjekt |`src/db/queries/transaction.ts`
+|Testdatei |`src/db/queries/__tests__/transaction.test.ts`
+|===
+
+== Testergebnisse
+
+=== Teststatistik
+[cols="1,1,1,1"]
+|===
+|Testkategorie |Anzahl Tests |Bestanden |Fehlgeschlagen
+
+|UI-Komponenten (Button)
+|8
+|8
+|0
+
+|UI-Komponenten (TextField)
+|4
+|4
+|0
+
+|Utility-Funktionen
+|9
+|9
+|0
+
+|Datenbank-Queries (Category)
+|3+
+|3+
+|0
+
+|Datenbank-Queries (Transaction)
+|4+
+|4+
+|0
+
+|*Gesamt*
+|*28+*
+|*28+*
+|*0*
+|===
+
+NOTE: Weitere Tests existieren in den Query-Testdateien (TransactionGroup, Budget), sind aber hier nicht vollständig aufgelistet.
+
+=== Code Coverage
+
+Um den aktuellen Coverage-Report zu generieren:
+
+[source,bash]
+----
+npm run test:coverage
+----
+
+*Erwartete Coverage-Ziele:*
+
+* Statements: > 70%
+* Branches: > 65%
+* Functions: > 70%
+* Lines: > 70%
+
+=== Ausführungsergebnisse
+
+Alle 28+ dokumentierten Tests wurden erfolgreich ausgeführt.
+
+
+*  Alle UI-Komponententests bestanden
+*  Alle Utility-Funktionstests bestanden
+*  Alle Datenbank-Query-Tests bestanden
+*  Integrationstests in Planung
+*  E2E-Tests in Planung
+
+== Bewertungskriterien
+
+=== Plausibles Testkonzept
+
+  *Erfüllt:*
+
+* Tests auf verschiedenen Teststufen (Unit-Level)
+* Sinnvolle Integration in den Entwicklungsprozess (Test-Driven Development)
+* Verwendung geeigneter Methoden (Jest, React Native Testing Library)
+* Klare Teststruktur mit `__tests__`-Ordnern
+
+=== Nachvollziehbarer Stand der Softwarequalität
+
+  *Erfüllt:*
+
+* Alle 28+ dokumentierten Tests bestehen
+* Keine bekannten Bugs in getesteten Komponenten
+* Code Coverage kann jederzeit mit `npm run test:coverage` überprüft werden
+
+==== Bekannte Issues
+
+Verknüpfung zu GitHub Issues mit Label "bug":
+
+* https://github.com/bPHANT/finance-tracker/issues?q=is%3Aissue+is%3Aopen+label%3Abug[Offene Bugs auf GitHub]
+
+NOTE: Zum Zeitpunkt der Dokumentation sind keine kritischen Bugs in den getesteten Komponenten bekannt.
+
+==== Nicht getestete Bereiche
+
+* AI-Integration (`src/utils/ai.ts`) - Requires API mocking
+* Navigation-Komponenten - Require navigation context
+* Komplexe Bildschirm-Flows - E2E-Tests erforderlich
+
+== Anhang
+
+=== Testdatei-Übersicht
+
+[cols="2,3"]
+|===
+|Testdatei |Testobjekt
+
+|`src/components/buttons/__tests__/Button.test.tsx`
+|Button-Komponente (8 Tests)
+
+|`src/components/input/__tests__/TextField.test.tsx`
+|TextField-Komponente (4 Tests)
+
+|`src/utils/__tests__/helper.test.ts`
+|Helper-Funktionen (9 Tests)
+
+|`src/db/queries/__tests__/category.test.ts`
+|Category-Queries (20+ Tests)
+
+|`src/db/queries/__tests__/transaction.test.ts`
+|Transaction-Queries (15+ Tests)
+
+|`src/db/queries/__tests__/transactionGroup.test.ts`
+|TransactionGroup-Queries (Tests vorhanden)
+
+|`src/db/queries/__tests__/budget.test.ts`
+|Budget-Queries (Tests vorhanden)
+|===
+
+=== Verwendete Dependencies
+
+[source,json]
+----
+{
+  "jest": "^29.x",
+  "@testing-library/react-native": "^12.x",
+  "@testing-library/jest-native": "^5.x",
+  "jest-expo": "~52.x"
+}
+----
+
+=== Nächste Schritte
+
+. Erhöhung der Code Coverage auf > 80%
+. Implementierung von Integrationstests
+. Einrichtung von CI/CD mit automatischen Testläufen
+. Implementierung von E2E-Tests mit Detox
+. Erweiterung der Tests für AI-Integration
