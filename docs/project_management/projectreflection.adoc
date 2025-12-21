@@ -1,0 +1,65 @@
+= Projektreflexion
+:toc:
+:toc-title: Inhaltsverzeichnis
+:toclevels: 2
+
+== Gruppenleistung
+=== Erfolg 1: Unique Selling Point
+Im Rahmen der Projektarbeit konnte der Erfolg *Unique Selling Point gefunden* besonders gut realisiert werden. Eine zentrale Grundlage dafür war die hohe intrinsische Motivation im Team: Jedes einzelne Teammitglied hatte sich selbst für den Finanztracker eingetragen, wodurch von Beginn an ein echtes Eigeninteresse an der Entwicklung einer solchen App bestand.
+In den ersten Wochen der Projektarbeit nahmen wir uns bewusst Zeit, um schrittweise zu erarbeiten, welche Art von Finanzapp wir entwickeln möchten und wodurch sich diese von bestehenden Lösungen abheben soll. Ziel war es, eine Finanzapp zu entwickeln, die wir selbst als Studierende tatsächlich nutzen würden. Diese frühe Phase der gemeinsamen Ideenfindung erwies sich als besonders wertvoll, da sie Raum für Diskussion, Perspektivwechsel und kritische Reflexion bot.
+
+Ein entscheidender Impuls für unseren Unique Selling Point entstand durch den Einsatz von KI-Technologien. Im Zuge des allgemeinen KI-Hypes stieß ein Teammitglied auf Gemini von Google und insbesondere auf die Möglichkeit sogenannter Structured Outputs. Diese erlauben es, dass KI-Modelle Antworten in einem klar definierten JSON-Schema zurückgeben. Dadurch entstehen vorhersagbare, maschinenlesbare Ergebnisse mit hoher Format- und Typsicherheit, die sich direkt weiterverarbeiten lassen. Konkret bedeutet das für unsere App, dass unstrukturierte Informationen – etwa aus Fotos von Kassenzetteln – automatisiert extrahiert, klassifiziert und als strukturierte Transaktionen in die App übernommen werden können. Diese technische Möglichkeit eröffnete neue Ansätze für Datenextraktion, strukturierte Klassifizierung und automatisierte Workflows innerhalb der App.
+Besonders faszinierend war für das gesamte Team die Vision, Kassenzettel einfach abzufotografieren und die einzelnen Posten automatisch als Transaktionen in die App zu übernehmen. Auf Basis dieser gemeinsamen Vision arbeiteten wir gezielt auf ein App-Ergebnis hin, das zentrale Probleme unserer Zielgruppe adressiert.
+
+Um diese Probleme besser zu verstehen, analysierten wir bestehende Finanzapps und holten Feedback aus unserem Umfeld ein. Dabei kristallisierten sich zwei Hauptschmerzpunkte heraus:
+
+1. Das manuelle Eintippen jeder einzelnen Ausgabe wird als zu aufwendig empfunden.
+
+2. Es besteht Unsicherheit darüber, ob nur die Gesamtsumme eines Kassenzettels oder einzelne Posten erfasst werden sollen, was wiederum eine detaillierte Ausgabenanalyse erschwert. Gerade für Studierende mit begrenztem Budget ist jedoch eine schnelle und einfache Finanzanalyse besonders wichtig.
+
+Auf Basis dieser Erkenntnisse entwickelte der Product Owner gezielt User Stories, die genau diese Schmerzpunkte adressierten. Diese User Stories wurden priorisiert und bildeten den Kern unserer Entwicklungsarbeit. Durch das Zusammenspiel aus gemeinsamer Vision, technischer Innovation und nutzerzentrierter Analyse gelang es uns, einen klaren Unique Selling Point für unsere Finanzapp zu definieren und erste Ansätze davon erfolgreich umzusetzen.
+
+
+== Einzelreflexion
+=== Natalie
+In unserem Projekt habe ich primär die Rolle der Scrum Masterin übernommen. Aufgrund meiner persönlichen Stärken – insbesondere Organisation, Planung, Strukturierung und das Einhalten von Deadlines – lag mein Fokus auf dem Projektmanagement und der Unterstützung des Teams bei der Zusammenarbeit. Ergänzend war ich in das Anforderungsmanagement, den Entwurf (UX/UI) sowie später punktuell in die Implementierung eingebunden.
+
+* Projektmanagement
+
+Meine zentrale Aufgabe als Scrum Master war es, den agilen Entwicklungsprozess zu strukturieren und für Transparenz zu sorgen (https://miro.com/app/board/uXjVIEIkF1s=/?moveToWidget=3458764626595495336&cot=14[Scrum-Ablauf bei uns]). Dazu gehörten die Vorbereitung, Moderation und Nachbereitung aller Scrum-Meetings (Sprint Planning, Weekly Stand-Ups, Review und Retrospektive). Besonders wichtig war mir dabei die Retrospektive als Werkzeug zur kontinuierlichen Verbesserung. Ich habe bewusst unterschiedliche Retro-Formate eingesetzt, um Reflexion zu fördern und einen Raum für Ehrlichkeit und Transparenz zu schaffen (https://miro.com/app/board/uXjVIEIkF1s=/?moveToWidget=3458764648070519027&cot=14[Retro]). Gleichermaßen war es mir wichtig, hier Wertschätzung und Dankbarkeit bewusst zu betonen, um insbesondere sehr aufwändige und zeitintensive Aufgaben, die von einzelnen Teammitgliedern übernommen und umgesetzt wurden, sichtbar anzuerkennen und wertzuschätzen.
+
+Da mir bewusst war, dass ein gemeinsamer Überblick über Aufgaben und Deadlines essenziell ist, habe ich das Miro-Board als zentrales Arbeits- und Kommunikationswerkzeug etabliert und konsequent in jedem Meeting genutzt. Ergänzend habe ich einen Ideenparkplatz eingeführt, um Raum für neue Projektmanagement-Ideen zu schaffen, die regelmäßig im Sprint Planning diskutiert wurden.
+
+Um meine Rolle fundiert auszufüllen, habe ich mich eigenständig in die Scrum-Grundlagen eingearbeitet, unter anderem mithilfe des in der Vorlesung empfohlenen Buchs Grundkurs agiles Software-Engineering. Inhalte und Methoden aus der Vorlesung habe ich gezielt auf unser Projekt übertragen und in unsere Arbeitsweise integriert und für alle ebenfalls transparent auf das Miro-Board geschrieben (https://miro.com/app/board/uXjVIEIkF1s=/?moveToWidget=3458764627238059387&cot=14[Vorlesung Miro]).
+
+Die eingeführten Maßnahmen trugen dazu bei, dass Meetings strukturierter abliefen und das Team stets einen klaren Überblick über den Projektstand hatte. Ich habe gelernt, wie wichtig Vorbereitung, Moderation und visuelle Unterstützung insbesondere in Online-Meetings sind.
+
+* Erfahrungsaustausch 
+
+Im Rahmen des Erfahrungsaustauschs habe ich nicht nur den Vortrag zum Thema Projektmanagement gehalten, sondern auch konkrete Impulse für unser Team mitgenommen. Besonders relevant war die Einführung einer Kapazitätsampel, die wir fest in unsere Weeklys integriert haben. Dadurch konnten Aufgaben realistischer verteilt und individuelle Belastungen besser berücksichtigt werden. Die Kapazitätsampel hat sich als wirksames Werkzeug erwiesen, um Transparenz über Arbeitsbelastung zu schaffen und Überlastungen frühzeitig zu erkennen (https://github.com/users/bPHANT/projects/1/views/14[Kapazitätsampel])
+
+
+* Anforderungsmanagement und Entwurf
+
+Zu Beginn des Projekts war ich intensiv in das Anforderungsmanagement eingebunden. Ich habe an der Erstellung von Personas, der Zusammenfassung von Stakeholderzielen sowie der Ausformulierung der Produktvision mitgewirkt (https://miro.com/app/board/uXjVIEIkF1s=/?moveToWidget=3458764624892253181&cot=14[Personas, Vision, Stakeholder]). Dabei habe ich mich an den im Modul empfohlenen Vorgehensweisen orientiert und relevante Inhalte bei Bedarf erneut nachgelesen.
+
+Zusätzlich war ich Teil des Designteams und habe an der Erstellung von Wireframes und Mock-ups mit Figma gearbeitet. Insbesondere die Arbeit an Mock-ups erwies sich als zeitintensiv, jedoch sinnvoll, da sie den Entwicklern ermöglichte, sich auf die Implementierung zu konzentrieren, ohne gleichzeitig Designentscheidungen treffen zu müssen.
+Im Verlauf der Zusammenarbeit wurde deutlich, dass ein regelmäßiger Austausch mit dem Entwicklerteam über Designentscheidungen hinsichtlich ihrer technischen Umsetzbarkeit notwendig ist. Diese Abstimmungen fanden teilweise auch außerhalb der regulären Meetings statt.
+
+Im Rahmen des ersten Fachaustauschs wurde die Bedeutung von frühem User-Feedback nochmals betont. In diesem Zusammenhang habe ich zwei Personen aus der Zielgruppe gebeten, die App zu testen, und die dabei gewonnenen Erkenntnisse zur User Experience dokumentiert. Die gesammelten Rückmeldungen wurden anschließend in der vorgesehenen User-Feedback-View berücksichtigt. Dadurch habe ich ein besseres Verständnis für nutzerzentriertes Arbeiten entwickelt.
+
+* Implementierung
+
+Aus vorherigen Semestern wusste ich, dass meine Stärken weniger im Programmieren liegen. Dennoch habe ich mich im zweiten Semester bewusst stärker in die Implementierung eingebracht, da sich durch eingespielte Routinen im Projektmanagement zeitliche Kapazitäten dafür ergaben.
+
+Meine erste Aufgabe bestand in der Überarbeitung eines auf unsere Zielgruppe abgestimmten Kategorienbaums. Dieser basierte auf einem KI-generierten Prebuild, den ich anpassen und verfeinern sollte. Dabei lernte ich, bestehenden Code zu lesen, zu verstehen und strukturgleich weiterzuentwickeln (_Code-Quelle: src > db > seed > categories.ts_).
+
+Eine weitere, komplexere Aufgabe war die Anbindung der Fotogalerie an die App, sodass bereits zuvor aufgenommene Fotos von Kassenzetteln importiert werden können. Mein Vorgehen bestand darin, zunächst den allgemeinen Workflow mithilfe von KI zu analysieren und diesen mit dem bestehenden Kamera-Workflow zu vergleichen. Da der Zugriff auf die Gemini-API sowie die Verarbeitung der JSON-Daten identisch waren, konnte ich redundanten Code vermeiden und gemeinsame Logik auslagern, wie in der Vorlesung thematisiert (_Code-Quelle: src > app > (tabs) > scan > camera.tsx_).
+
+Im Zuge dieser Aufgaben habe ich gelernt, auf einem eigenen Branch zu arbeiten, Merge Requests zu erstellen und das Feedback aus Code Reviews umzusetzen. Zudem entwickelte ich ein besseres Verständnis für die Codebasis und konnte später aus Entwicklerperspektive Bugs identifizieren. Dafür wurde im Team ein Bug-Board eingeführt, in dem Fehler dokumentiert, behoben oder refaktoriert wurden.
+
+Die Implementierungsaufgaben haben dazu beigetragen, meine Unsicherheiten im Umgang mit Code teilweise abzubauen. Ich habe gelernt, wie wichtig klare Kommunikation im Team ist, insbesondere wenn Unsicherheiten bestehen, und dass kontinuierliches Nachfragen ein zentraler Bestandteil des Lernprozesses ist.
+
+* Fazit
+
+Zusammenfassend konnte ich in diesem Modul sowohl meine bestehenden Stärken im Projektmanagement gezielt einsetzen als auch bewusst an meinen Schwächen in der Implementierung arbeiten. Durch die gegenseitige Unterstützung im Team war es jederzeit möglich, Fragen zu stellen und neue Kompetenzen aufzubauen. Insgesamt habe ich ein deutlich umfassenderes Verständnis für den gesamten Software-Engineering-Prozess entwickelt.
