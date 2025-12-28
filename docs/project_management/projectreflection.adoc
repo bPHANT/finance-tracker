@@ -19,6 +19,21 @@ Um diese Probleme besser zu verstehen, analysierten wir bestehende Finanzapps un
 
 Auf Basis dieser Erkenntnisse entwickelte der Product Owner gezielt User Stories, die genau diese Schmerzpunkte adressierten. Diese User Stories wurden priorisiert und bildeten den Kern unserer Entwicklungsarbeit. Durch das Zusammenspiel aus gemeinsamer Vision, technischer Innovation und nutzerzentrierter Analyse gelang es uns, einen klaren Unique Selling Point für unsere Finanzapp zu definieren und erste Ansätze davon erfolgreich umzusetzen.
 
+=== Erfolg 2: Das Arbeiten mit Scrum
+Das Erlernen von Scrum: Eine Reflexion
+In diesem Modul haben viele von uns zum ersten Mal praktisch mit Scrum gearbeitet. Dabei wurde uns schnell klar: Scrum ist keine starre Technik, sondern in erster Linie eine Denkweise. Dieses agile Denken war anfangs gar nicht so leicht umzusetzen. Bisher sah unsere Gruppenarbeit meist so aus, dass wir Aufgaben mehr oder weniger erfolgreich verteilt und dann abgearbeitet haben. Während man zu Beginn noch denkt, Scrum sei unnötiger Overhead, merkt man mit wachsender Projektgröße schnell, dass es ohne klare Projektmanagement-Strukturen im Chaos endet.
+
+Besonders die Rolle des Scrum Masters wurde anfangs etwas verkannt und oft als derjenige belächelt, der „nur“ die Meetings leitet. Dass diese Rolle jedoch essenziell ist und der gesamte Scrum-Prozess mit dem Engagement des Scrum Masters steht und fällt, haben wir erst im laufenden Prozess wirklich begriffen.
+
+Zwischendurch gab es immer wieder Reibungspunkte, da das Verständnis von Scrum innerhalb des Teams variierte. Fragen wie die Aufgabenverteilung oder die Zeitplanung haben wir anfangs oft ad hoc gelöst, was uns später in Form von ungleicher Arbeitslast oder Unstimmigkeiten auf die Füße gefallen ist. Man versteht ein System oft erst dann richtig, wenn man versucht, es zu verändern – das ist uns mehr als einmal passiert. Geholfen hat uns schließlich die Einführung einer „Lead Programmer“-Rolle, wodurch Verantwortlichkeiten und Kompetenzen klarer zugeordnet wurden, was dem Team eine stabilere Struktur gab.
+
+Auch das Anlegen von Tasks haben wir anfangs auf die leichte Schulter genommen. Das ging oft zulasten der Übersichtlichkeit und der Klarheit der Aufgabenstellungen. Manchmal war eine User Story nicht präzise genug formuliert, was zu viel Interpretationsspielraum ließ. Dieser fiel uns besonders dann auf, wenn wir keine detaillierten Tasks dazu erstellt hatten: Es war nie wirklich klar, was der andere gerade genau tut, was wiederum zu unnötigem Abstimmungsbedarf führte. Seit wir angefangen haben, zu jeder User Story möglichst präzise und abgegrenzte Tasks zu definieren, ist dieses Problem kaum noch aufgetreten. Da wir die Tasks meist direkt im Sprint Planning erstellt haben, gab es sofort Feedback bei Unklarheiten. Wenn man bedenkt, wie klein unser Projekt im Vergleich zu echten Industrieprojekten ist, zeigt das umso deutlicher, wie wichtig gutes Management ist – auch wenn es sich anfangs nach Mehrarbeit anfühlt.
+
+Ein weiterer Punkt, den wir unterschätzt haben, war das systematische Feedback des anderen Teams am Ende eines Sprints. Gerade als Product Owner (PO) steckt man tief in seiner eigenen „Bubble“ und geht davon aus, dass alle die eigenen Ideen sofort verstehen. Das Feedback hat uns jedoch gezeigt, dass es immer Aspekte gibt – seien es Features oder Bugs –, die man schlicht übersehen hat, oder UI/UX-Elemente, die in der Praxis nicht funktionieren. Das Product Backlog war hier ein extrem hilfreiches Werkzeug zur Organisation.
+
+Was wir ebenfalls gelernt haben: Es gibt nicht „das eine“ Scrum. Jedes Team lebt den Prozess anders und es gibt kein striktes Richtig oder Falsch. Während ein Team gut damit fährt, wenn sich die Entwickler komplett selbst organisieren und das Daily nur als Statusbericht dient, braucht ein anderes Team längere Dailys für intensive Absprachen.
+
+Wir sind mit diesem Projekt an Scrum gewachsen. Auch wenn wir uns nicht als Experten bezeichnen würden – was vermutlich ohnehin kaum jemand von sich behaupten kann –, haben wir nun ein besseres Gefühl für agile Praktiken und die Teamkommunikation entwickelt. Diese Erfahrungen werden uns im späteren Berufsleben sicher weiterhelfen.
 
 == Einzelreflexion
 === Natalie
