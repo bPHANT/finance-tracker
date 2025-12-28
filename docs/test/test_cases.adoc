@@ -5,10 +5,10 @@ include::../_includes/default-attributes.inc.adoc[]
 == Allgemeine Informationen
 
 === Testumgebung
-* *Framework:* Jest (Version 29+) mit React Native Testing Library
-* *Test Runner:* Jest mit Expo-Preset
-* *Sprache:* TypeScript/JavaScript
-* *CI/CD:* Lokale Ausführung, geplant für GitHub Actions
+* *Framework:* Jest (Version 29+) 
+* *Test Runner:* Jest 
+* *Sprache:* TypeScript
+* *CI/CD:* Lokale Ausführung, nach Push in GitHub Actions
 
 === Testausführung
 [cols="1,3"]
@@ -18,20 +18,19 @@ include::../_includes/default-attributes.inc.adoc[]
 |`npm test`
 |Führt alle Tests einmalig aus
 
-|`npm run test:watch`
-|Führt Tests im Watch-Modus aus (bei Dateiänderungen)
+|`npm run type-check
+|Führt einen Type Check aus
 
-|`npm run test:coverage`
-|Führt Tests aus und erstellt Coverage-Report
+|`npm run lint`
+|Führt einen Lint Check aus
 |===
 
 === Teststruktur
-Tests befinden sich in `__tests__/`-Ordnern neben den zu testenden Dateien:
+Tests befinden sich in `+__tests__+/`-Ordnern neben den zu testenden Dateien:
 
-* `src/components/buttons/__tests__/` - Komponententests für Buttons
-* `src/components/input/__tests__/` - Komponententests für Input-Felder
-* `src/utils/__tests__/` - Tests für Hilfsfunktionen
-* `src/db/queries/__tests__/` - Tests für Datenbankabfragen
+* `src/components/+__tests__+/`- Komponententest für einzelne UI-Komponenten
+* `src/utils/+__tests__+/` - Tests für Hilfsfunktionen
+* `src/db/queries/+__tests__+/` - Tests für Datenbankabfragen
 
 == Testkonzept
 
@@ -42,19 +41,16 @@ Unit Tests bilden die Basis der Testpyramide und testen einzelne Funktionen und 
 
 *Getestete Komponenten:*
 
-* *UI-Komponenten:* Button, TextField
-* *Utility-Funktionen:* calculateTotalAmount, dateFromString
-* *Datenbank-Queries:* Category, Transaction, TransactionGroup, Budget
+* *UI-Komponenten:* Button, TextField - weitere geplant
+* *Utility-Funktionen:* calculateTotalAmount, dateFromString 
+* *Datenbank-Queries:* Category, Transaction, TransactionGroup, Budget - weitere geplant
 
-==== Integrationstests (geplant)
-* Integration von Komponenten mit Redux/Context
-* Datenbank-Operationen mit tatsächlichen Daten
+==== Integrationstests 
+* Durch Entwickler 
 * API-Integration (Gemini AI)
 
-==== End-to-End Tests (geplant)
-* Vollständige User Flows
-* Navigation zwischen Screens
-* Komplette Transaktionserstellung
+==== Systemtests 
+* Durch Teile des Teams, die nicht im Entwicklungsprozess involviert sind
 
 === Testmethoden
 
@@ -86,13 +82,12 @@ Unit Tests bilden die Basis der Testpyramide und testen einzelne Funktionen und 
 ==== Wann werden Tests durchgeführt?
 * *Bei Entwicklung:* Entwickler schreiben Tests parallel zur Implementierung
 * *Vor Commits:* Lokale Testausführung vor jedem Commit
-* *Bei Pull Requests:* Automatische Testausführung (geplant)
-* *Vor Releases:* Vollständiger Testlauf mit Coverage-Analyse
+* *Bei Pull Requests:* Automatische Testausführung 
 
 ==== Wer führt Tests durch?
 * *Entwickler:* Unit Tests während der Entwicklung
 * *Team:* Code Review mit Testüberprüfung
-* *CI/CD:* Automatisierte Tests (geplant)
+* *CI/CD:* Automatisierte Tests 
 
 == Test Cases
 
@@ -286,23 +281,6 @@ Die Datenbank-Queries werden mit gemockten Datenbank-Operationen getestet. Tests
 |*0*
 |===
 
-NOTE: Weitere Tests existieren in den Query-Testdateien (TransactionGroup, Budget), sind aber hier nicht vollständig aufgelistet.
-
-=== Code Coverage
-
-Um den aktuellen Coverage-Report zu generieren:
-
-[source,bash]
-----
-npm run test:coverage
-----
-
-*Erwartete Coverage-Ziele:*
-
-* Statements: > 70%
-* Branches: > 65%
-* Functions: > 70%
-* Lines: > 70%
 
 === Ausführungsergebnisse
 
@@ -312,35 +290,29 @@ Alle 28+ dokumentierten Tests wurden erfolgreich ausgeführt.
 *  Alle UI-Komponententests bestanden
 *  Alle Utility-Funktionstests bestanden
 *  Alle Datenbank-Query-Tests bestanden
-*  Integrationstests in Planung
-*  E2E-Tests in Planung
 
 == Bewertungskriterien
 
 === Plausibles Testkonzept
 
-  *Erfüllt:*
+  Erfüllt:
 
 * Tests auf verschiedenen Teststufen (Unit-Level)
 * Sinnvolle Integration in den Entwicklungsprozess (Test-Driven Development)
 * Verwendung geeigneter Methoden (Jest, React Native Testing Library)
-* Klare Teststruktur mit `__tests__`-Ordnern
+* Klare Teststruktur mit `+__tests__+`-Ordnern
 
 === Nachvollziehbarer Stand der Softwarequalität
 
-  *Erfüllt:*
+  Erfüllt:
 
 * Alle 28+ dokumentierten Tests bestehen
 * Keine bekannten Bugs in getesteten Komponenten
-* Code Coverage kann jederzeit mit `npm run test:coverage` überprüft werden
 
 ==== Bekannte Issues
 
 Verknüpfung zu GitHub Issues mit Label "bug":
 
-* https://github.com/bPHANT/finance-tracker/issues?q=is%3Aissue+is%3Aopen+label%3Abug[Offene Bugs auf GitHub]
-
-NOTE: Zum Zeitpunkt der Dokumentation sind keine kritischen Bugs in den getesteten Komponenten bekannt.
 
 ==== Nicht getestete Bereiche
 
@@ -356,25 +328,25 @@ NOTE: Zum Zeitpunkt der Dokumentation sind keine kritischen Bugs in den getestet
 |===
 |Testdatei |Testobjekt
 
-|`src/components/buttons/__tests__/Button.test.tsx`
+|`src/components/buttons/+__tests__+/Button.test.tsx`
 |Button-Komponente (8 Tests)
 
-|`src/components/input/__tests__/TextField.test.tsx`
+|`src/components/input/+__tests__+/TextField.test.tsx`
 |TextField-Komponente (4 Tests)
 
-|`src/utils/__tests__/helper.test.ts`
+|`src/utils/+__tests__+/helper.test.ts`
 |Helper-Funktionen (9 Tests)
 
-|`src/db/queries/__tests__/category.test.ts`
+|`src/db/queries/+__tests__+/category.test.ts`
 |Category-Queries (20+ Tests)
 
-|`src/db/queries/__tests__/transaction.test.ts`
+|`src/db/queries/+__tests__+/transaction.test.ts`
 |Transaction-Queries (15+ Tests)
 
-|`src/db/queries/__tests__/transactionGroup.test.ts`
+|`src/db/queries/+__tests__+/transactionGroup.test.ts`
 |TransactionGroup-Queries (Tests vorhanden)
 
-|`src/db/queries/__tests__/budget.test.ts`
+|`src/db/queries/+__tests__+/budget.test.ts`
 |Budget-Queries (Tests vorhanden)
 |===
 
@@ -394,6 +366,5 @@ NOTE: Zum Zeitpunkt der Dokumentation sind keine kritischen Bugs in den getestet
 
 . Erhöhung der Code Coverage auf > 80%
 . Implementierung von Integrationstests
-. Einrichtung von CI/CD mit automatischen Testläufen
-. Implementierung von E2E-Tests mit Detox
+. Implementierung von E2E-Tests
 . Erweiterung der Tests für AI-Integration
