@@ -18,7 +18,7 @@ include::../_includes/default-attributes.inc.adoc[]
 |`npm test`
 |Führt alle Tests einmalig aus
 
-|`npm run type-check
+|`npm run type-check``
 |Führt einen Type Check aus
 
 |`npm run lint`
