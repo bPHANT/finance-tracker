@@ -22,7 +22,7 @@ Wechsle zu den _Einstellungen > Konten verwalten > +_ > Gib einen Namen, eine Fa
 
 [align=center]
 .Überblick über die ersten drei Benutzeroberflächen
-image::images/Home.png[width=25%] 
+image::images/Home.PNG[width=25%] 
 
 Das Home-Menü ist der erste Einstiegspunkt. In dieser Version wird hier der Kontostand angezeigt. Die Anzeige dessen setzt voraus, dass in _Einstellungen > Accounts verwalten_ ein Account mit einem Budget hinterlegt ist.
 
@@ -47,7 +47,7 @@ Das heißt, je größer eine Box, desto größer sind die zugehörigen Ausgaben.
 == Budget
 [align=center]
 .Option Budget
-image::images/Budget.png[width=25%] 
+image::images/Budget.PNG[width=25%] 
 
 Mit der Budget-Funktion kannst du für bestimmte Kategorien ein monatliches Ausgabenlimit festlegen und deine Ausgaben gezielt kontrollieren.
 
@@ -59,7 +59,7 @@ Auf diese Weise ist jederzeit ersichtlich, wie viel vom Budget du bereits verbra
 
 [align=center]
 .Einstellungen Ansicht
-image::images/Einstellungen.png[width=25%] 
+image::images/Einstellungen.PNG[width=25%] 
 
 In den Einstellungen kannst du grundlegende Optionen der App individuell konfigurieren. Dazu gehören die Verwaltung von Kategorien und Konten sowie persönliche Anpassungen der Darstellung.
 
