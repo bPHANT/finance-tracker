@@ -53,7 +53,7 @@ Mit der Budget-Funktion kannst du für bestimmte Kategorien ein monatliches Ausg
 
 Sobald Ausgaben in einer zugeordneten Kategorie erfasst werden, werden diese automatisch dem Budget angerechnet. Der Fortschritt wird visuell über einen Balken dargestellt, der sich entsprechend der Höhe der Ausgaben füllt. Je näher die Gesamtausgaben dem festgelegten Budget kommen, desto stärker ist der Balken gefüllt.
 
-Auf diese Weise ist jederzeit ersichtlich, wie viel vom Budget bereits verbraucht wurde und wie viel Spielraum noch zur Verfügung steht.
+Auf diese Weise ist jederzeit ersichtlich, wie viel vom Budget du bereits verbraucht hast und wie viel Spielraum noch zur Verfügung steht.
 
 == Einstellungen
 
