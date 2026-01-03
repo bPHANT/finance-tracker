@@ -41,6 +41,7 @@
       "de": "Speichern"
     }
   },
+
   "screens": {
     "home": {
       "title": {
@@ -56,24 +57,50 @@
         "de": "Letzte Transaktionen"
       }
     },
+
     "transactions": {
       "title": {
         "en": "Transactions",
         "de": "Transaktionen"
+      },
+
+      "months": {
+        "january": { "en": "January", "de": "Januar" },
+        "february": { "en": "February", "de": "Februar" },
+        "march": { "en": "March", "de": "März" },
+        "april": { "en": "April", "de": "April" },
+        "may": { "en": "May", "de": "Mai" },
+        "june": { "en": "June", "de": "Juni" },
+        "july": { "en": "July", "de": "Juli" },
+        "august": { "en": "August", "de": "August" },
+        "september": { "en": "September", "de": "September" },
+        "october": { "en": "October", "de": "Oktober" },
+        "november": { "en": "November", "de": "November" },
+        "december": { "en": "December", "de": "Dezember" }
+      },
+
+      "filters": {
+        "allYears": { "en": "All Years", "de": "Alle Jahre" },
+        "allMonths": { "en": "All Months", "de": "Alle Monate" },
+        "selectYear": { "en": "Select Year", "de": "Jahr auswählen" },
+        "selectMonth": { "en": "Select Month", "de": "Monat auswählen" }
       }
     },
+
     "transactionGroupForm": {
       "title": {
         "en": "Transaction Group",
         "de": "Transaktionsgruppe"
       }
     },
+
     "bubbles": {
       "title": {
         "en": "Boxes",
         "de": "Boxen"
       }
     },
+
     "camera": {
       "title": {
         "en": "Camera",
@@ -92,6 +119,7 @@
         "de": "Bitte warten Sie, während wir Ihren Beleg analysieren"
       }
     },
+
     "categorySelector": {
       "title": {
         "en": "Select Category",
@@ -106,6 +134,7 @@
         "de": "Keine"
       }
     },
+
     "input": {
       "title": {
         "en": "Input",
@@ -174,6 +203,7 @@
         }
       }
     },
+
     "transactionForm": {
       "titleAdd": {
         "en": "Add Transaction",
@@ -252,18 +282,21 @@
         "de": "Bitte wählen Sie eine gültige Kategorie"
       }
     },
+
     "budget": {
       "title": {
         "en": "Budget",
         "de": "Budget"
       }
     },
+
     "goals": {
       "title": {
         "en": "Goals",
         "de": "Ziele"
       }
     },
+
     "settings": {
       "title": {
         "en": "Settings",
@@ -314,6 +347,7 @@
         "de": "Deutsch"
       }
     },
+
     "categoryForm": {
       "title": {
         "create": {
@@ -354,6 +388,7 @@
         "de": "Kein Kategoriename angegeben!"
       }
     },
+
     "budgetForm": {
       "title": {
         "create": {

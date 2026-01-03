@@ -1,95 +1,81 @@
 import { CustomColorKeys } from "@/assets/colors"
-import TransactionGroupList, {
-  TransactionGroupListProps,
-} from "@/components/containers/TransactionGroupList"
+import TransactionGroupList from "@/components/containers/TransactionGroupList"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
+import MonthYearSelector from "@/components/widgets/MonthYearSelector"
+
 import useTransactionGroup from "@/db/queries/transactionGroup"
+import { useTransactionFilter } from "@/db/queries/transactionFilter"
+
 import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { router, useFocusEffect } from "expo-router"
-import { useCallback, useState, useMemo } from "react"
+import { useCallback, useState } from "react"
 import { BackHandler, ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { Picker } from "@react-native-picker/picker"
-
-type TransactionGroups = {
-  date: Date
-  groups: TransactionGroupListProps["groups"]
-}[]
 
 export default function TransactionsScreen() {
   const { t, i18n } = useTypedTranslation()
 
-  const { getMany: getTransactionGroups, remove: deleteTransactionGroup } =
-    useTransactionGroup()
+  const { remove: deleteGroup } = useTransactionGroup()
+  const {
+    loadAll,
+    getAvailableMonthsYears,
+    applyFilter,
+  } = useTransactionFilter()
 
-  // All unfiltered data
-  const [allTransactionGroups, setAllTransactionGroups] = useState<TransactionGroups>([])
+  const [available, setAvailable] = useState<{ year: number; month: number }[]>([])
+  const [year, setYear] = useState<number | null>(null)
+  const [month, setMonth] = useState<number | null>(null)
 
-  // Filtered data
-  const [transactionGroups, setTransactionGroups] = useState<TransactionGroups>([])
+  const [groups, setGroups] = useState<any[]>([])
 
-  const [selectedMonth, setSelectedMonth] = useState("all")
-  const [selectedYear, setSelectedYear] = useState("all")
-
-  // Extract all years from ALL data
-  const availableYears = useMemo(() => {
-    const years = new Set<string>()
-    allTransactionGroups.forEach((g) => {
-      years.add(g.date.getFullYear().toString())
-    })
-    return Array.from(years).sort()
-  }, [allTransactionGroups])
-
+  // Prevent Android back navigation closing the entire app
   useFocusEffect(
     useCallback(() => {
-      const subscription = BackHandler.addEventListener("hardwareBackPress", () => true)
+      const handler = () => true
+      const subscription = BackHandler.addEventListener("hardwareBackPress", handler)
       return () => subscription.remove()
     }, [])
   )
 
-  // Load data and apply filters
-  const fetchTransactionGroups = useCallback(async () => {
-    const result = await getTransactionGroups()
+  /**
+   * Load available months/years + filtered groups
+   */
+  const loadData = useCallback(async () => {
+    const all = await loadAll()
 
-    // Save unfiltered data
-    const mappedAll = result.map((grouped) => ({
-      date: new Date(grouped.date),
-      groups: grouped.groups.map((g) => ({
-        id: g.id,
-        name: g.name!,
-        amount: g.totalAmount!,
-        color: g.categoryColor as CustomColorKeys,
-        emoji: g.categoryEmoji,
-      })),
-    }))
-    setAllTransactionGroups(mappedAll)
+    const availableList = await getAvailableMonthsYears()
+    setAvailable(availableList)
 
-    // Apply filter
-    const filtered = mappedAll.filter((grouped) => {
-      const date = grouped.date
-      const month = date.getMonth().toString()
-      const year = date.getFullYear().toString()
+    // If no filter selected, default to newest available entry
+    if (year === null || month === null) {
+      const last = availableList[availableList.length - 1]
+      if (last) {
+        setYear(last.year)
+        setMonth(last.month)
+      }
+    }
 
-      const monthMatch = selectedMonth === "all" || selectedMonth === month
-      const yearMatch = selectedYear === "all" || selectedYear === year
+    const filtered = applyFilter(all, year, month)
 
-      return monthMatch && yearMatch
-    })
-
-    setTransactionGroups(filtered)
-  }, [getTransactionGroups, selectedMonth, selectedYear])
+    setGroups(
+      filtered.map((g: any) => ({
+        date: new Date(g.date),
+        groups: g.groups.map((x: any) => ({
+          id: x.id,
+          name: x.name!,
+          amount: x.totalAmount!,
+          color: x.categoryColor as CustomColorKeys,
+          emoji: x.categoryEmoji,
+        })),
+      }))
+    )
+  }, [year, month])
 
   useFocusEffect(
     useCallback(() => {
-      fetchTransactionGroups()
-    }, [fetchTransactionGroups])
+      loadData()
+    }, [loadData])
   )
-
-  // Delete transaction group
-  const handleDeleteTransactionGroup = async (id: number) => {
-    await deleteTransactionGroup({ id })
-    await fetchTransactionGroups()
-  }
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100 dark:bg-primary-950">
@@ -97,68 +83,46 @@ export default function TransactionsScreen() {
 
         <ScreenTitle title={t("screens.transactions.title")} />
 
-        {/* Year filter */}
-        <Picker
-          selectedValue={selectedYear}
-          onValueChange={(value) => setSelectedYear(value)}
-          style={{ backgroundColor: "white", marginBottom: 15, borderRadius: 10 }}
-        >
-          <Picker.Item label="All Years" value="all" />
-          {availableYears.map((year) => (
-            <Picker.Item key={year} label={year} value={year} />
-          ))}
-        </Picker>
-
-        {/* Month filter */}
-        <Picker
-          selectedValue={selectedMonth}
-          onValueChange={(value) => setSelectedMonth(value)}
-          style={{ backgroundColor: "white", marginBottom: 10, borderRadius: 10 }}
-        >
-          <Picker.Item label="All Months" value="all" />
-          <Picker.Item label="January" value="0" />
-          <Picker.Item label="February" value="1" />
-          <Picker.Item label="March" value="2" />
-          <Picker.Item label="April" value="3" />
-          <Picker.Item label="May" value="4" />
-          <Picker.Item label="June" value="5" />
-          <Picker.Item label="July" value="6" />
-          <Picker.Item label="August" value="7" />
-          <Picker.Item label="September" value="8" />
-          <Picker.Item label="October" value="9" />
-          <Picker.Item label="November" value="10" />
-          <Picker.Item label="December" value="11" />
-        </Picker>
+        {/* Month & Year Selector */}
+        {available.length > 0 && (
+          <MonthYearSelector
+            month={month}
+            year={year}
+            available={available}
+            onChange={(y, m) => {
+              setYear(y)
+              setMonth(m)
+            }}
+          />
+        )}
 
         <ScrollView>
-          <View className="gap-6">
-            {transactionGroups.map((grouped, index) => (
-              <View key={index} className="gap-2">
-                <Text className="text-subtitle text-gray-950 dark:text-gray-100">
-                  {grouped.date.toLocaleDateString(
-                    i18n.language === "en" ? "en-US" : "de-DE",
-                    {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }
-                  )}
-                </Text>
-
-                <TransactionGroupList
-                  groups={grouped.groups}
-                  onDelete={handleDeleteTransactionGroup}
-                  onPress={(id) =>
-                    router.push({
-                      pathname: "/transactions/transactionGroupForm",
-                      params: { transactionGroupId: id },
-                    })
+          {groups.map((g, idx) => (
+            <View key={idx} className="gap-2 mb-6">
+              <Text className="text-subtitle text-gray-950 dark:text-gray-100">
+                {g.date.toLocaleDateString(
+                  i18n.language === "en" ? "en-US" : "de-DE",
+                  {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
                   }
-                />
-              </View>
-            ))}
-          </View>
+                )}
+              </Text>
+
+              <TransactionGroupList
+                groups={g.groups}
+                onDelete={(id) => deleteGroup({ id }).then(loadData)}
+                onPress={(id) =>
+                  router.push({
+                    pathname: "/transactions/transactionGroupForm",
+                    params: { transactionGroupId: id },
+                  })
+                }
+              />
+            </View>
+          ))}
         </ScrollView>
 
       </View>
