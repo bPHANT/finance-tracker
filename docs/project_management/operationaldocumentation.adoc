@@ -5,6 +5,13 @@
 :icons: font
 
 == Systemvoraussetzungen
+=== Docker Download
+* https://www.docker.com/products/docker-desktop/[Docker]
+
+=== Expo Go App Download
+* https://apps.apple.com/de/app/expo-go/id982107779[Expo Go (iOS)]
+* https://play.google.com/store/apps/details/Expo_Go?id=host.exp.exponent&hl=en_ZA[Expo Go (Android)]
+
 
 == Systemeinrichtung
 
@@ -13,11 +20,6 @@
 ----
 docker pull lxriz/spendex
 ----
-
-
-=== Expo Go App Download
-* https://apps.apple.com/de/app/expo-go/id982107779[Expo Go (iOS)]
-* https://play.google.com/store/apps/details/Expo_Go?id=host.exp.exponent&hl=en_ZA[Expo Go (Android)]
 
 === Dockerfile starten
 Dockerimage starten mit:
