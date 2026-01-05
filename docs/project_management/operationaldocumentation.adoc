@@ -8,16 +8,29 @@
 
 == Systemeinrichtung
 
-=== Dockerfile runterladen
+=== Dockerfile Download
+[source,bash]
+----
+docker pull lxriz/spendex
+----
+
+
+=== Expo Go App Download
+* https://apps.apple.com/de/app/expo-go/id982107779[Expo Go (iOS)]
+* https://play.google.com/store/apps/details/Expo_Go?id=host.exp.exponent&hl=en_ZA[Expo Go (Android)]
 
 === Dockerfile starten
 Dockerimage starten mit:
 
-'docker run --rm -it spendex:latest'
+[source,bash]
+----
+docker run --rm -it spendex:latest
+----
 
-Bei Nachfrage ob das "@expo/ngrok" Paket installiert werden soll mit 'y' bestätigen, dieses Paket dient zum Aufbau des Tunnels. Daraufhin sollte sich die Expo UI angzeigt werden, mit einem QR Code welchen man mit der offiziellen Expo Go App (IOS - https://apps.apple.com/de/app/expo-go/id982107779 oder Android - https://play.google.com/store/apps/details/Expo_Go?id=host.exp.exponent&hl=en_ZA) scannen kann. Der Buildvorgang sollte damit gestartet werden und nach Abschluss sollte nun die Spendex App auf dem lokalen Gerät benutzbar sein. 
+Bei Nachfrage ob das "@expo/ngrok" Paket installiert werden soll mit 'y' bestätigen, dieses Paket dient zum Aufbau des Tunnels. Daraufhin sollte sich die Expo UI angzeigt werden, mit einem QR Code welchen man mit der offiziellen Expo Go App scannen kann. Der Buildvorgang sollte damit gestartet werden und nach Abschluss sollte nun die Spendex App auf dem lokalen Gerät benutzbar sein. 
 
 Emulatoren sind nicht unterstützt!
+
 
 == Systembetreuung
 
