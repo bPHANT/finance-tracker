@@ -8,4 +8,26 @@
 
 == Systemeinrichtung
 
+=== Dockerfile runterladen
+
+=== Dockerfile starten
+Dockerimage starten mit:
+
+'docker run --rm -it spendex:latest'
+
+Bei Nachfrage ob das "@expo/ngrok" Paket installiert werden soll mit 'y' bestätigen, dieses Paket dient zum Aufbau des Tunnels. Daraufhin sollte sich die Expo UI angzeigt werden, mit einem QR Code welchen man mit der offiziellen Expo Go App (IOS - https://apps.apple.com/de/app/expo-go/id982107779 oder Android - https://play.google.com/store/apps/details/Expo_Go?id=host.exp.exponent&hl=en_ZA) scannen kann. Der Buildvorgang sollte damit gestartet werden und nach Abschluss sollte nun die Spendex App auf dem lokalen Gerät benutzbar sein. 
+
+Emulatoren sind nicht unterstützt!
+
 == Systembetreuung
+
+=== Fehlerdiagnose
+==== Problem: Beim starten der App kommen Datenbankfehler! 
+- Lösung: Das ist ein Problem der Expo App, hier hilft es den Cash der Expo App bzw. die gesamt App zu resetten. 
+
+==== Problem: Der Build der App durch Expo dauert sehr lange!
+- Lösung: Um Fehler und Probleme mit Firewalls/Ports zu umgehen, nutzt Expo das --tunnel flag. Damit ist der Buildprozess zwar langsamer, aber sollte deutlich weniger Fehleranfällig sein. 
+
+==== Problem: Beim Scannen eines Kassenzettels kommt manchmal eine Fehlermeldung!
+- Lösung: Das ist gewollt. Da wir die freie Gemini Api nehmen, kommt es vor das unser Request abgelehnt wird. Um das dem Entwickler klar zu zeigen und das es im fertigen Produkt solche Fehler nicht geben sollte, haben wir das noch als klassische Fehlermeldung gelassen. 
+
