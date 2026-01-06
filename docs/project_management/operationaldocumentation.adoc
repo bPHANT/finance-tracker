@@ -29,20 +29,26 @@ Dockerimage starten mit:
 docker run --rm -it spendex:latest
 ----
 
-Bei Nachfrage ob das "@expo/ngrok" Paket installiert werden soll mit 'y' bestätigen, dieses Paket dient zum Aufbau des Tunnels. Daraufhin sollte sich die Expo UI angzeigt werden, mit einem QR Code welchen man mit der offiziellen Expo Go App scannen kann. Der Buildvorgang sollte damit gestartet werden und nach Abschluss sollte nun die Spendex App auf dem lokalen Gerät benutzbar sein. 
-
+Bei Nachfrage ob das "@expo/ngrok" Paket installiert werden soll mit 'y' bestätigen, dieses Paket dient zum Aufbau des Tunnels. Daraufhin sollte sich die Expo UI angzeigt werden.
 Emulatoren sind nicht unterstützt!
+
+=== Expo Go verbinden
+Mit einem QR Code, welcher in der Konsole bereitgestellt wird, kann man nun mit der offiziellen Expo Go App scannen. Der Buildvorgang sollte damit gestartet werden und nach Abschluss sollte die Applikation auf dem lokalen Gerät nun benutzbar sein. 
 
 
 == Systembetreuung
 
 === Fehlerdiagnose
-==== Problem: Beim starten der App kommen Datenbankfehler! 
+==== Docker Fehlerdiagnose
+===== Problem: Beim starten der App kommen Datenbankfehler! 
 - Lösung: Das ist ein Problem der Expo App, hier hilft es den Cash der Expo App bzw. die gesamt App zu resetten. 
 
-==== Problem: Der Build der App durch Expo dauert sehr lange!
+===== Problem: Der Build der App durch Expo dauert sehr lange!
 - Lösung: Um Fehler und Probleme mit Firewalls/Ports zu umgehen, nutzt Expo das --tunnel flag. Damit ist der Buildprozess zwar langsamer, aber sollte deutlich weniger Fehleranfällig sein. 
 
-==== Problem: Beim Scannen eines Kassenzettels kommt manchmal eine Fehlermeldung!
+===== Problem: Beim Scannen eines Kassenzettels kommt manchmal eine Fehlermeldung!
 - Lösung: Das ist gewollt. Da wir die freie Gemini Api nehmen, kommt es vor das unser Request abgelehnt wird. Um das dem Entwickler klar zu zeigen und das es im fertigen Produkt solche Fehler nicht geben sollte, haben wir das noch als klassische Fehlermeldung gelassen. 
+
+==== Allgemeine Fehlerdiagnose
+- Alle Fehler und Warnungen die während der Ausführung der Applikation auftreten, werden in der npx Konsole gelogged.
 
