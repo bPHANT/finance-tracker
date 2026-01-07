@@ -6,11 +6,11 @@
 
 == Systemvoraussetzungen
 === Docker Download
-* https://www.docker.com/products/docker-desktop/[Docker]
+- https://www.docker.com/products/docker-desktop/[Docker]
 
 === Expo Go App Download
-* https://apps.apple.com/de/app/expo-go/id982107779[Expo Go (iOS)]
-* https://play.google.com/store/apps/details/Expo_Go?id=host.exp.exponent&hl=en_ZA[Expo Go (Android)]
+- https://apps.apple.com/de/app/expo-go/id982107779[Expo Go (iOS)]
+- https://play.google.com/store/apps/details/Expo_Go?id=host.exp.exponent&hl=en_ZA[Expo Go (Android)]
 
 
 == Systemeinrichtung
@@ -32,9 +32,12 @@ docker run --rm -it spendex:latest
 Bei Nachfrage ob das "@expo/ngrok" Paket installiert werden soll mit 'y' bestätigen, dieses Paket dient zum Aufbau des Tunnels. Daraufhin sollte sich die Expo UI angzeigt werden.
 Emulatoren sind nicht unterstützt!
 
+- https://docs.docker.com/manuals/[Docker Dokumentation]
+
 === Expo Go verbinden
 Mit einem QR Code, welcher in der Konsole bereitgestellt wird, kann man nun mit der offiziellen Expo Go App scannen. Der Buildvorgang sollte damit gestartet werden und nach Abschluss sollte die Applikation auf dem lokalen Gerät nun benutzbar sein. 
 
+- https://docs.expo.dev/[Expo Go Dokumentation]
 
 == Systembetreuung
 
