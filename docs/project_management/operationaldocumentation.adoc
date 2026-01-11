@@ -5,13 +5,30 @@
 :icons: font
 
 == Systemvoraussetzungen
+
+=== Hardware-Anforderungen (Server / Host)
+* **CPU:** 64-Bit Prozessor (x86_64 oder arm64).
+* **RAM:** Mindestens 4 GB Arbeitsspeicher empfohlen.
+* **Festplattenspeicher:** Mindestens 2 GB freier Speicherplatz.
+* **Netzwerk:**
+** Stabile Internetverbindung.
+** Freie lokale Ports: **8081** sowie **19000-19002**.
+
+=== Hardware-Anforderungen (Client / Endgerät)
+Zur Bedienung der App ist zwingend ein physisches Mobilgerät erforderlich.
+
+* **Gerätetyp:** Smartphone.
+* **Betriebssystem:**
+** Android (Version 5.0 oder neuer)
+** iOS (Version 12.0 oder neuer)
+* **Software:** Installierte "Expo Go" App.
+
 === Docker Download
-- https://www.docker.com/products/docker-desktop/[Docker]
+* https://www.docker.com/products/docker-desktop/[Docker]
 
 === Expo Go App Download
-- https://apps.apple.com/de/app/expo-go/id982107779[Expo Go (iOS)]
-- https://play.google.com/store/apps/details/Expo_Go?id=host.exp.exponent&hl=en_ZA[Expo Go (Android)]
-
+* https://apps.apple.com/de/app/expo-go/id982107779[Expo Go (iOS)]
+* https://play.google.com/store/apps/details/Expo_Go?id=host.exp.exponent&hl=en_ZA[Expo Go (Android)]
 
 == Systemeinrichtung
 
@@ -32,26 +49,30 @@ docker run --rm -it spendex:latest
 Bei Nachfrage ob das "@expo/ngrok" Paket installiert werden soll mit 'y' bestätigen, dieses Paket dient zum Aufbau des Tunnels. Daraufhin sollte sich die Expo UI angzeigt werden.
 Emulatoren sind nicht unterstützt!
 
-- https://docs.docker.com/manuals/[Docker Dokumentation]
+* https://docs.docker.com/manuals/[Docker Dokumentation]
 
 === Expo Go verbinden
-Mit einem QR Code, welcher in der Konsole bereitgestellt wird, kann man nun mit der offiziellen Expo Go App scannen. Der Buildvorgang sollte damit gestartet werden und nach Abschluss sollte die Applikation auf dem lokalen Gerät nun benutzbar sein. 
+Mit einem QR Code, welcher in der Konsole bereitgestellt wird, kann man nun mit der offiziellen Expo Go App scannen. Der Buildvorgang sollte damit gestartet werden und nach Abschluss sollte die Applikation auf dem lokalen Gerät nun benutzbar sein.
 
-- https://docs.expo.dev/[Expo Go Dokumentation]
+* https://docs.expo.dev/[Expo Go Dokumentation]
 
 == Systembetreuung
 
 === Fehlerdiagnose
+
 ==== Docker Fehlerdiagnose
-===== Problem: Beim starten der App kommen Datenbankfehler! 
-- Lösung: Das ist ein Problem der Expo App, hier hilft es den Cash der Expo App bzw. die gesamt App zu resetten. 
+
+===== Problem: Beim starten der App kommen Datenbankfehler!
+* **Lösung:** Das ist ein Problem der Expo App, hier hilft es den Cash der Expo App bzw. die gesamt App zu resetten.
 
 ===== Problem: Der Build der App durch Expo dauert sehr lange!
-- Lösung: Um Fehler und Probleme mit Firewalls/Ports zu umgehen, nutzt Expo das --tunnel flag. Damit ist der Buildprozess zwar langsamer, aber sollte deutlich weniger Fehleranfällig sein. 
+* **Lösung:** Um Fehler und Probleme mit Firewalls/Ports zu umgehen, nutzt Expo das `--tunnel` flag. Damit ist der Buildprozess zwar langsamer, aber sollte deutlich weniger Fehleranfällig sein.
 
 ===== Problem: Beim Scannen eines Kassenzettels kommt manchmal eine Fehlermeldung!
-- Lösung: Das ist gewollt. Da wir die freie Gemini Api nehmen, kommt es vor das unser Request abgelehnt wird. Um das dem Entwickler klar zu zeigen und das es im fertigen Produkt solche Fehler nicht geben sollte, haben wir das noch als klassische Fehlermeldung gelassen. 
+* **Lösung:** Das ist gewollt. Da wir die freie Gemini Api nehmen, kommt es vor das unser Request abgelehnt wird. Um das dem Entwickler klar zu zeigen und das es im fertigen Produkt solche Fehler nicht geben sollte, haben wir das noch als klassische Fehlermeldung gelassen.
 
 ==== Allgemeine Fehlerdiagnose
-- Alle Fehler und Warnungen die während der Ausführung der Applikation auftreten, werden in der npx Konsole gelogged.
+* Alle Fehler und Warnungen die während der Ausführung der Applikation auftreten, werden in der npx Konsole gelogged.
 
+=== Datensicherung
+* Alle erstellten Daten werden auf dem mobilen Endgerät gespeichert. Ein Export der Daten ist akutell noch nicht möglich. Um die gespseicherten Daten zu löschen muss dies über die "Expo Go" App geschehen. 
