@@ -12,7 +12,6 @@
 * **Festplattenspeicher:** Mindestens 2 GB freier Speicherplatz.
 * **Netzwerk:**
 ** Stabile Internetverbindung.
-** Freie lokale Ports: **8081** sowie **19000-19002**.
 
 === Hardware-Anforderungen (Client / Endgerät)
 Zur Bedienung der App ist zwingend ein physisches Mobilgerät erforderlich.
@@ -43,7 +42,7 @@ Dockerimage starten mit:
 
 [source,bash]
 ----
-docker run --rm -it spendex:latest
+docker run --rm -it lxriz/spendex:latest
 ----
 
 Bei Nachfrage ob das "@expo/ngrok" Paket installiert werden soll mit 'y' bestätigen, dieses Paket dient zum Aufbau des Tunnels. Daraufhin sollte sich die Expo UI angzeigt werden.
@@ -75,4 +74,4 @@ Mit einem QR Code, welcher in der Konsole bereitgestellt wird, kann man nun mit 
 * Alle Fehler und Warnungen die während der Ausführung der Applikation auftreten, werden in der npx Konsole gelogged.
 
 === Datensicherung
-* Alle erstellten Daten werden auf dem mobilen Endgerät gespeichert. Ein Export der Daten ist akutell noch nicht möglich. Um die gespseicherten Daten zu löschen muss dies über die "Expo Go" App geschehen. 
+* Alle erstellten Daten werden auf dem mobilen Endgerät gespeichert. Ein Export der Daten ist akutell noch nicht möglich. Um die gespeicherten Daten zu löschen, muss dies über die "Expo Go" App gemacht werden. 
