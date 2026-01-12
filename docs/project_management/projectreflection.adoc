@@ -52,6 +52,14 @@ Die Ursachen dafür lagen unter anderem darin, dass es oft schlichtweg vergessen
 
 Um dieses Problem zu vermeiden, wäre es sinnvoll gewesen feste Regeln zur Aktualisierung des Boards festzulegen. Beispielsweise “kein Commit ohne Task” oder ähnliches. Außerdem wäre es wichtig gewesen einen regelmäßigen und festen Check in seinen persönlichen Workflow einzubauen. So überprüft man immer gleich selbst, ob man im Git alles aktuell gehalten hat. Darüber hinaus hätte eine klare Definition, wann eine Aufgabe als vollständig abgeschlossen gilt dazu geführt, dass bei Unsicherheiten über den aktuellen Status Klarheit herrscht und die Aktualisierung konsequenter durchgeführt wird.
 
+=== Misserfolg 3: Zu viele Features geplant (Planung)
+
+Obwohl die Features von Beginn an in die Kategorien „Must have“, „Should at least be started“ und „When nothing is left“ eingeteilt wurden, zeigte sich im Projektverlauf, dass insbesondere die „Must have“-Features bereits zu umfangreich geplant waren. Dadurch war der Arbeitsaufwand für die zwingend notwendigen Funktionen höher als ursprünglich angenommen.
+
+Die Ursache lag vor allem in einer zu optimistischen Aufwandsschätzung und einer zu breiten Definition der Core-Features. Dies führte dazu, dass selbst grundlegende Anforderungen viel Entwicklungs- und Testzeit beanspruchten und gegen Ende des Projektes Zeitdruck entstand.
+
+Um dieses Problem zu vermeiden, wäre es sinnvoll gewesen, die „Must have“-Features stärker zu reduzieren und klarer zu schneiden. Eine frühzeitige Überprüfung des Umfangs sowie eine realistischere Aufwandsabschätzung hätten dazu beigetragen, den Fokus stärker auf wenige, stabile Kernfunktionen zu legen.
+
 == Einzelreflexion
 === Natalie
 In unserem Projekt habe ich primär die Rolle der Scrum Masterin übernommen. Aufgrund meiner persönlichen Stärken – insbesondere Organisation, Planung, Strukturierung und das Einhalten von Deadlines – lag mein Fokus auf dem Projektmanagement und der Unterstützung des Teams bei der Zusammenarbeit. Ergänzend war ich in das Anforderungsmanagement, den Entwurf (UX/UI) sowie später punktuell in die Implementierung eingebunden.
