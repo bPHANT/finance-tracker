@@ -430,8 +430,72 @@
         "de": "Keine Kategorien verknüpft"
       },
       "alertNoName": {
-        "en": "No budget name defined!",
-        "de": "Kein Budgetname angegeben!"
+        "en": "No category name defined!",
+        "de": "Kein Kategoriename angegeben!"
+      },
+      "confirmDelete": {
+        "title": {
+          "en": "Warning!",
+          "de": "Achtung!"
+        },
+        "message": {
+          "en": "Are you sure you want to delete this category?",
+          "de": "Sind Sie sicher, dass Sie diese Kategorie löschen möchten?"
+        }
+      }
+    },
+    "accountForm": {
+      "title": {
+        "create": {
+          "en": "Create Account",
+          "de": "Konto erstellen"
+        },
+        "update": {
+          "en": "Update Account",
+          "de": "Konto bearbeiten"
+        }
+      },
+      "name": {
+        "en": "Name",
+        "de": "Name"
+      },
+      "color": {
+        "en": "Color",
+        "de": "Farbe"
+      },
+      "emoji": {
+        "en": "Emoji",
+        "de": "Emoji"
+      },
+      "balanceType": {
+        "en": "Balance Type",
+        "de": "Saldo-Typ"
+      },
+      "balance": {
+        "en": "Balance",
+        "de": "Saldo"
+      },
+      "create": {
+        "en": "Create",
+        "de": "Erstellen"
+      },
+      "alertNoName": {
+        "en": "Please enter an account name",
+        "de": "Bitte geben Sie einen Kontonamen ein"
+      }
+    },
+    "accountModal": {
+      "title": {
+        "en": "Accounts",
+        "de": "Konten"
+      },
+      "close": {
+        "en": "Close",
+        "de": "Schließen"
+      },
+      "empty": {
+        "en": "No accounts available",
+        "de": "Keine Konten vorhanden"
       },
       "alertNoAmount": {
         "en": "No amount defined!",
