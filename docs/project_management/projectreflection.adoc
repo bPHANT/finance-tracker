@@ -136,7 +136,7 @@ Fazit:
 Durch das Projekt habe ich sowohl fachlich als auch persönlich viel gelernt. Insbesondere habe ich ein besseres Verständnis dafür entwickelt, wie eng Implementierung, Usability und Planung miteinander verknüpft sind. Für zukünftige Projekte nehme ich mir vor, mich früher und aktiver mit Frontend-Komponenten auseinanderzusetzen, UI-Aspekte stärker zu berücksichtigen und meine Selbstorganisation konsequenter zu gestalten.
 
 
-=== Reflexion Loris
+=== Loris
 
 In den Modulen SE1 und SE2 habe ich hauptsächlich die Rolle des Product Owner (PO) übernommen. Ich habe diese gewählt, weil ich schon am Anfang von SE1 sehr an der Analyse beziehungsweise dem Anforderungsmanagement interessiert war. Die Aufgabe bestand zu Beginn darin, eine Stakeholderanalyse durchzuführen und ein Produkt zu entwickeln, welches einen *Unique Selling Point* hat. Dafür haben Natalie und ich Personas erstellt und die Produktvision erarbeitet (siehe link:https://github.com/bPHANT/finance-tracker/blob/main/docs/requirements/vision.adoc[Vision Document]). Nach einer „Marktanalyse“ dessen, was es bereits gibt, hatte ich die Idee, KI als verbessertes OCR einzubinden und gleichzeitig die Produkte auch intelligent kategorisieren zu lassen. Anhand der Vorlesung und durch den Coach konnte ich die Methoden gut anwenden, was ich auch mit dem Modul Marketing verknüpfen konnte.
 
