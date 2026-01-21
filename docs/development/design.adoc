@@ -129,6 +129,7 @@ Die Geschäftslogik ist in Custom React Hooks organisiert:
 [plantuml, class-diagram-hooks, svg]
 ....
 @startuml
+top to bottom direction
 
 interface IQueryHook {
   +error: Error | null
@@ -203,6 +204,11 @@ IQueryHook <|.. useBudget
 IQueryHook <|.. useAccount
 IQueryHook <|.. useTransactionGroup
 
+useTransaction -[hidden]d- useCategory
+useCategory -[hidden]d- useBudget
+useBudget -[hidden]d- useAccount
+useAccount -[hidden]d- useTransactionGroup
+
 @enduml
 ....
 
@@ -213,6 +219,7 @@ Die UI ist in wiederverwendbare Komponenten aufgeteilt:
 [plantuml, component-diagram, svg]
 ....
 @startuml
+left to right direction
 
 package "Präsentationsschicht" {
   [App Root (_layout.tsx)]
@@ -261,8 +268,18 @@ package "Präsentationsschicht" {
 }
 
 package "Geschäftslogikschicht" {
-  [Query Hooks]
   [AI Service]
+  
+  [useTransaction]
+  [useCategory]
+  [useBudget]
+  [useAccount]
+  [useTransactionGroup]
+  
+  useTransaction -[hidden]d- useCategory
+  useCategory -[hidden]d- useBudget
+  useBudget -[hidden]d- useAccount
+  useAccount -[hidden]d- useTransactionGroup
 }
 
 package "Datenschicht" {
@@ -283,12 +300,19 @@ package "Datenschicht" {
 [TransactionContainer] --> [Button]
 [TransactionContainer] --> [TextField]
 [TransactionContainer] --> [BaseModal]
-[TransactionContainer] --> [Query Hooks]
+[TransactionContainer] --> [useTransaction]
+[TransactionContainer] --> [useCategory]
+
+[BudgetContainer] --> [useBudget]
 
 [ScanScreen] --> [AI Service]
-[AI Service] --> [Query Hooks]
+[AI Service] --> [useCategory]
 
-[Query Hooks] --> [Drizzle ORM]
+[useTransaction] --> [Drizzle ORM]
+[useCategory] --> [Drizzle ORM]
+[useBudget] --> [Drizzle ORM]
+[useAccount] --> [Drizzle ORM]
+[useTransactionGroup] --> [Drizzle ORM]
 [Drizzle ORM] --> [SQLite DB]
 
 @enduml
@@ -297,4 +321,17 @@ package "Datenschicht" {
 == Schnittstellen
 //Dokumentation oder Verweise auf Schnittstellen, z.B. REST-APIs
 
-== Datenmodell
+=== Google Gemini API
+Die Anwendung nutzt die Google Gemini API (Modell: gemini-2.5-flash) zur KI-gestützten Kategorisierung von Belegen. Über die Kamerafunktion erfasste Bilder werden an die Gemini API gesendet, welche die Transaktionen automatisch extrahiert und kategorisiert.
+
+**Implementierung:** `src/utils/ai.ts`
+
+**API-Endpunkt:** `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`
+
+**Funktionsweise:**
+
+* Das aufgenommene Bild wird als Base64-kodierte Daten übertragen
+* Ein strukturierter Prompt beschreibt die gewünschte Extraktion von Einzelposten (Name, Betrag, Kategorie)
+* Die API liefert strukturierte JSON-Daten mit den erkannten Transaktionen zurück
+* Die Kategorisierung erfolgt auf Basis der in der App definierten Kategorienhierarchie
+* Mehrsprachige Unterstützung (DE/EN) wird über den Prompt gesteuert
