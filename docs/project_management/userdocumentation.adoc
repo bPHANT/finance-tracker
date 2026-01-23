@@ -67,7 +67,36 @@ Unter dem Bereich Personalisierung kannst du zwischen einem hellen und einem dun
 
 = Überblick über die wichtigsten Funktionen
 == Ausgabe mittels Kamera oder Galerie-Import erfassen
-== Manuelle Ausgabe erstellen
+Möchten Sie einen Kassenzettel von Ihrem Einkauf einscannen, haben Sie 2 Optionen.
+Die erste Option ist, den Kassenzettel per Kamera Einzuscannen:
+1. Tippe auf den mittleren Scan-Button in der unteren Leiste
+2. Ist Ihr Kassenzettel gut zu sehen, tippen sie den weißen Auslösebutton um ein Foto zu machen
+3. Nachdem Ihr Foto eingescannt wurde, sehen Sie das der Preis, dass aktuelle Datum und die Transaktionen automatisch eingetragen wurden
+4. Nun können Sie den Namen, das Konto, ggf. eine Notiz eintragen
+5. Es können jedoch alle Eingaben manuell geändert werden
+6. Möchten Sie eine Transkation hinzufügen, klicken sie auf den "Add" Button
+Wenn Sie "Add" klicken, können Sie den namen der Transaktion eintragen, auswählen zwischen Einkommen und Ausgabe wählen und den Betrag angeben. Außerdem können Sie eine Kategorie auswählen
+7. Möchten Sie keine Transaktion hinzufügen, tippen Sie auf "Abbrechen", um zur vorherigen Ansicht zurückzukehren
+8. Tippe auf "Add", um ein Transaktion zu speichern
+9. Möchten Sie eine Transkation bearbeiten, können Sie über den roten Button mit dem Mülleimer Icon die Transaktion löschen oder über den gelben Button die Transaktion bearbeiten und dort die Eigenschaften anpassen, gleich zu der Erstellung einer Transaktion
+
+Die zweite Option ist, ein bereits aufgenommenes Foto aus der Galerie einzufügen (auch Online Rechnung möglich)
+1. Klicken Sie dafür auf den mittleren Scan-Button in der unteren Leiste
+2. Tippen Sie dann auf den "Galerie" Button unten rechts 
+3. Ihre Galerie App wird sich öffnen und Sie müssen Ihr gewolltes Bild auswählen
+4. ab hier gelten die gleichen Schritte, wie bei dem Foto Scan
+
+== Manuelle Eingabe erstellen
+Möchten Sie die Kamera Funktion nicht nutzen, können sie auch eine Manuelle Eingabe verfassen, dann folg ganz einfach diesen Schritten:
+1. Tippe auf den mittleren Scan-Button in der unteren Leiste
+2. Wähle unten rechts das "Input" Feld aus
+3. Gib den Namen, das Datum (standard,äßig das aktuelle Datum, aber manuell änderbar), das Konto, ggf. eine Notiz und die Summe ein.
+4. Optional kannst du über den Button "Add" unter dem "Speichern" Button eine Transaktion hinzufügen
+5. Wenn Sie "Add" klicken, können Sie den namen der Transaktion eintragen, auswählen zwischen Einkommen und Ausgabe wählen und den Betrag angeben. Außerdem können Sie eine Kategorie auswählen
+6. Möchten Sie keine Transaktion hinzufügen, tippen Sie auf "Abbrechen", um zur vorherigen Ansicht zurückzukehren
+7. Tippe auf "Add", um ein Transaktion zu speichern
+8. Tippe abschließen auf den "Speichern" Button, um den Eintrag zu sichern
+
 
 == Budget-Ziel erstellen, ändern oder löschen
 [align=center]
@@ -78,7 +107,7 @@ Möchtest du ein neues Budget-Ziel erstellen, folgst du ganz einfach diesen Schr
 1. Wechsle zu Budget in der Menüleiste
 2. Klicke auf das +, um ein neues Budget zu erstellen.
 3. Füge Namen, den Betrag, den du für das Budget ausgeben möchtest sowie ein Startdatum und zugehörige Kategorien hinzu. Vergebe optional eine Farbe und ein Emoji.
-4. Klicke auf "Erstellen".
+4. Klicke auf "Erstellen" 
 
 [align=center]
 .Budget löschen oder ändern
@@ -89,6 +118,9 @@ Fast denselben Weg wählst du, wenn du ein Budget ändern oder löschen möchtes
 2. Scrolle nach unten um das Budget zu löschen oder klicke auf einzelne Felder, um diese zu bearbeiten.
 
 == Kategorien verwalten
+Um eine neue Kategorie zu bearbeiten, gehst du zuerst auf den Einstellungstab (Zahnrad Symbol). Dort klickst du auf den Button „Kategorien verwalten“. Dann wählst du eine Kategorie aus, welche du bearbeiten möchtest. Möchtest du eine neue erstellen klickst du oben rechts das Plus (+) an. Dort wählst du einen Namen aus, die Farbe und den Emoji. Außerdem kannst du der Kategorie auch eine Oberkategorie zuweisen. Hast du dies alles ausgefüllt, kannst du einfach „speichern“ drücken. 
+Wenn du eine Kategorie bearbeiten möchtest, wählst du nicht das Plus (+), sondern eine vorhandene Kategorie. Dort kannst du den Namen, die Farbe, den Emoji oder die Oberkategorie ändern und mit dem Button „speichern“ einfach bestätigen. 
+
 
 
 = FAQ
