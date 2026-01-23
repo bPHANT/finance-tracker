@@ -1,5 +1,6 @@
 import { CustomColorKeys } from "@/assets/colors"
 import AccountModal, { Account } from "@/components/modal/AccountModal"
+import AlertModal from "@/components/modal/AlertModal"
 import TransactionGroupFormScreen from "@/components/screens/transactionGroupForm"
 import useAccounts from "@/db/queries/accounts"
 import useCategory from "@/db/queries/category"
@@ -10,7 +11,7 @@ import { calculateTotalAmount, dateFromString } from "@/utils/helper"
 import { storage } from "@/utils/storage"
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 import React, { useCallback, useEffect, useState } from "react"
-import { Alert, BackHandler, Keyboard } from "react-native"
+import { BackHandler, Keyboard } from "react-native"
 
 type TransactionResponse = {
   specific: string
@@ -46,6 +47,9 @@ export default function TransactionGroupFormScreenFromScan() {
   const [date, setDate] = useState(new Date())
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
   const [showAccountModal, setShowAccountModal] = useState(false)
+
+  const [alertVisible, setAlertVisible] = useState(false)
+  const [alertMessage, setAlertMessage] = useState("")
 
   const { getMany: getCategories } = useCategory()
   const { getMany: getAccounts } = useAccounts()
@@ -86,10 +90,8 @@ export default function TransactionGroupFormScreenFromScan() {
         )
 
         if (!categoryIds || categoryIds.length === 0) {
-          Alert.alert(
-            t("common.error"),
-            t("screens.input.errors.noCategoryIds")
-          )
+          setAlertMessage(t("screens.input.errors.noCategoryIds"))
+          setAlertVisible(true)
           setTransactions([])
           return
         }
@@ -99,10 +101,8 @@ export default function TransactionGroupFormScreenFromScan() {
         })
 
         if (!categories || categories.length === 0) {
-          Alert.alert(
-            t("common.error"),
-            t("screens.input.errors.categoryNotFound")
-          )
+          setAlertMessage(t("screens.input.errors.categoryNotFound"))
+          setAlertVisible(true)
           return
         }
 
@@ -121,7 +121,8 @@ export default function TransactionGroupFormScreenFromScan() {
         )
       } catch (error) {
         console.error("Error while parsing: ", error)
-        Alert.alert(t("common.error"), t("screens.input.errors.parsingError"))
+        setAlertMessage(t("screens.input.errors.parsingError"))
+        setAlertVisible(true)
       }
     }
 
@@ -178,7 +179,8 @@ export default function TransactionGroupFormScreenFromScan() {
 
   const handleSubmit = async () => {
     if (name.trim() === "" || transactions.length === 0 || !selectedAccount) {
-      Alert.alert(t("common.error"), t("screens.input.errors.missingData"))
+      setAlertMessage(t("screens.input.errors.missingData"))
+      setAlertVisible(true)
       return
     }
 
@@ -206,8 +208,8 @@ export default function TransactionGroupFormScreenFromScan() {
       setTransactions([])
     } else {
       console.error("Failed to create transaction group")
-      //FIXME translation and our modal
-      Alert.alert(t("common.error"), "Failed to create transaction group")
+      setAlertMessage("Failed to create transaction group")
+      setAlertVisible(true)
     }
   }
 
@@ -250,6 +252,13 @@ export default function TransactionGroupFormScreenFromScan() {
 
   return (
     <>
+      <AlertModal
+        visible={alertVisible}
+        type='error'
+        title={t("common.error")}
+        message={alertMessage}
+        onConfirm={() => setAlertVisible(false)}
+      />
       <AccountModal
         visible={showAccountModal}
         onClose={() => setShowAccountModal(false)}
