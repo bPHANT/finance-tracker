@@ -22,19 +22,17 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 - Leichte Wartbarkeit und Weiterentwicklung durch komponentenbasierten Aufbau.
 - Sollte flexible und schnelle Programmierung von moderner UI erlauben.
 - Unterstützung für unterschiedliche Geräte und Betriebssysteme.
-- Erlaubt Synchronisation und Datenspeicherung über ein Backend-System.
-- Minimale Abhängigkeiten, hohe Portabilität und offline/online Nutzung.
+- Minimale Abhängigkeiten, hohe Portabilität und offline Nutzung.
 - Unterstützung der verschiedenen Formfaktoren der mobilen Geräte. 
 
 == Annahmen und Abhängigkeiten
-//[List the assumptions and dependencies that drive architectural decisions. This could include sensitive or critical areas, dependencies on legacy interfaces, the skill and experience of the team, the availability of important resources, and so forth]
 - Das Entwicklerteam hat Vorerfahrung mit Webentwicklung.
 - Wir können freie KI Rest APIs nutzen.
 - Lokale KI Verarbeitung ist wegen der schwachen Hardware der mobilen Geräte nicht möglich.
 - Die meisten mobilen Geräte besitzen eine Kamera.
 - Jeder Nutzer hat eine aktive Internetverbindung.
-- Die meisten Nutzer verwenden moderne Hardware, worauf moderne Architekturkomponenten perofrmant drauf laufen. 
-- Jeder Nutzer besitzt ein mobiles Endgerät (iOS oder Android) verwenden.
+- Die meisten Nutzer verwenden moderne Hardware, worauf moderne Architekturkomponenten perofrmant laufen. 
+- Jeder Nutzer besitzt ein mobiles Endgerät (iOS oder Android).
 
 == Architektur-relevante Anforderungen
 //Fügen Sie eine Referenz / Link zu den Anforderungen ein, die implementiert werden müssen, um die Architektur zu erzeugen.
@@ -46,36 +44,114 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 - Vorbereitung für spätere Daten-Synchronisation zwischen Geräten
 
 == Entscheidungen, Nebenbedingungen und Begründungen
-//[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
 
 * **Frontend-Framework:** React Native in Kombination mit Expo ermöglicht schnelle Entwicklung, Testing und Deployment auf mehreren Plattformen.
 * **Styling:** TailwindCSS (über Nativewind) sorgt für einheitliches, modernes Styling und produktive Entwicklung von UI-Komponenten.
-* **Navigation:** Implementierung mit React Navigation für eine flexible und modulare Navigationsstruktur innerhalb der App.
-* **Datenhaltung:** In der ersten Version ausschließlich lokal (z.B. AsyncStorage, Expo-Speicherlösungen), Backend-Anbindung geplant.
+* **Navigation:** Implementierung mit Expo Router für eine flexible und modulare dateibasierende Navigationsstruktur innerhalb der App.
+* **Datenhaltung:** In der ersten Version ausschließlich lokal (z.B. AsyncStorage, Expo-SQLite mit Drizzle ORM).
 * **Backend:** Noch nicht umgesetzt, Anbindung an REST API vorgesehen.
 * **Plattformstrategie:** Fokus auf plattformübergreifende Nutzung (iOS, Android) ohne spezielle Hardwareabhängigkeiten.
-* **Testing:** Nutzung von Expo-Tools für einfaches Testen und Debugging.
+* **Testing:** Nutzung von Expo-Tools und Jest für einfaches Testen und Debugging.
 
 == Schichten oder Architektur-Framework
 //[Describe the architectural pattern that you will use or how the architecture will be consistent and uniform. This could be a simple reference to an existing or well-known architectural pattern, such as the Layer framework, a reference to a high-level model of the framework, or a description of how the major system components should be put together.]
-- Präsentationsschicht: React Native-Komponenten (UI, Screens)
-- Logikschicht: State Management, Datenverarbeitung, Navigation
-- (zukünftig) Datenschicht: Anbindung an Backend-API für Speicherung und Synchronisation
+
+Die Anwendung folgt einer **mehrschichtigen Architektur (Layered Architecture)** kombiniert mit **Domain-Driven Design (DDD)** Prinzipien:
+
+=== Präsentationsschicht (Presentation Layer)
+* **Verantwortlichkeit:** Darstellung der Benutzeroberfläche und Interaktion mit dem Benutzer
+* **Technologie:** React Native Komponenten, Expo Router für Navigation
+* **Dateiort:** `/src/app/`, `/src/components/`
+* **Komponenten:**
+** Screen-Komponenten für verschiedene Ansichten (Home, Transactions, Budget, etc.)
+** Wiederverwendbare UI-Komponenten (Buttons, Modals, Input-Felder)
+** Container-Komponenten für komplexe UI-Logik
+
+=== Geschäftslogikschicht (Business Logic Layer)
+* **Verantwortlichkeit:** Geschäftslogik, Datenvalidierung und -verarbeitung
+* **Technologie:** TypeScript, React Hooks
+* **Dateiort:** `/src/db/queries/`
+* **Komponenten:**
+** Custom Hooks für CRUD-Operationen (useTransaction, useCategory, useBudget, useAccount)
+** Geschäftslogik für Berechnungen (Saldierung, Budget-Tracking)
+** Validierungslogik
+
+=== Datenzugriffsschicht (Data Access Layer)
+* **Verantwortlichkeit:** Abstraktion der Datenbankzugriffe, Schema-Definition
+* **Technologie:** Drizzle ORM, Expo SQLite
+* **Dateiort:** `/src/db/schemas/`, `/src/db/migrations/`
+* **Komponenten:**
+** Schema-Definitionen für alle Entitäten
+** Datenbank-Migrationen
+** Relationen zwischen Entitäten
+
+=== Infrastrukturschicht (Infrastructure Layer)
+* **Verantwortlichkeit:** Externe Integrationen und Hilfsfunktionen
+* **Technologie:** verschiedene externe APIs und Utilities
+* **Dateiort:** `/src/utils/`, `/src/api/`
+* **Komponenten:**
+** KI-Integration (Gemini API für Belegscan)
+** Storage-Utilities (AsyncStorage-Wrapper)
+** Mehrsprachig (i18next)
+** Helper-Funktionen
+
+[plantuml, layered-architecture, svg]
+....
+@startuml
+package "Präsentationsschicht" {
+  [Screens & Components]
+  [Navigation (Expo Router)]
+}
+
+package "Geschäftslogikschicht" {
+  [Query Hooks]
+  [Business Logic]
+  [Validierung]
+}
+
+package "Datenzugriffsschicht" {
+  [Drizzle ORM]
+  [Schemas]
+  [Migrations]
+}
+
+package "Infrastrukturschicht" {
+  [SQLite]
+  [Gemini API]
+  [Storage Utils]
+  [i18n]
+}
+
+[Screens & Components] --> [Query Hooks]
+[Navigation (Expo Router)] --> [Screens & Components]
+[Query Hooks] --> [Business Logic]
+[Business Logic] --> [Drizzle ORM]
+[Drizzle ORM] --> [Schemas]
+[Drizzle ORM] --> [SQLite]
+[Query Hooks] --> [Gemini API]
+[Query Hooks] --> [Storage Utils]
+@enduml
+....
+
+**Designprinzipien:**
+- **Separation of Concerns:** Jede Schicht hat eine klar definierte Verantwortlichkeit
+- **Dependency Inversion:** Höhere Schichten hängen von Abstraktionen niedrigerer Schichten ab, nicht von Implementierungen
+- **Single Responsibility:** Jede Komponente/Modul erfüllt genau eine Aufgabe
+- **DRY (Don't Repeat Yourself):** Wiederverwendbare Hooks und Komponenten vermeiden Code-Duplikation
 
 == Architektursichten (Views)
-//[Describe the architectural views that you will use to describe the software architecture. This illustrates the different perspectives that you will make available to review and to document architectural decisions.]
 
-=== Kontextabgrenzung
+=== Schicht 1 (C4-Modell)
 //Level 1 im C4-Modell
 
-image::https://github.com/bPHANT/finance-tracker/blob/main/docs/architecture/images/Schicht%201.png[]
+image::./Schicht1.png[]
 
-=== Container
+=== Schicht 2 (C4-Modell)
 //Level 2 im C4-Modell
 
-image::https://github.com/bPHANT/finance-tracker/blob/main/docs/architecture/images/Schicht%202.png[]
+image::./Schicht2.png[]
 
-=== Components
+=== Schicht 3 (C4-Modell)
 //Level 3 im C4-Modell
 Die wichtigsten Komponenten innerhalb des Frontend-Containers sind:
 
@@ -89,20 +165,108 @@ Die wichtigsten Komponenten innerhalb des Frontend-Containers sind:
   Kapseln die Datenhaltung (zunächst lokal, später via API).
 - **Datenmodelle:**  
   Repräsentiert durch die im ER-Diagramm dargestellten Entitäten:  
-  CategoryType, Category, Dictionary, Currency, BankAccount, Transaction, Badge
+  Account, Currency, TransactionGroup, Transaction, Category, CategoryTerm, Budget
 
 Die logische Struktur und Beziehungen zwischen diesen Entitäten sind im folgenden ER-Diagramm visualisiert:
 
-image::datenbankentwurf.drawio.png[]
+[plantuml, database-er-diagram, svg]
+....
+@startuml
+!define Table(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define primary_key(x) <b>x</b>
+!define foreign_key(x) <i>x</i>
 
-=== Verteilungsdiagramm (Deployment Diagramm)
-//Beschreibt die physischen Knoten (Rechner) des Systems und Komponenten, die in diesen Knoten ausgeführt werden. Diese Sicht wird nicht benötigt, wenn das System in einem einzelnen Prozess oder Thread ausgeführt wird.
-Das System läuft aktuell ausschließlich auf den Endgeräten der Nutzer (Mobile App auf iOS/Android oder im Webbrowser).  
-Es gibt keine verteilten Backend-Komponenten oder Serverprozesse im aktuellen Entwicklungsstand.  
-Die gesamte Datenhaltung erfolgt lokal auf dem Gerät, wodurch die App offline-fähig bleibt.
+entity "Account" as account {
+  primary_key(id): INTEGER
+  --
+  name: TEXT
+  balance: REAL
+  color: TEXT
+  emoji: TEXT
+  foreign_key(currencyId): INTEGER
+  createdAt: TIMESTAMP
+  updatedAt: TIMESTAMP
+}
 
-- **Physische Knoten:**  
-  - Mobilgerät des Nutzers (iOS, Android)
-- **Geplante Erweiterung:**  
-  In zukünftigen Versionen ist die Anbindung an einen externen Backend-Service (z.B. Cloud-Datenbank) vorgesehen. Diese würde als zusätzlicher Knoten in der Infrastruktur auftreten.
+entity "Currency" as currency {
+  primary_key(id): INTEGER
+  --
+  name: TEXT
+  symbol: TEXT
+  code: TEXT
+  createdAt: TIMESTAMP
+  updatedAt: TIMESTAMP
+}
+
+entity "TransactionGroup" as txgroup {
+  primary_key(id): INTEGER
+  --
+  name: TEXT
+  date: TIMESTAMP
+  foreign_key(accountId): INTEGER
+  createdAt: TIMESTAMP
+  updatedAt: TIMESTAMP
+}
+
+entity "Transaction" as transaction {
+  primary_key(id): INTEGER
+  --
+  name: TEXT
+  amount: REAL
+  foreign_key(categoryTermId): INTEGER
+  foreign_key(transactionGroupId): INTEGER
+  createdAt: TIMESTAMP
+  updatedAt: TIMESTAMP
+}
+
+entity "Category" as category {
+  primary_key(id): INTEGER
+  --
+  name: TEXT
+  color: TEXT
+  emoji: TEXT
+  foreign_key(parentCategoryId): INTEGER
+  createdAt: TIMESTAMP
+  updatedAt: TIMESTAMP
+}
+
+entity "CategoryTerm" as term {
+  primary_key(id): INTEGER
+  --
+  term: TEXT
+  foreign_key(categoryId): INTEGER
+  createdAt: TIMESTAMP
+  updatedAt: TIMESTAMP
+}
+
+entity "Budget" as budget {
+  primary_key(id): INTEGER
+  --
+  name: TEXT
+  amount: REAL
+  start: INTEGER
+  end: INTEGER
+  period: TEXT
+  color: TEXT
+  emoji: TEXT
+  createdAt: TIMESTAMP
+  updatedAt: TIMESTAMP
+}
+
+entity "CategoryToBudget" as cattobudget {
+  primary_key(budgetId): INTEGER
+  primary_key(categoryId): INTEGER
+}
+
+account ||--o{ txgroup : "hat"
+account }o--|| currency : "verwendet"
+txgroup ||--o{ transaction : "gruppiert"
+transaction }o--|| term : "kategorisiert"
+term }o--|| category : "gehört zu"
+category ||--o{ category : "enthält"
+budget }o--o{ cattobudget
+category }o--o{ cattobudget
+
+@enduml
+....
 

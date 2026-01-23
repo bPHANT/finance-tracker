@@ -1,0 +1,11 @@
+= Software-Produkt-Dokumentation
+
+== System
+Name: Spendex 
+
+== Zugriff
+Docker Image: https://hub.docker.com/r/lxriz/spendex
+Produktivsystem: keine öffentliche Instanz
+
+== Demo-Zugang
+Kein Demo-Login vorhanden
