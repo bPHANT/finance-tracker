@@ -151,3 +151,19 @@ Im Bereich Testing habe ich als allgemeiner Tester fungiert und – inspiriert d
 Für die Bereitstellung habe ich im Rahmen der Betriebsdokumentation das Docker Image erstellt, wobei ich mein Wissen aus dem Praktikum erfolgreich anwenden konnte (siehe link:https://github.com/bPHANT/finance-tracker/blob/docs/operationaldocumentation/docs/project_management/operationaldocumentation.adoc[Betriebsdokumentation mit Docker Image]).
 
 Fazit: In den beiden Semestern habe ich viel über agile Zusammenarbeit gelernt. Es war mein bislang komplexestes Teamprojekt. Die Erfahrungen als PO – insbesondere im Umgang mit Konflikten zwischen Anforderung und technischer Umsetzung – sowie die Einblicke in die Entwicklung werden mir im Berufsleben helfen, da ich nun verschiedene Perspektiven und potenzielle Fallstricke besser verstehe. Würde ich jetzt bei einem neuen Projekt wieder als PO anfangen, würde ich glaube ich vieles anders machen. Mehr Orintierung bieten, nicht versuchen gleichzeit mitzuentwickeln und PO zu sein sondern auf eine Rolle konzentrieren und die dafür sehr gut machen. Gerade die Sachen die wir in Informationsmanagement gelernt haben, wie man ein Projekt richtig plant, die sozialen Skills aus Managementtechniken, würden mir jetzt wahrscheinlich sehr weiterhelfen. 
+
+=== Einzelreflexion – Kevin
+Ich habe in Softwareengineering 2 meine Gruppe als Lead Developer unterstützt. Dabei habe ich zusätzlich zu dem vorherigen Semester auch betonter architekturelle Entscheidungen für die Gruppe getroffen. 
+
+*Datenbanksystem
+
+Direkt zu Beginn des Semesters stand die Frage im Raum, das Datenbankmanagementsystem zu wechseln. Da wir SQLite verwendeten und dadurch manche Features die in anderen Systemen wie PostgreSQL vorhanden sind nicht hatten, lag ein Wechsel nahe. Er wäre auch umsetzbar aber mit einem Mehraufwand verbunden, wodurch wir manche Features dann im Umkehrschluss nicht fertig stellen könnten. Ich habe die Optionen der Gruppe dargelegt und gemeinsam haben wir uns gegen einen Wechsel entschieden.
+
+*Komponente zur Kategorie-Auswahl
+
+Mein weiterer Aufgabenbereich war vor allem das Entwickeln unserer React Native App. Im vorherigen Semester habe ich für den Prototypen einen Screen/Seite geschrieben, die dem User das Selektieren der Kategorie nach dem Scannen bei Eingabe einer Transaktion ermöglicht. Dieser „Category Selector“ wurde dann schnell auch wiederverwendet, als wir das Feature eingebaut haben, Kategorien erstellen und bearbeiten zu können. Schnell deswegen, weil ich aus dem Screen direkt eine Komponente gemacht habe, die dann von den entsprechenden Positionen aufgerufen wird und anhand der Parameter in den Komponenten entschieden wird, wie auf Events reagiert wird. Dadurch kam es zu einer Überlagerung des Category Selector, der unnötig sehr groß und übersichtlich geworden ist, während die Aufrufe keine Logik oder weiteres besaßen. Die Wartbarkeit auch für andere Gruppenmitglieder war dadurch sehr schlecht. Als wir dann die Möglichkeit hinzugefügt haben, die Transaktionen später in der Übersicht auch zu editieren, brauchten wir wieder den Category Selector. Da mir die vorhin beschriebenen Umstände bewusst waren habe ich mich entschlossen die Komponente grundlegend umzustrukturieren und die Positionsspezifische Logik in die Aufrufe umgelagert. Dadurch kam es zu deutlich weniger/keinen Fehlern in dem Category Selector. Auch die zukünftige Wartbarkeit und die Möglichkeit die Komponente an neuen Stellen einzusetzen wurde deutlich erhöht. Ich denke, dass die Umstrukturierung notwendig und wichtig war, auch wenn sie vermischt mit anderen Änderungen viel Zeit in Anspruch genommen hat. Mit einer besseren Vorüberlegung über den User-Flow hätte man/ich wahrscheinlich schon eher erkennen können, dass der Category Selector an mehreren Stellen verwendet werden würde und ich hätte schon eher diese strukturellen Entscheidungen treffen können.
+
+Link zum Category Selector
+Link zum Aufruf im Scanner
+
+
