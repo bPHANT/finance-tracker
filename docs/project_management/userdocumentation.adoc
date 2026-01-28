@@ -70,25 +70,26 @@ Unter dem Bereich Personalisierung kannst du zwischen einem hellen und einem dun
 image::images/Kamera_Import.png[width=95%] 
 
 
-Möchten Sie einen Kassenzettel von Ihrem Einkauf einscannen, haben Sie 2 Optionen.
+Möchtest du einen Kassenzettel von deinem Einkauf einscannen, hast du zwei Optionen.
 Die erste Option ist, den Kassenzettel per Kamera Einzuscannen:
+
 1. Tippe auf den mittleren Scan-Button in der unteren Leiste
-2. Ist Ihr Kassenzettel gut zu sehen, tippen sie den weißen Auslösebutton um ein Foto zu machen
-3. Nachdem Ihr Foto eingescannt wurde, sehen Sie das der Preis, dass aktuelle Datum und die Transaktionen automatisch eingetragen wurden
-4. Nun können Sie den Namen, das Konto, ggf. eine Notiz eintragen
+2. Ist dein Kassenzettel gut zu sehen, tippe den weißen Auslösebutton um ein Foto zu machen
+3. Nachdem dein Foto eingescannt wurde, sehen Sie das der Preis, dass aktuelle Datum und die Transaktionen automatisch eingetragen wurden
+4. Nun kannst du den Namen, das Konto, ggf. eine Notiz eintragen
 5. Es können jedoch alle Eingaben manuell geändert werden
-6. Möchten Sie eine Transkation hinzufügen, klicken sie auf den "Add" Button
-Wenn Sie "Add" klicken, können Sie den namen der Transaktion eintragen, auswählen zwischen Einkommen und Ausgabe wählen und den Betrag angeben. Außerdem können Sie eine Kategorie auswählen
-7. Möchten Sie keine Transaktion hinzufügen, tippen Sie auf "Abbrechen", um zur vorherigen Ansicht zurückzukehren
-8. Tippe auf "Add", um ein Transaktion zu speichern
-9. Möchten Sie eine Transkation bearbeiten, können Sie über den roten Button mit dem Mülleimer Icon die Transaktion löschen oder über den gelben Button die Transaktion bearbeiten und dort die Eigenschaften anpassen, gleich zu der Erstellung einer Transaktion
+6. Möchtest du eine Transkation hinzufügen, klicke auf den "Hinzufügen" Button
+Wenn du "Hinzufügen" klickst, kannst du den Namen der Transaktion eintragen, auswählen zwischen Einkommen und Ausgabe wählen und den Betrag angeben. Außerdem kannst du eine Kategorie auswählen
+7. Möchtest du keine Transaktion hinzufügen, tippe auf "Abbrechen", um zur vorherigen Ansicht zurückzukehren
+8. Tippe auf "Hinzufügen", um ein Transaktion zu speichern
+9. Möchtest du eine Transkation bearbeiten, kannst du sie über den roten Button mit dem Mülleimer Icon die Transaktion löschen oder über den gelben Button die Transaktion bearbeiten und dort die Eigenschaften anpassen, gleich zu der Erstellung einer Transaktion
 
 image::images/Galerie_Import.png[width=95%] 
 
 Die zweite Option ist, ein bereits aufgenommenes Foto aus der Galerie einzufügen (auch Online Rechnung möglich)
-1. Klicken Sie dafür auf den mittleren Scan-Button in der unteren Leiste
-2. Tippen Sie dann auf den "Galerie" Button unten rechts 
-3. Ihre Galerie App wird sich öffnen und Sie müssen Ihr gewolltes Bild auswählen
+1. Klicke dafür auf den mittleren Scan-Button in der unteren Leiste
+2. Tippe dann auf den "Galerie" Button unten rechts 
+3. Die Galerie App wird sich öffnen und du musst dein gewolltes Bild auswählen
 4. ab hier gelten die gleichen Schritte, wie bei dem Foto Scan
 
 == Manuelle Eingabe erstellen
@@ -96,13 +97,14 @@ image::images/Manuelle_Eingabe.png[width=95%]
 
 
 Möchten Sie die Kamera Funktion nicht nutzen, können sie auch eine Manuelle Eingabe verfassen, dann folg ganz einfach diesen Schritten:
+
 1. Tippe auf den mittleren Scan-Button in der unteren Leiste
 2. Wähle unten rechts das "Input" Feld aus
-3. Gib den Namen, das Datum (standard,äßig das aktuelle Datum, aber manuell änderbar), das Konto, ggf. eine Notiz ein.
+3. Gib den Namen, das Datum (standardmäßig das aktuelle Datum, aber manuell änderbar), das Konto, ggf. eine Notiz ein.
 4. Neben "Transktionen" ist ein Button "hinzufügen", tippe darauf um die Transktion manuell zu erstellen
 6. Wenn Sie "Hinzufügen" klicken, können Sie den namen der Transaktion eintragen, auswählen zwischen Einkommen und Ausgabe wählen und den Betrag angeben. Außerdem können Sie eine Kategorie auswählen
 7. Tippe auf "Hinzufügen", um ein Transaktion zu speichern
-8. Tippe abschließen auf den "Speichern" Button, um den Eintrag zu sichern
+8. Tippe anschließend auf den "Speichern" Button, um den Eintrag zu sichern
 
 
 == Budget-Ziel erstellen, ändern oder löschen
@@ -111,9 +113,10 @@ Möchten Sie die Kamera Funktion nicht nutzen, können sie auch eine Manuelle Ei
 image::images/Budgeterstellen.png[width=95%] 
 
 Möchtest du ein neues Budget-Ziel erstellen, folgst du ganz einfach diesen Schritten:
+
 1. Wechsle zu Budget in der Menüleiste
 2. Klicke auf das +, um ein neues Budget zu erstellen.
-3. Füge Namen, den Betrag, den du für das Budget ausgeben möchtest sowie ein Startdatum und zugehörige Kategorien hinzu. Vergebe optional eine Farbe und ein Emoji.
+3. Füge Namen, den Betrag, den du für das Budget ausgeben möchtest sowie ein Startdatum und zugehörige Kategorien hinzu. Vergebe optional eine Farbe und ein Emoji nach deiner Wahl
 4. Klicke auf "Erstellen" 
 
 [align=center]
