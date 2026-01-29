@@ -61,7 +61,7 @@ Die Ursache lag vor allem in einer zu optimistischen Aufwandsschätzung und eine
 Um dieses Problem zu vermeiden, wäre es sinnvoll gewesen, die „Must have“-Features stärker zu reduzieren und klarer zu schneiden. Eine frühzeitige Überprüfung des Umfangs sowie eine realistischere Aufwandsabschätzung hätten dazu beigetragen, den Fokus stärker auf wenige, stabile Kernfunktionen zu legen.
 
 == Einzelreflexion
-=== Natalie
+=== Natalie Hinze
 In unserem Projekt habe ich primär die Rolle der Scrum Masterin übernommen. Aufgrund meiner persönlichen Stärken – insbesondere Organisation, Planung, Strukturierung und das Einhalten von Deadlines – lag mein Fokus auf dem Projektmanagement und der Unterstützung des Teams bei der Zusammenarbeit. Ergänzend war ich in das Anforderungsmanagement, den Entwurf (UX/UI) sowie später punktuell in die Implementierung eingebunden.
 
 * Projektmanagement
@@ -104,7 +104,7 @@ Die Implementierungsaufgaben haben dazu beigetragen, meine Unsicherheiten im Umg
 
 Zusammenfassend konnte ich in diesem Modul sowohl meine bestehenden Stärken im Projektmanagement gezielt einsetzen als auch bewusst an meinen Schwächen in der Implementierung arbeiten. Durch die gegenseitige Unterstützung im Team war es jederzeit möglich, Fragen zu stellen und neue Kompetenzen aufzubauen. Insgesamt habe ich ein deutlich umfassenderes Verständnis für den gesamten Software-Engineering-Prozess entwickelt.
 
-=== Luca
+=== Luca Funk
 In SE 1 und auch in SE2 war ich der dedizierte Frontend-Entwickler. Das heißt, ich habe die Designs bzw. Wireframe oder Mock-ups von unserem Design-Team umgesetzt und unseren Backend-Entwicklern als Komponenten bereitgestellt. Ich war  das ganze Projekt im Bezug auf des SE-Prozess in der Implementierung. Das Design hat das Design-Team entworfen und die Best-Practices vom Code und den Frameworks der Lead-Dev und der PO. 
 
 Nachdem meine Aufgaben als Front-End Entwickler dann in SE2 immer weniger wurden, da ich die gewünschten Designs für fast alle Features schon implementiert habe, bin ich dann ins Back-End gewechselt und habe dann fast immer in Group Coding Sessions mit unserem Lead-Dev Kevin neue Features entwickelt. 
@@ -121,7 +121,7 @@ Ich habe gelernt, dass ein stabiles, gut getestetes System mit klar definierten 
 
 Im Kontext von dem ganzen Projekt in SE1+2 habe ich als überwiegend im Frontend tätiger Entwickler erkannt, wie stark die Platzierung und Präsentation von Features die User Experience positiv beeinflussen kann. Gleichzeitig habe ich erfahren, wie schnell falsch platzierte oder unnötige Funktionen Nutzer irritieren und letztlich von der App abhalten können.
 
-=== Einzelreflexion – Lucas
+=== Lucas Effenberger
 
 Im Projekt war ich hauptsächlich als Entwickler tätig und an verschiedenen Aufgaben in der Implementierung sowie an projektbegleitender Dokumentation beteiligt. Zu meinen Aufgaben gehörten unter anderem die Überarbeitung und Bereinigung des Glossars, die Anpassung von Datenstruktur-Bezeichnungen an das Domänenmodell, die Mitarbeit am Transaktionsscreen sowie die Implementierung eines Datumsselektors für Transaktionsgruppen. Darüber hinaus war ich an der Erstellung der Betriebsdokumentation und der Software-Produkt-Dokumentation beteiligt.
 
@@ -135,8 +135,7 @@ Fazit:
 
 Durch das Projekt habe ich sowohl fachlich als auch persönlich viel gelernt. Insbesondere habe ich ein besseres Verständnis dafür entwickelt, wie eng Implementierung, Usability und Planung miteinander verknüpft sind. Für zukünftige Projekte nehme ich mir vor, mich früher und aktiver mit Frontend-Komponenten auseinanderzusetzen, UI-Aspekte stärker zu berücksichtigen und meine Selbstorganisation konsequenter zu gestalten.
 
-
-=== Loris
+=== Loris Leopold Kulke
 
 In den Modulen SE1 und SE2 habe ich hauptsächlich die Rolle des Product Owner (PO) übernommen. Ich habe diese gewählt, weil ich schon am Anfang von SE1 sehr an der Analyse beziehungsweise dem Anforderungsmanagement interessiert war. Die Aufgabe bestand zu Beginn darin, eine Stakeholderanalyse durchzuführen und ein Produkt zu entwickeln, welches einen Unique Selling Point hat. Dafür haben Natalie und ich Personas erstellt und die Produktvision erarbeitet (siehe link:https://github.com/bPHANT/finance-tracker/blob/main/docs/requirements/vision.adoc[Vision Document]). Nach einer „Marktanalyse“ dessen, was es bereits gibt, hatte ich die Idee, KI als verbessertes OCR einzubinden und gleichzeitig die Produkte auch intelligent kategorisieren zu lassen. Anhand der Vorlesung und durch den Coach konnte ich die Methoden gut anwenden, was ich auch mit dem Modul Marketing verknüpfen konnte.
 
@@ -157,32 +156,36 @@ Ein PO fokussiert sich auf die Aufgabenebene, während er die Führungs- und Bez
 Genau hier entstanden in unserem Team Spannungen: Als PO war ich initial stark aufgabenorientiert, was jedoch auch auf Kevin in seiner Rolle als inoffizieller Tech Lead zutraf. Theoretisch wäre eine Besetzung des Tech Leads mit jemandem vorteilhafter gewesen, der zwar technisch weniger versiert, dafür aber kommunikationsstärker und kompromissbereiter im Umgang mit Team und PO gewesen wäre. Da ich versucht habe, diese Lücke durch eigene Kompromissbereitschaft zu füllen, wurde meine Rolle als PO geschwächt, da meine Vision nicht mehr konsequent umgesetzt werden konnten. 
 Sowohl diese Erkenntnis als auch das Reifegradmodell nach Hersey – welches hilft, die Definition of Ready passend zum Team zu definieren (das ein Team einen klaren Rahmen hat aber sich auch nicht zu eingeengt fühlt) – wären meiner Ansicht nach wertvolle Ergänzungen für das SE1-Modul, da sie retrospektiv betrachtet unsere Konflikte wahrscheinlich verhindern hätten können.
 
-=== Einzelreflexion – Kevin
+=== Kevin Kunze
 Ich habe in Softwareengineering 2 meine Gruppe als Lead Developer unterstützt. Dabei habe ich zusätzlich zu dem vorherigen Semester auch betonter architekturelle Entscheidungen für die Gruppe getroffen. 
 
-*Datenbanksystem
+* Datenbanksystem
 
 Direkt zu Beginn des Semesters stand die Frage im Raum, das Datenbankmanagementsystem zu wechseln. Da wir SQLite verwendeten und dadurch manche Features die in anderen Systemen wie PostgreSQL vorhanden sind nicht hatten, lag ein Wechsel nahe. Er wäre auch umsetzbar aber mit einem Mehraufwand verbunden, wodurch wir manche Features dann im Umkehrschluss nicht fertig stellen könnten. Ich habe die Optionen der Gruppe dargelegt und gemeinsam haben wir uns gegen einen Wechsel entschieden.
 
-*Komponente zur Kategorie-Auswahl
+* Komponente zur Kategorie-Auswahl
 
-Mein weiterer Aufgabenbereich war vor allem das Entwickeln unserer React Native App. Im vorherigen Semester habe ich für den Prototypen einen Screen/Seite geschrieben, die dem User das Selektieren der Kategorie nach dem Scannen bei Eingabe einer Transaktion ermöglicht. Dieser „Category Selector“ wurde dann schnell auch wiederverwendet, als wir das Feature eingebaut haben, Kategorien erstellen und bearbeiten zu können. Schnell deswegen, weil ich aus dem Screen direkt eine Komponente gemacht habe, die dann von den entsprechenden Positionen aufgerufen wird und anhand der Parameter in den Komponenten entschieden wird, wie auf Events reagiert wird. Dadurch kam es zu einer Überlagerung des Category Selector, der unnötig sehr groß und übersichtlich geworden ist, während die Aufrufe keine Logik oder weiteres besaßen. Die Wartbarkeit auch für andere Gruppenmitglieder war dadurch sehr schlecht. Als wir dann die Möglichkeit hinzugefügt haben, die Transaktionen später in der Übersicht auch zu editieren, brauchten wir wieder den Category Selector. Da mir die vorhin beschriebenen Umstände bewusst waren habe ich mich entschlossen die Komponente grundlegend umzustrukturieren und die Positionsspezifische Logik in die Aufrufe umgelagert. Dadurch kam es zu deutlich weniger/keinen Fehlern in dem Category Selector. Auch die zukünftige Wartbarkeit und die Möglichkeit die Komponente an neuen Stellen einzusetzen wurde deutlich erhöht. Ich denke, dass die Umstrukturierung notwendig und wichtig war, auch wenn sie vermischt mit anderen Änderungen viel Zeit in Anspruch genommen hat. Mit einer besseren Vorüberlegung über den User-Flow hätte man/ich wahrscheinlich schon eher erkennen können, dass der Category Selector an mehreren Stellen verwendet werden würde und ich hätte schon eher diese strukturellen Entscheidungen treffen können.
+Mein weiterer Aufgabenbereich war vor allem das Entwickeln unserer React Native App. Im vorherigen Semester habe ich für den Prototypen einen Screen/Seite geschrieben, die dem User das Selektieren der Kategorie nach dem Scannen (siehe link:https://github.com/bPHANT/finance-tracker/blob/f8ac75bd15abf820c26a9a247b07fae00c41e546/src/app/(tabs)/scan/categorySelector.tsx[Scanner]) bei Eingabe einer Transaktion ermöglicht. Dieser „Category Selector“ (siehe link:https://github.com/bPHANT/finance-tracker/blob/f8ac75bd15abf820c26a9a247b07fae00c41e546/src/components/screens/categorySelector.tsx[Category Selector]) wurde dann schnell auch wiederverwendet, als wir das Feature eingebaut haben, Kategorien erstellen und bearbeiten zu können. Schnell deswegen, weil ich aus dem Screen direkt eine Komponente gemacht habe, die dann von den entsprechenden Positionen aufgerufen wird und anhand der Parameter in den Komponenten entschieden wird, wie auf Events reagiert wird. Dadurch kam es zu einer Überlagerung des Category Selector, der unnötig sehr groß und übersichtlich geworden ist, während die Aufrufe keine Logik oder weiteres besaßen. Die Wartbarkeit auch für andere Gruppenmitglieder war dadurch sehr schlecht. Als wir dann die Möglichkeit hinzugefügt haben, die Transaktionen später in der Übersicht auch zu editieren, brauchten wir wieder den Category Selector. Da mir die vorhin beschriebenen Umstände bewusst waren habe ich mich entschlossen die Komponente grundlegend umzustrukturieren und die Positionsspezifische Logik in die Aufrufe umgelagert. Dadurch kam es zu deutlich weniger/keinen Fehlern in dem Category Selector. Auch die zukünftige Wartbarkeit und die Möglichkeit die Komponente an neuen Stellen einzusetzen wurde deutlich erhöht. Ich denke, dass die Umstrukturierung notwendig und wichtig war, auch wenn sie vermischt mit anderen Änderungen viel Zeit in Anspruch genommen hat. Mit einer besseren Vorüberlegung über den User-Flow hätte man/ich wahrscheinlich schon eher erkennen können, dass der Category Selector an mehreren Stellen verwendet werden würde und ich hätte schon eher diese strukturellen Entscheidungen treffen können.
 
-Link zum Category Selector
-Link zum Aufruf im Scanner
+=== Ruben Czock
+In Software Engineering 1 und Software Engineering 2, habe ich hauptsächlich die Rolle des Designers (UI/UX) übernommen. Im Vergleich zu Software Engineering 1 fiel der Designaufwand diesmal jedoch deutlich geringer aus, weswegen wir die Designergruppe von zwei Personen auf eine Person verkleinert haben. Der Grund dafür war, dass wir bereits im letzten Semester die meisten Designs/Konzepte schon vorbereitet hatten. Meine Aufgaben lagen daher weniger in der Entwicklung von neues Designs, was jedoch auch vor kam, aber vielmehr ging es um die Ergänzungen und Verfeinerungen bestehender Designs.
 
-=== Einzelreflexion – Ruben
-In Software Engineering 1 und Software Engineering 2, habe ich hauptsächlich die Rolle des Designers übernommen. Im Vergleich zu Software Engineering 1 fiel der Designaufwand diesmal jedoch deutlich geringer aus, weswegen wir die Designergruppe von zwei Personen auf eine Person verkleinert haben. Der Grund dafür war, da wir bereits im letzten Semester die meisten Designs/Konzepte schon vorbereitet hatten. Meine Aufgaben lagen daher weniger in der Entwicklung von neues Designs, was jedoch auch vor kam, aber vielmehr ging es um gezielte Ergänzungen und Verfeinerungen bestehender Designlösungen.
+Ein sehr wichtiger Punkt für die Gruppenarbeit und besonders für die Kommunikation zwischen Dev-Team und Design Team, sowohl in SE 1 als auch in SE 2, war der Austausch in den wöchtentlichen Meetings, als auch in extra Gesprächen. Denn ich persönlich bin nicht auf einem Level mit den Programmier Fähigkeiten der Dev-Team Mitglieder, somit war es wichtig immer ein direktes Feedback zu erhalten aus Erfahrungen und Umsetzungsmöglichkeiten. Sprich, wie realistisch und zeitaufwändig die jeweilige Änderung/Neuerung wäre. So konnte sich immer auf eine gute Lösung für beide Teams geeinigt werden.
+
+Anfangs hatte ich auch immer wieder Probleme mit GitHub/VS-Code, welche aber immer mit Hilfe des Teams, als auch des Praktikums gelöst werden konnten. Da man auch immer Fragen konnte und dies hat mir sehr geholfen, da ich dieserseits auch einiges dazu gelernt habe.
 
 Hauptsächlich war meine Arbeit die Erstellung und Überarbeitung der Mockups in Figma, die für neue Features benötigt wurden oder in dem Fall, dass Anpassungen getätigt werden mussten. Im Vergleich zu Software Engineering 1 war die Verwendung von Figma auch deutlich leichter, da ich nun gut mit dem Programm arbeiten konnte und nicht mehr die Einarbeitungsphase hatte. 
 
-Wichtig am Design war unser Hauptaugenmerk nicht zu vernachlässigen, sprich es soll leicht bedienbar, übersichtlich und eher minimalistisch sein. Das Design soll so aussehen, dass der Nutzer immer wieder gern in die App zurückkehrt und nicht nach einer Woche die App nicht mehr öffnet.
+Wichtig am Design war unser Hauptaugenmerk nicht zu vernachlässigen, sprich es soll leicht bedienbar, übersichtlich und eher minimalistisch sein. Das Design soll so aussehen, dass der Nutzer immer wieder gern in die App zurückkehrt und nach einer Woche immer noch gern die App öffnet und es nicht vernachlässigt, weil er keine Lust mehr hat.
 
 Außerdem führte ich zusammen mit Natalie den Usertest durch. Dies war auch ein direkter Test, wie funktionsfähig das Design ist, ob wir damit wirklich unser Ziel erfüllen. Aber die Hauptaufgabe lag natürlich darin, Bugs oder Unstimmigkeiten festzustellen um diese im Meeting mit unserem Dev-Team zu besprechen. 
 
 Am Ende war ich noch dafür verantwortlich die Dokumentationen zu überwachen. Nach der Vorstellung im Meeting haben wir intern gemeinsam festgelegt wer welche Dokumentation schreiben soll. Meine Aufgabe lag dann neben der Anwenderdokumentation mit Natalie, darin die Reviews zu verteilen, selber alles einmal zu reviewn und am Ende alles auf Vollständigkeit zu prüfen.
 
-Rückblickend habe ich mitgenommen, dass aus der Design Sicht es immer wieder zu schnellen Änderungen kommen kann, da in der Entwicklung manches nicht immer so funktioniert wie es im Mockup aussieht bzw. auch neue Dinge entdeckt werden, welche man ändern, bzw. hinzufügen muss. Besonders Interessant fande ich wie schon in Software Engineering 1, immer wieder zu beachten die App so nutzerfreundlich wie möglich zu gestalten und außerdem minimalistisch zu Arbeiten und ich denke das ist uns auch gut gelungen. Am Ende haben wir nach der Auswertung von externen Personen festgestellt, dass es einige Dinge dann gab, welche man verständlicher hätte machen können, aber im großen ganzen es gut, ansprechend und übersichtlich war.
+* Fazit
 
+Rückblickend habe ich mitgenommen, dass aus der Design Sicht es immer wieder zu schnellen Änderungen kommen kann, da in der Entwicklung manches nicht immer so funktioniert wie es im Mockup aussieht bzw. auch neue Dinge entdeckt werden, welche man ändern, bzw. hinzufügen muss. Besonders Interessant fande ich wie schon in Software Engineering 1, immer wieder zu beachten die App so nutzerfreundlich wie möglich zu gestalten und außerdem minimalistisch zu Designen und ich denke das ist uns auch gut gelungen. Am Ende haben wir nach der Auswertung von externen Personen festgestellt, dass es einige Dinge dann gab, welche man verständlicher hätte machen können, aber das es im allgemeinen, ansprechend und übersichtlich ist.
+
+Aber besonders wertvoll war für mich auch der praktische Einblick, der Weg von der ersten Idee zu einem fertigen Produkt. Ich konnte die Abläufe eines solchen Projektes kennenlernen und mir neue Fähigkeiten aneignen, vorallem im Bereich UI/UX Design, sowie Programme wie Figma oder Miro. Ich denke dieses Projekt wird auch eine wichtige Erfahrung für mein späteres Berufsleben sein.
 
 
