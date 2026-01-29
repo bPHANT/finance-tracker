@@ -171,4 +171,18 @@ Mein weiterer Aufgabenbereich war vor allem das Entwickeln unserer React Native 
 Link zum Category Selector
 Link zum Aufruf im Scanner
 
+=== Einzelreflexion – Ruben
+In Software Engineering 1 und Software Engineering 2, habe ich hauptsächlich die Rolle des Designers übernommen. Im Vergleich zu Software Engineering 1 fiel der Designaufwand diesmal jedoch deutlich geringer aus, weswegen wir die Designergruppe von zwei Personen auf eine Person verkleinert haben. Der Grund dafür war, da wir bereits im letzten Semester die meisten Designs/Konzepte schon vorbereitet hatten. Meine Aufgaben lagen daher weniger in der Entwicklung von neues Designs, was jedoch auch vor kam, aber vielmehr ging es um gezielte Ergänzungen und Verfeinerungen bestehender Designlösungen.
+
+Hauptsächlich war meine Arbeit die Erstellung und Überarbeitung der Mockups in Figma, die für neue Features benötigt wurden oder in dem Fall, dass Anpassungen getätigt werden mussten. Im Vergleich zu Software Engineering 1 war die Verwendung von Figma auch deutlich leichter, da ich nun gut mit dem Programm arbeiten konnte und nicht mehr die Einarbeitungsphase hatte. 
+
+Wichtig am Design war unser Hauptaugenmerk nicht zu vernachlässigen, sprich es soll leicht bedienbar, übersichtlich und eher minimalistisch sein. Das Design soll so aussehen, dass der Nutzer immer wieder gern in die App zurückkehrt und nicht nach einer Woche die App nicht mehr öffnet.
+
+Außerdem führte ich zusammen mit Natalie den Usertest durch. Dies war auch ein direkter Test, wie funktionsfähig das Design ist, ob wir damit wirklich unser Ziel erfüllen. Aber die Hauptaufgabe lag natürlich darin, Bugs oder Unstimmigkeiten festzustellen um diese im Meeting mit unserem Dev-Team zu besprechen. 
+
+Am Ende war ich noch dafür verantwortlich die Dokumentationen zu überwachen. Nach der Vorstellung im Meeting haben wir intern gemeinsam festgelegt wer welche Dokumentation schreiben soll. Meine Aufgabe lag dann neben der Anwenderdokumentation mit Natalie, darin die Reviews zu verteilen, selber alles einmal zu reviewn und am Ende alles auf Vollständigkeit zu prüfen.
+
+Rückblickend habe ich mitgenommen, dass aus der Design Sicht es immer wieder zu schnellen Änderungen kommen kann, da in der Entwicklung manches nicht immer so funktioniert wie es im Mockup aussieht bzw. auch neue Dinge entdeckt werden, welche man ändern, bzw. hinzufügen muss. Besonders Interessant fande ich wie schon in Software Engineering 1, immer wieder zu beachten die App so nutzerfreundlich wie möglich zu gestalten und außerdem minimalistisch zu Arbeiten und ich denke das ist uns auch gut gelungen. Am Ende haben wir nach der Auswertung von externen Personen festgestellt, dass es einige Dinge dann gab, welche man verständlicher hätte machen können, aber im großen ganzen es gut, ansprechend und übersichtlich war.
+
+
 
