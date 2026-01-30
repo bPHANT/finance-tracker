@@ -6,12 +6,332 @@ include::../_includes/default-attributes.inc.adoc[]
 
 
 == Zweck
-Dieses Dokument beschreibt wesentliche Entwurfsentscheidungen auf Ebene der Komponenten und Module. Diese dienen als Vorgabe für die Implementierung und erleichtern das Systemverständnis.
+Dieses Dokument beschreibt wesentliche Entwurfsentscheidungen auf Ebene der Komponenten und Module. Diese dienen als Vorgabe für die Implementierung und erleichtern das Systemverständnis. Es werden die Systemarchitektur, Klassenstrukturen, Sequenzabläufe und Schnittstellen dokumentiert.
+
+== Systemübersicht
+
+Die Spendex Finance Tracker Anwendung ist eine mobile React Native-App zur Verwaltung persönlicher Finanzen. Sie ermöglicht das Erfassen von Transaktionen, Kategorisierung von Ausgaben, Budget-Tracking und die Analyse von Ausgabenmustern. Ein besonderes Feature ist die KI-gestützte automatische Kategorisierung von Belegen via Kamera-Scan.
+
+=== Technologie-Stack
+* **Frontend Framework:** React Native mit Expo 
+* **Programmiersprache:** TypeScript 
+* **Styling:** NativeWind (TailwindCSS für React Native)
+* **Navigation:** Expo Router
+* **Datenbank:** SQLite (expo-sqlite) mit Drizzle ORM
+* **State Management:** React Hooks
+* **Internationalisierung:** i18next
+* **Testing:** Jest mit React Native Testing Library
+* **KI-Integration:** Google Gemini API 2.5-flash
  
 == Ausgewählte Sichten
 //Entwurfsklassendiagramme, Sequenzdiagramme
 
+=== Klassendiagramm: Datenmodell
+
+Das folgende Klassendiagramm zeigt die Hauptentitäten der Anwendung und ihre Beziehungen:
+
+[plantuml, class-diagram-data-model, svg]
+....
+@startuml
+skinparam classAttributeIconSize 0
+
+class Account {
+  +id: number
+  +name: string
+  +balance: number
+  +color: CustomColorKeys
+  +emoji: string
+  +currencyId: number
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class Currency {
+  +id: number
+  +name: string
+  +symbol: string
+  +code: string
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class TransactionGroup {
+  +id: number
+  +name: string
+  +date: Date
+  +accountId: number
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class Transaction {
+  +id: number
+  +name: string
+  +amount: number
+  +categoryTermId: number
+  +transactionGroupId: number
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class Category {
+  +id: number
+  +name: string
+  +color: CustomColorKeys
+  +emoji: string
+  +parentCategoryId?: number
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class CategoryTerm {
+  +id: number
+  +term: string
+  +categoryId: number
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class Budget {
+  +id: number
+  +name: string
+  +amount: number
+  +start: number
+  +end?: number
+  +period: PeriodType
+  +color: CustomColorKeys
+  +emoji: string
+  +createdAt: Date
+  +updatedAt: Date
+}
+
+class CategoryToBudget {
+  +budgetId: number
+  +categoryId: number
+}
+
+Account "1" -- "1" Currency : hat >
+Account "1" -- "*" TransactionGroup : enthält >
+TransactionGroup "1" -- "*" Transaction : gruppiert >
+Transaction "*" -- "1" CategoryTerm : kategorisiert durch >
+CategoryTerm "*" -- "1" Category : gehört zu >
+Category "1" -- "*" Category : kann enthalten >
+Budget "*" -- "*" Category : überwacht >
+(Budget, Category) .. CategoryToBudget
+
+@enduml
+....
+
+=== Klassendiagramm: Query-Hooks (Business Logic)
+
+Die Geschäftslogik ist in Custom React Hooks organisiert:
+
+[plantuml, class-diagram-hooks, svg]
+....
+@startuml
+top to bottom direction
+
+interface IQueryHook {
+  +error: Error | null
+  +loading: boolean
+}
+
+class useTransaction {
+  -db: Database
+  -error: Error | null
+  -loading: boolean
+  +getTotalAmount(): Promise<string>
+  +getMany(): Promise<Transaction[]>
+  +getByCategoryId(categoryId: number): Promise<Transaction[]>
+  +getByAccountId(accountId: number): Promise<Transaction[]>
+  +create(data: TransactionData): Promise<void>
+  +update(id: number, data: TransactionData): Promise<void>
+  +remove(id: number): Promise<void>
+}
+
+class useCategory {
+  -db: Database
+  -error: Error | null
+  -loading: boolean
+  +create(data: CategoryData): Promise<void>
+  +update(id: number, data: CategoryData): Promise<void>
+  +remove(id: number): Promise<void>
+  +getAll(): Promise<Category[]>
+  +getById(id: number): Promise<Category>
+  +getHierarchy(): Promise<CategoryTree>
+  +getTotalAmountByCategory(id: number): Promise<number>
+  +getBudgetOverview(budgetId: number): Promise<BudgetData>
+}
+
+class useBudget {
+  -db: Database
+  -error: Error | null
+  -loading: boolean
+  +create(data: BudgetData): Promise<void>
+  +update(id: number, data: BudgetData): Promise<void>
+  +remove(id: number): Promise<void>
+  +getAll(): Promise<Budget[]>
+  +getCurrentProgress(id: number): Promise<number>
+  +linkCategories(budgetId: number, categoryIds: number[]): Promise<void>
+}
+
+class useAccount {
+  -db: Database
+  -error: Error | null
+  -loading: boolean
+  +create(data: AccountData): Promise<void>
+  +update(id: number, data: AccountData): Promise<void>
+  +remove(id: number): Promise<void>
+  +getAll(): Promise<Account[]>
+  +getTotalBalance(): Promise<string>
+  +updateBalance(id: number, amount: number): Promise<void>
+}
+
+class useTransactionGroup {
+  -db: Database
+  -error: Error | null
+  -loading: boolean
+  +create(data: TransactionGroupData): Promise<void>
+  +update(id: number, data: TransactionGroupData): Promise<void>
+  +remove(id: number): Promise<void>
+  +getByAccountId(accountId: number): Promise<TransactionGroup[]>
+  +getWithTransactions(id: number): Promise<GroupWithTransactions>
+}
+
+IQueryHook <|.. useTransaction
+IQueryHook <|.. useCategory
+IQueryHook <|.. useBudget
+IQueryHook <|.. useAccount
+IQueryHook <|.. useTransactionGroup
+
+useTransaction -[hidden]d- useCategory
+useCategory -[hidden]d- useBudget
+useBudget -[hidden]d- useAccount
+useAccount -[hidden]d- useTransactionGroup
+
+@enduml
+....
+
+=== Komponentendiagramm
+
+Die UI ist in wiederverwendbare Komponenten aufgeteilt:
+
+[plantuml, component-diagram, svg]
+....
+@startuml
+left to right direction
+
+package "Präsentationsschicht" {
+  [App Root (_layout.tsx)]
+  
+  package "Screens" {
+    [HomeScreen]
+    [TransactionsScreen]
+    [BudgetScreen]
+    [ScanScreen]
+    [SettingsScreen]
+  }
+  
+  package "Components" {
+    package "Containers" {
+      [TransactionContainer]
+      [BudgetContainer]
+      [CategoryContainer]
+    }
+    
+    package "Buttons" {
+      [Button]
+      [CircularButton]
+      [FunctionalButton]
+    }
+    
+    package "Input" {
+      [TextField]
+      [DateField]
+      [CategoryTouchable]
+    }
+    
+    package "Modal" {
+      [BaseModal]
+      [AccountModal]
+      [TransactionListModal]
+      [EmojiModal]
+      [ColorModal]
+    }
+    
+    package "Display" {
+      [AmountBadge]
+      [Emoji]
+      [NavigationPath]
+    }
+  }
+}
+
+package "Geschäftslogikschicht" {
+  [AI Service]
+  
+  [useTransaction]
+  [useCategory]
+  [useBudget]
+  [useAccount]
+  [useTransactionGroup]
+  
+  useTransaction -[hidden]d- useCategory
+  useCategory -[hidden]d- useBudget
+  useBudget -[hidden]d- useAccount
+  useAccount -[hidden]d- useTransactionGroup
+}
+
+package "Datenschicht" {
+  [Drizzle ORM]
+  [SQLite DB]
+}
+
+[App Root (_layout.tsx)] --> [HomeScreen]
+[App Root (_layout.tsx)] --> [TransactionsScreen]
+[App Root (_layout.tsx)] --> [BudgetScreen]
+[App Root (_layout.tsx)] --> [ScanScreen]
+[App Root (_layout.tsx)] --> [SettingsScreen]
+
+[HomeScreen] --> [TransactionContainer]
+[TransactionsScreen] --> [TransactionContainer]
+[BudgetScreen] --> [BudgetContainer]
+
+[TransactionContainer] --> [Button]
+[TransactionContainer] --> [TextField]
+[TransactionContainer] --> [BaseModal]
+[TransactionContainer] --> [useTransaction]
+[TransactionContainer] --> [useCategory]
+
+[BudgetContainer] --> [useBudget]
+
+[ScanScreen] --> [AI Service]
+[AI Service] --> [useCategory]
+
+[useTransaction] --> [Drizzle ORM]
+[useCategory] --> [Drizzle ORM]
+[useBudget] --> [Drizzle ORM]
+[useAccount] --> [Drizzle ORM]
+[useTransactionGroup] --> [Drizzle ORM]
+[Drizzle ORM] --> [SQLite DB]
+
+@enduml
+....
+
 == Schnittstellen
 //Dokumentation oder Verweise auf Schnittstellen, z.B. REST-APIs
 
-== Datenmodell
+=== Google Gemini API
+Die Anwendung nutzt die Google Gemini API (Modell: gemini-2.5-flash) zur KI-gestützten Kategorisierung von Belegen. Über die Kamerafunktion erfasste Bilder werden an die Gemini API gesendet, welche die Transaktionen automatisch extrahiert und kategorisiert.
+
+**Implementierung:** `src/utils/ai.ts`
+
+**API-Endpunkt:** `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`
+
+**Funktionsweise:**
+
+* Das aufgenommene Bild wird als Base64-kodierte Daten übertragen
+* Ein strukturierter Prompt beschreibt die gewünschte Extraktion von Einzelposten (Name, Betrag, Kategorie)
+* Die API liefert strukturierte JSON-Daten mit den erkannten Transaktionen zurück
+* Die Kategorisierung erfolgt auf Basis der in der App definierten Kategorienhierarchie
+* Mehrsprachige Unterstützung (DE/EN) wird über den Prompt gesteuert

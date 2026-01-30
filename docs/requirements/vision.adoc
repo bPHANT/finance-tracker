@@ -1,8 +1,7 @@
 = Vision: {project-name}
-Kevin Kunze <s87006@htw-dresden.de>; Natalie Hinze <s86218@htw-dresden.de>; Loris Kulke <s87072@htw-dresden.de>; Luca Funk <s84313@htw-dresden.de>; Ruben Czock <s87149@htw-dresden.de>; Lucas Effenberger <s87202@htw-dresden.de>; Ali Zeinelov<s85161@htw-dresden.de>
+Kevin Kunze <s87006@htw-dresden.de>; Natalie Hinze <s86218@htw-dresden.de>; Loris Kulke <s87072@htw-dresden.de>; Luca Funk <s84313@htw-dresden.de>; Ruben Czock <s87149@htw-dresden.de>; Lucas Effenberger <s87202@htw-dresden.de>; Ali Zeinelov <s85161@htw-dresden.de>
 {localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
-// Platzhalter für weitere Dokumenten-Attribute
 
 
 == Einführung
@@ -15,18 +14,12 @@ Der Zweck dieses Dokuments ist es, die wesentlichen Anforderungen an das System 
 Dieses Visions-Dokument bezieht sich auf das System Spendex, das vom Spendex-Team entwickelt wird. Die App unterstützt Studierende dabei, ihre finanzielle Situation selbstbestimmt und unkompliziert zu organisieren – mit dem Ziel, bewusster mit Ausgaben umzugehen und individuelle Sparziele erfolgreich zu verfolgen. Im Rahmen dieses Projekts wird bewusst auf komplexe Funktionalitäten verzichtet, die über die grundlegende Budgetverwaltung hinausgehen (Out-of-Scope). Nicht Bestandteil des Projektumfangs sind insbesondere die Anbindung externer Bankkonten, tiefgreifende Analysefunktionen sowie die Verwendung von fachspezifischer Terminologie.
 
 === Definitionen, Akronyme und Abkürzungen
-//Verweis passend zum Belegabgabe-Template se1_belegabgabe_t00.adoc
 Siehe <<#glossary, Glossar>>.
-//Siehe <<./glossary.adoc#glossary, Glossar>>.
-
-=== Referenzen
-//(hier externe Verweise zu anderen Dokumenten, Quellen, Standards etc. einfügen, sofern notwendig)
 
 
 == Positionierung
 
 === Fachliche Motivation
-//Erläutern Sie kurz den Hintergrund, in dem das Projekt angesiedelt ist. Welches Problem soll gelöst werden, wie ist es entstanden? Welche Verbesserung wird angestrebt. Achten Sie darauf, eine fachliche (organisatorische, betriebswirtschaftliche) Perspektive einzunehmen.
 Aufgrund der Tatsache, dass unser Team selbst aus Studierenden besteht, kennen wir die finanziellen Herausforderungen in unserem Umfeld sehr gut. Viele Studierende haben nur ein begrenztes Einkommen aus Minijobs, BaföG oder Unterstützung von Angehörigen.
 
 Mit unserer App bieten wir eine einfache Möglichkeit, Einnahmen und Ausgaben schnell und unkompliziert zu tracken. So können Studierende ihr Budget besser im Blick behalten, sicherstellen, dass ihr Geld bis zum Monatsende reicht, und gezielt Sparmaßnahmen umsetzen.
@@ -34,7 +27,6 @@ Mit unserer App bieten wir eine einfache Möglichkeit, Einnahmen und Ausgaben sc
 Durch intuitive Funktionen, moderne Visualisierungen und smarte Tipps unterstützt unsere App junge Menschen dabei, ohne großen Aufwand mehr finanzielle Kontrolle und Sicherheit zu gewinnen.
 
 === Produktvision
-//Eine Produktvision beschreibt das Einsatzziel der Anwendung und sorgt für ein gemeinsames Ziel und Verständnis für alle Beteiligten im Projekt. Geben Sie in knapper Form übersichtsartig die Positionierung der angestrebten Lösung im Vergleich zu verfügbaren Alternativen dar. Das folgende Format kann dazu verwendet werden:
 
 [cols="1,3"]
 |===
@@ -42,23 +34,11 @@ Durch intuitive Funktionen, moderne Visualisierungen und smarte Tipps unterstüt
 | die | eine knappe finanzielle Lage haben und mit minimalem Aufwand den Überblick über ihre Ausgaben und Sparziele behalten wollen,
 | ist die  | App Spendex
 | eine  | moderne und smarte Finanzapp
-| die | schnell, unkompliziert und individuell zugeschnitten Einnahmen erfässt und durch KI intelligent mitdenkt,
+| die | schnell, unkompliziert und individuell zugeschnitten Einnahmen erfasst und durch KI intelligent mitdenkt,
 | anders als | klassische Finanz-Apps, die oft überladen, kompliziert oder auf Profi-Nutzer ausgerichtet sind,
 | kann unser Produkt | durch intuitive Bedienung, modernes Design und gezielte KI-Unterstützung die Bedürfnisse von Digital Natives mit begrenztem Budget optimal erfüllen.
 |===
 
-
-//Beispiel
-//[cols="1,3"]
-//|===
-//| Für | Studierende der HTWD
-//| die | zu wenig Zeit in der Mittagspause zum Essen haben
-//| ist   | Flying Burger
-//| ein  | Lieferdient für Burger
-//| der  | per Drohne liefert
-//| anders als | landgestützte Lieferdienste
-//| kann unser Produkt |  durchs Fenster direkt in den Hörsaal liefern.
-//|===
 
 == Stakeholder Beschreibungen
 
@@ -71,8 +51,9 @@ Durch intuitive Funktionen, moderne Visualisierungen und smarte Tipps unterstüt
 
 | Studierende
 | Junge Erwachsene, meist Digital Natives, die oft nur über ein geringes Einkommen verfügen. Sie wünschen sich eine einfache, schnelle und motivierende Möglichkeit, ihre Finanzen zu verwalten, Ausgaben im Blick zu behalten und Sparziele zu erreichen – am liebsten per Smartphone und in einer optisch modernen, smarten und intuitiven App.
-| Studierende nutzen die App aktiv zur Verwaltung ihrer Einnahmen und Ausgaben. Ihr Hauptinteresse ist eine übersichtliche, verständliche Darstellung ihrer Finanzen ohne komplizierte Fachbegriffe. Sie erwarten eine einfache Handhabung, intelligente und motivierende Unterstützung (z. B. durch Finanztipps) und eine leichte Anpassbarkeit an ihre individuellen Bedürfnisse.
-| Testende 
+| Studierende nutzen die App aktiv zur Verwaltung ihrer Einnahmen und Ausgaben. Ihr Hauptinteresse ist eine übersichtliche, verständliche Darstellung ihrer Finanzen ohne komplizierte Fachbegriffe. Sie erwarten eine einfache Handhabung, intelligente und motivierende Unterstützung (z. B. durch Finanztipps) und eine leichte Anpassbarkeit an ihre individuellen Bedürfnisse.
+
+| Testende
 | Studierende, die potenzielle Nutzer*innen der App sind und regelmäßig im Rahmen der Scrum Reviews eingeladen werden, um das Produkt zu testen. Ziel ist es, durch ihre Rückmeldung einen realitätsnahen Blick auf die Nutzbarkeit, Verständlichkeit und den Funktionsumfang der Anwendung zu gewinnen.
 | Dieser Stakeholder bringt die Perspektive zukünftiger Endnutzender ein. Die Testenden haben kein direktes Mitspracherecht bei der Projektplanung, liefern jedoch wertvolles Feedback zu Usability, Design und Funktionsverständnis. Ihr Beitrag unterstützt das Team dabei, frühzeitig Schwachstellen zu erkennen und Nutzerbedürfnisse besser zu adressieren. Ihre Rückmeldungen fließen iterativ in die Produktentwicklung ein.
 |===
@@ -83,7 +64,8 @@ Durch intuitive Funktionen, moderne Visualisierungen und smarte Tipps unterstüt
 | Name | Beschreibung | Verantwortlichkeiten
 | Universitäten und Hochschulen
 | Bildungseinrichtungen, die Studierende akademisch ausbilden und dabei auch deren persönliche Entwicklung unterstützen wollen. Sie haben ein Interesse daran, dass Studierende Kompetenzen wie Finanzmanagement frühzeitig aufbauen, um ihre Lebenssituation während des Studiums zu verbessern und Studienabbrüche aus finanziellen Gründen zu vermeiden.
-| Universitäten und Hochschulen könnten die App indirekt unterstützen oder empfehlen, z. B. über Studienberatungen oder Veranstaltungen zum Thema Finanzkompetenz. Ihr besonderes Interesse liegt darin, Studierende bei einem erfolgreichen und stabilen Studienverlauf zu fördern. Außerdem könnten sie Feedback zur Weiterentwicklung der App im Bereich Bildung und Nutzendenunterstützung geben.
+| Universitäten und Hochschulen könnten die App indirekt unterstützen oder empfehlen, z. B. über Studienberatungen oder Veranstaltungen zum Thema Finanzkompetenz. Ihr besonderes Interesse liegt darin, Studierende bei einem erfolgreichen und stabilen Studienverlauf zu fördern. Außerdem könnten sie Feedback zur Weiterentwicklung der App im Bereich Bildung und Nutzendenunterstützung geben.
+
 | Angehörige
 | Eltern oder andere enge Bezugspersonen, die Studierende finanziell unterstützen oder sich um deren Wohl sorgen. Ihr Ziel ist es, dass die Studierenden lernen, selbstständig mit Geld umzugehen und finanziell besser organisiert sind, um Sorgen und Engpässe zu vermeiden.
 | Angehörige haben ein indirektes Interesse daran, dass die App die finanzielle Selbstständigkeit und Verantwortungsbereitschaft der Studierenden fördert.
@@ -96,18 +78,18 @@ Durch intuitive Funktionen, moderne Visualisierungen und smarte Tipps unterstüt
 | Name | Beschreibung | Verantwortlichkeiten
 | Scrum Master
 | Mitglied des Projektteams mit der Verantwortung, den Scrum-Prozess zu fördern und sicherzustellen, dass das Team effektiv und organisiert zusammenarbeitet. Ziel ist es, Hindernisse im Entwicklungsprozess frühzeitig zu erkennen und zu beseitigen sowie das Team in der Anwendung agiler Prinzipien zu unterstützen.
-| Der Scrum Master sorgt dafür, dass die Scrum-Meetings (z. B. Weekly, Planning, Review, Retro) regelmäßig stattfinden und organisiert ablaufen. Er achtet darauf, dass das Team fokussiert arbeiten kann und nicht durch organisatorische oder zwischenmenschliche Blockaden gebremst wird. Zudem vermittelt er bei Konflikten und schützt das Team vor externen Störungen.
-| Product-Owner 
+| Der Scrum Master sorgt dafür, dass die Scrum-Meetings (z. B. Weekly, Planning, Review, Retro) regelmäßig stattfinden und organisiert ablaufen. Er achtet darauf, dass das Team fokussiert arbeiten kann und nicht durch organisatorische oder zwischenmenschliche Blockaden gebremst wird. Zudem vermittelt er bei Konflikten und schützt das Team vor externen Störungen.
+
+| Product-Owner
 | Der Product Owner ist Teil des Projektteams und verantwortlich für die inhaltliche Ausrichtung des Produkts. Er vertritt die Interessen der Nutzenden und Stakeholder, priorisiert Anforderungen und trägt die Verantwortung für den Product Backlog. Ziel ist es, den größtmöglichen Produktnutzen im Rahmen der gegebenen Ressourcen zu erzielen.
-| Der Product Owner formuliert und priorisiert Anforderungen in Form von User Stories im Product Backlog. Er sorgt dafür, dass das Entwicklungsteam ein klares Verständnis für die Anforderungen und deren Mehrwert hat. Darüber hinaus steht er regelmäßig im Austausch mit Stakeholdern (z. B. Testende, Coach), um deren Rückmeldungen in die Produktentwicklung einfließen zu lassen.
+| Der Product Owner formuliert und priorisiert Anforderungen in Form von User Stories im Product Backlog. Er sorgt dafür, dass das Entwicklungsteam ein klares Verständnis für die Anforderungen und deren Mehrwert hat. Darüber hinaus steht er regelmäßig im Austausch mit Stakeholdern, um deren Rückmeldungen in die Produktentwicklung einfließen zu lassen.
+
 | Development Team
-| Das Development Team besteht aus den Mitgliedern, die aktiv an der Umsetzung des Produkts arbeiten. Dazu gehören z. B. Frontend- und Backend-Entwicklung, UX/UI-Design, Dokumentation und Testing. Ziel ist es, in jeder Iteration ein funktionsfähiges Inkrement des Produkts bereitzustellen.
+| Das Development Team besteht aus den Mitgliedern, die aktiv an der Umsetzung des Produkts arbeiten. Dazu gehören z. B. Frontend- und Backend-Entwicklung, UX/UI-Design, Dokumentation und Testing. Ziel ist es, in jeder Iteration ein funktionsfähiges Inkrement des Produkts bereitzustellen.
 | Das Entwicklungsteam ist verantwortlich für die technische Umsetzung der Anforderungen aus dem Product Backlog. Es plant und organisiert die Arbeit im Rahmen der Sprints eigenverantwortlich, schätzt den Aufwand von Aufgaben ein und stellt durch kontinuierliche Abstimmung sicher, dass qualitativ hochwertige Ergebnisse entstehen.
 |===
 
-
-// | [Kurze Beschreibung des Stakeholders und seiner Ziele]
-// | [Fassen Sie die wesentlichen Verantwortlichkeiten des Stakeholder mit Bezug auf das zu entwickelnde System kurz zusammen, d.h. ihr besonderen Interessen. Beispiele: Dieser Stakeholder sorgt dafür, dass das System gewartet wird / dass die angezeigten Daten aktuell sind / überwacht den Projektfortschritt / usw.]
+Interessen. Beispiele: Dieser Stakeholder sorgt dafür, dass das System gewartet wird / dass die angezeigten Daten aktuell sind / überwacht den Projektfortschritt / usw.
 
 
 Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mittels Personas vorgenommen.
@@ -116,64 +98,63 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 == Produktüberblick
 
 === Bedarfe und Hauptfunktionen
-//Vermeiden Sie Angaben zum Entwurf. Nennen wesentliche Features (Produktmerkmale) auf allgemeiner Ebene. Fokussieren Sie sich auf die benötigten Fähigkeiten des Systems und warum (nicht wie!) diese realisiert werden sollen. Geben Sie die von den Stakeholdern vorgegebenen Prioritäten an.
 
 [%header, cols="4,1,4,1"]
 |===
 | Bedarf | Priorität | Features / Funktionen | Geplantes Release
 
-| Transaktionssystem, dass die Daten der Eingaben speichert
+| Nutzende wollen Einnahmen und Ausgaben schnell erfassen und später zuverlässig abrufen können.
 | sehr hoch
 a|
-* Scannen von Bildern womit Einnahmen und Ausgaben durch KI erfasst werden
+* Scannen von Bildern, womit Einnahmen und Ausgaben durch KI erfasst werden
 ** Automatische Kategorisierung von Transaktionen durch KI
 * Manuelle Eingabe von Einnahmen und Ausgaben
 ** Vorschläge für Kategorien
 * Wiederkehrende Transaktionen
 | MVP
 
-| Flexibles Kategoriensystem zur Organisation der Transaktionen
+| Nutzer wollen ein frei anpassbares Kategoriensystem zur Organisation der Einnahmen und Ausgaben, damit sie den Überblick behalten.
 | sehr hoch
 a|
-* Möglichkeit eine Kategorien zu erstellen, zu bearbeiten und zu löschen
-* Möglichkeit Kategorien zu organisieren
-* Möglichkeit Kategorien visuell zu gestalten (Farben, Icons)
-* Möglichkeit Kategorien zu einer Transaktion zuzuordnen
+* Möglichkeit, Kategorien zu erstellen, zu bearbeiten und zu löschen
+* Möglichkeit, Kategorien zu organisieren
+* Möglichkeit, Kategorien visuell zu gestalten (Farben, Icons)
+* Möglichkeit, Kategorien zu einer Transaktion zuzuordnen
 | MVP
 
-| Flexibels Budgetsystem für die Finanzen
+| Nutzer wollen für bestimmte Kategorien über Zeiträume Ausgabenlimits festlegen, um effektiv zu sparen.
 | hoch
 a|
-* Möglichkeit Budgets zu erstellen, zu bearbeiten und zu löschen
-* Möglichkeit Budgets Kategorien zuzuordnen
+* Möglichkeit, Budgets zu erstellen, zu bearbeiten und zu löschen
+* Möglichkeit, Budgets Kategorien zuzuordnen
 | MVP
 
-| Flexibles Kontosystem, dass er ermöglicht mehrere Einnahmequellen/Ausgabequellen zu differenzieren
+| Nutzer wollen ihre Einnahmen und Ausgaben nach Konten/Geldquellen trennen können, damit sie einen besseren Überblick über diese Konten/Geldquellen behalten können.
 | hoch
 a|
-* Möglichkeit Konten zu erstellen, zu bearbeiten und zu löschen
-* Möglichkeit Konten in vorgegebenen Kategorien zu kategorisieren
-* Möglichkeit Konten visuell zu gestalten (Farben, Icons)
-* Möglichkeit Konten Transaktionen zuzuordnen
+* Möglichkeit, Konten zu erstellen, zu bearbeiten und zu löschen
+* Möglichkeit, Konten in vorgegebenen Kategorien zu kategorisieren
+* Möglichkeit, Konten visuell zu gestalten (Farben, Icons)
+* Möglichkeit, Konten Transaktionen zuzuordnen
 * Anzeigen des aktuellen Kontostands
 | MVP
 
-| Sparziele, dass dem Nutzer ermöglicht eigene Ausgabegrenzen festzulegen für die bessere Kontrolle über das Konsumverhalten
+| Nutzer wollen Sparziele festlegen können, damit sie motiviert und gezielt Geld für Anschaffungen/Ziele zurücklegen können.
 | mittel
 a|
-* Möglichkeit Sparziele zu erstellen, zu bearbeiten und zu löschen
-* Möglichkeit Raten für Sparziele zu erstellen
-* Möglichkeit Sparziele visuell zu gestalten (Farben, Icons)
+* Möglichkeit, Sparziele zu erstellen, zu bearbeiten und zu löschen
+* Möglichkeit, Raten für Sparziele zu erstellen
+* Möglichkeit, Sparziele visuell zu gestalten (Farben, Icons)
 | Release 2
 
-| Ein übersichtles Dashboard, dass dem Nutzer alle wichtigen Informationen auf einen Blick darstellt
+| Nutzer wollen ein übersichtliches Dashboard, das alle wichtigen Informationen auf einen Blick darstellt.
 | mittel
 a|
 * Überblick über aktuelle Trends
 * Darstellung von übersichtlichen Statistiken
 | Release 2
 
-| Export/Import Funktionen, die dem Nutzer ermöglichen gesammelte Daten weiterzuverwenden
+| Nutzer wollen eine Export/Import-Funktionen, damit sie ihre Daten teilen oder anderweitig verwenden können.
 | niedrig
 a|
 * Export aller Daten in einem geeigneten Format
@@ -181,32 +162,31 @@ a|
 * Import von Daten aus einem geeigneten Format
 | Release 3
 
-| Benachrichtigungen, die dem Nutzer über wichtige Informationen bezüglich der Finanzen alarmieren
+| Nutzer wollen Benachrichtigungen zu wichtigen Ereignissen erhalten, damit sie auch informiert sind, wenn sie die App nicht aktiv nutzen.
 | niedrig
 a|
 * Benachrichtigung bei und vor dem Erreichen von Budgets
-* Benachrichtigung wenn wiederkehrende Transaktionen anstehen
+* Benachrichtigung, wenn wiederkehrende Transaktionen anstehen
 * Benutzerdefinierte regelmäßige zusammenfassende Benachrichtigungen
 | Release 3
 
 |===
 
 === Zusätzliche Produktanforderungen
-//Zutreffendes angeben, nicht zutreffendes streichen oder auskommentieren
 
 [%header, cols="4,1,1"]
 |===
 | Anforderung | Priorität | Geplantes Release
 
-| Gute Leistung (auf einfachen Geräten) 
+| Gute Leistung (Die App soll auf allen gängigen Mittelklassegeräten bis 2020 gut laufen, also keine spürbaren Verzögerungen bei der Bedienung; >3 Sekunden)
 | sehr hoch
 | MVP
 
-| Benutzerfreundlichkeit - UI, die alle wichtigen Daten auf einem Blick bereitstellt 
+| Benutzerfreundlichkeit - (Dashboard mit Saldo, Budgets und Sparzielen auf einen Blick. Anlegen einer Einnahme oder Ausgabe in max. 3 Schritten und klare Fehlermeldungen.)
 | sehr hoch
 | MVP
 
-| Robustheit 
+| Robustheit - (Daten dürfen durch Abstürze, Fehler bei der Gemini API oder falsche Ausgaben nicht verloren gehen oder korrupt werden.)
 | hoch
 | MVP
 

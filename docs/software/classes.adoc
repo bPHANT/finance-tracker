@@ -1,0 +1,1639 @@
+= Finance Tracker - API Dokumentation
+:toc: left
+:toclevels: 3
+:sectnums:
+:source-highlighter: rouge
+:icons: font
+:imagesdir: images
+
+== Übersicht
+
+Dieses Dokument beschreibt alle Klassen, Module und Funktionen des Finance Tracker Projekts.
+Das Projekt ist eine React Native Applikation zur Verwaltung persönlicher Finanzen mit TypeScript, SQLite-Datenbank und Expo.
+
+== Architektur-Übersicht
+
+[plantuml, architecture-overview, svg]
+....
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam componentStyle rectangle
+
+package "Präsentationsschicht" {
+  [Screens] as screens
+  [Components] as components
+  [Navigation] as nav
+}
+
+package "Geschäftslogikschicht" {
+  [Query Hooks] as hooks
+  [Utilities] as utils
+}
+
+package "Datenzugriffsschicht" {
+  [Database Schemas] as schemas
+  [Drizzle ORM] as orm
+}
+
+package "Externe Services" {
+  [Gemini AI API] as ai
+  [AsyncStorage] as storage
+}
+
+screens --> components
+screens --> hooks
+nav --> screens
+hooks --> utils
+hooks --> schemas
+hooks --> orm
+hooks --> ai
+hooks --> storage
+orm --> schemas
+
+@enduml
+....
+
+== Datenbank-Schichten
+
+=== Schema-Definitionen
+
+==== accountTable (accounts.ts)
+
+*Beschreibung:* Datenbankschema für Benutzerkonten.
+
+*Felder:*
+
+[cols="1,2,2"]
+|===
+|Feld |Typ |Beschreibung
+
+|id
+|integer (PK, autoincrement)
+|Eindeutige ID
+
+|createdAt
+|timestamp
+|Erstellungszeitpunkt
+
+|updatedAt
+|timestamp
+|Aktualisierungszeitpunkt
+
+|name
+|text
+|Name des Kontos
+
+|balance
+|real
+|Kontostand (Default: 0)
+
+|color
+|text (enum)
+|Farbe für UI-Darstellung
+
+|emoji
+|text
+|Emoji-Symbol
+
+|currencyId
+|integer (FK)
+|Referenz auf Währung
+|===
+
+*Type:* `Account = typeof accountTable.$inferSelect`
+
+==== budgetTable (budgets.ts)
+
+*Beschreibung:* Datenbankschema für Budgets.
+
+*Felder:*
+
+[cols="1,2,2"]
+|===
+|Feld |Typ |Beschreibung
+
+|id
+|integer (PK, autoincrement)
+|Eindeutige ID
+
+|createdAt
+|timestamp
+|Erstellungszeitpunkt
+
+|updatedAt
+|timestamp
+|Aktualisierungszeitpunkt
+
+|name
+|text
+|Name des Budgets
+
+|amount
+|real
+|Budget-Betrag
+
+|start
+|integer
+|Startzeitpunkt
+
+|end
+|integer (optional)
+|Endzeitpunkt
+
+|period
+|text (enum)
+|Periode: daily, weekly, monthly, semesterly, yearly
+
+|color
+|text (enum)
+|Farbe für UI-Darstellung
+
+|emoji
+|text
+|Emoji-Symbol
+|===
+
+*Type:* `Budget = typeof budgetTable.$inferSelect`
+
+==== categoryTable (categories.ts)
+
+*Beschreibung:* Datenbankschema für Kategorien (hierarchisch).
+
+*Felder:*
+
+[cols="1,2,2"]
+|===
+|Feld |Typ |Beschreibung
+
+|id
+|integer (PK, autoincrement)
+|Eindeutige ID
+
+|createdAt
+|timestamp
+|Erstellungszeitpunkt
+
+|updatedAt
+|timestamp
+|Aktualisierungszeitpunkt
+
+|name
+|text
+|Name der Kategorie
+
+|color
+|text (enum)
+|Farbe für UI-Darstellung
+
+|emoji
+|text
+|Emoji-Symbol
+
+|parentCategoryId
+|integer (FK, optional)
+|Referenz auf übergeordnete Kategorie
+|===
+
+*Type:* `Category = typeof categoryTable.$inferSelect`
+
+==== transactionTable (transactions.ts)
+
+*Beschreibung:* Datenbankschema für einzelne Transaktionen.
+
+*Felder:*
+
+[cols="1,2,2"]
+|===
+|Feld |Typ |Beschreibung
+
+|id
+|integer (PK, autoincrement)
+|Eindeutige ID
+
+|createdAt
+|timestamp
+|Erstellungszeitpunkt
+
+|updatedAt
+|timestamp
+|Aktualisierungszeitpunkt
+
+|name
+|text
+|Name/Beschreibung der Transaktion
+
+|amount
+|real
+|Betrag (negativ = Ausgabe, positiv = Einnahme)
+
+|categoryTermId
+|integer (FK)
+|Referenz auf Kategorie-Begriff
+
+|transactionGroupId
+|integer (FK)
+|Referenz auf Transaktionsgruppe
+|===
+
+*Type:* `Transaction = typeof transactionTable.$inferSelect`
+
+==== currencyTable (currencies.ts)
+
+*Beschreibung:* Datenbankschema für Währungen.
+
+*Felder:*
+
+[cols="1,2,2"]
+|===
+|Feld |Typ |Beschreibung
+
+|id
+|integer (PK, autoincrement)
+|Eindeutige ID
+
+|name
+|text
+|Name der Währung
+
+|symbol
+|text
+|Währungssymbol (z.B. €, $)
+|===
+
+=== Datenbank-Initialisierung
+
+==== Module: db/index.ts
+
+*Beschreibung:* Hauptmodul für Datenbank-Verwaltung und Initialisierung.
+
+*Exportiertes Schema:*
+```typescript
+export const schema = {
+  accountTable,
+  budgetTable,
+  categoryTable,
+  categoryToBudgetTable,
+  categoryTermTable,
+  currencyTable,
+  transactionGroupTable,
+  transactionTable,
+}
+```
+
+*Funktionen:*
+
+===== initializeDatabase()
+[source,typescript]
+----
+async function initializeDatabase(
+  db: ExpoSQLiteDatabase<typeof schema>
+): Promise<void>
+----
+
+*Parameter:*
+
+* `db: ExpoSQLiteDatabase<typeof schema>` - Datenbank-Instanz
+
+*Beschreibung:* Initialisiert die Datenbank, führt Migrationen aus und fügt Seed-Daten ein.
+
+===== isDatabaseInitialized()
+[source,typescript]
+----
+function isDatabaseInitialized(): boolean
+----
+
+*Rückgabe:* `boolean` - Status der Datenbankinitialisierung
+
+*Beschreibung:* Prüft, ob die Datenbank bereits initialisiert wurde.
+
+===== useDb()
+[source,typescript]
+----
+function useDb(): ExpoSQLiteDatabase<typeof schema>
+----
+
+*Rückgabe:* `ExpoSQLiteDatabase<typeof schema>` - Datenbank-Instanz
+
+*Beschreibung:* React Hook für Zugriff auf die Datenbankinstanz.
+
+== Query-Hooks (Geschäftslogik)
+
+=== useTransaction Hook
+
+*Modul:* `db/queries/transaction.ts`
+
+*Beschreibung:* Custom Hook für Transaktions-CRUD-Operationen.
+
+==== Rückgabewert
+
+[source,typescript]
+----
+{
+  getTotalAmount: () => Promise<string>
+  getMany: () => Promise<Transaction[]>
+  getByCategoryId: ({ categoryId }: { categoryId: number }) => Promise<Transaction[]>
+  error: Error | null
+  loading: boolean
+}
+----
+
+==== Funktionen
+
+===== getTotalAmount()
+[source,typescript]
+----
+async function getTotalAmount(): Promise<string>
+----
+
+*Rückgabe:* `Promise<string>` - Gesamtbetrag aller Transaktionen (formatiert)
+
+*Beschreibung:* Berechnet die Summe aller Transaktionsbeträge.
+
+===== getMany()
+[source,typescript]
+----
+async function getMany(): Promise<Transaction[]>
+----
+
+*Rückgabe:* `Promise<Transaction[]>` - Liste aller Transaktionen
+
+*Beschreibung:* Lädt alle Transaktionen aus der Datenbank.
+
+===== getByCategoryId()
+[source,typescript]
+----
+async function getByCategoryId({ 
+  categoryId 
+}: { 
+  categoryId: number 
+}): Promise<Transaction[]>
+----
+
+*Parameter:*
+
+* `categoryId: number` - ID der Kategorie (inkl. Unterkategorien)
+
+*Rückgabe:* `Promise<Transaction[]>` - Gefilterte Transaktionen
+
+*Beschreibung:* Lädt alle Transaktionen für eine Kategorie und deren Unterkategorien.
+
+=== useCategory Hook
+
+*Modul:* `db/queries/category.ts`
+
+*Beschreibung:* Custom Hook für Kategorie-Verwaltung.
+
+==== Funktionen
+
+===== create()
+[source,typescript]
+----
+async function create({
+  name,
+  color,
+  emoji,
+  parentCategoryId
+}: {
+  name: string
+  color: CustomColorKeys
+  emoji: string
+  parentCategoryId?: number | null
+}): Promise<void>
+----
+
+*Parameter:*
+
+* `name: string` - Name der Kategorie
+* `color: CustomColorKeys` - Farbe für UI-Darstellung
+* `emoji: string` - Emoji-Symbol
+* `parentCategoryId?: number | null` - Optional: ID der übergeordneten Kategorie
+
+*Beschreibung:* Erstellt eine neue Kategorie und einen zugehörigen CategoryTerm.
+
+===== update()
+[source,typescript]
+----
+async function update({
+  id,
+  name,
+  color,
+  emoji,
+  parentCategoryId
+}: {
+  id: number
+  name: string
+  color: CustomColorKeys
+  emoji: string
+  parentCategoryId?: number | null
+}): Promise<void>
+----
+
+*Parameter:*
+
+* `id: number` - ID der zu aktualisierenden Kategorie
+* `name: string` - Neuer Name
+* `color: CustomColorKeys` - Neue Farbe
+* `emoji: string` - Neues Emoji
+* `parentCategoryId?: number | null` - Optional: Neue übergeordnete Kategorie
+
+*Beschreibung:* Aktualisiert eine bestehende Kategorie.
+
+===== get()
+[source,typescript]
+----
+async function get({ 
+  id 
+}: { 
+  id: number 
+}): Promise<Category | null>
+----
+
+*Parameter:*
+
+* `id: number` - Kategorie-ID
+
+*Rückgabe:* `Promise<Category | null>` - Kategorie oder null
+
+*Beschreibung:* Lädt eine einzelne Kategorie nach ID.
+
+===== getWithParent()
+[source,typescript]
+----
+async function getWithParent({ 
+  id 
+}: { 
+  id: number 
+}): Promise<CategoryWithParent | null>
+----
+
+*Parameter:*
+
+* `id: number` - Kategorie-ID
+
+*Rückgabe:* `Promise<CategoryWithParent | null>` - Kategorie mit Parent-Information
+
+*Beschreibung:* Lädt eine Kategorie zusammen mit ihrer übergeordneten Kategorie.
+
+=== useBudget Hook
+
+*Modul:* `db/queries/budget.ts`
+
+*Beschreibung:* Custom Hook für Budget-Verwaltung.
+
+==== Funktionen
+
+===== create()
+[source,typescript]
+----
+async function create({
+  name,
+  amount,
+  start,
+  end,
+  period,
+  color,
+  emoji,
+  categoryIds
+}: {
+  name: string
+  amount: number
+  start: number
+  end?: number | null
+  period: "daily" | "weekly" | "monthly" | "semesterly" | "yearly"
+  color: string
+  emoji: string
+  categoryIds: number[]
+}): Promise<Budget | null>
+----
+
+*Parameter:*
+
+* `name: string` - Name des Budgets
+* `amount: number` - Budget-Betrag
+* `start: number` - Startzeitpunkt (Unix-Timestamp)
+* `end?: number | null` - Optional: Endzeitpunkt
+* `period: string` - Zeitperiode (daily/weekly/monthly/semesterly/yearly)
+* `color: string` - Farbe für UI
+* `emoji: string` - Emoji-Symbol
+* `categoryIds: number[]` - Zugeordnete Kategorien
+
+*Rückgabe:* `Promise<Budget | null>` - Erstelltes Budget oder null
+
+*Beschreibung:* Erstellt ein neues Budget mit Kategorie-Zuordnungen.
+
+===== get()
+[source,typescript]
+----
+async function get(id: number): Promise<Budget | null>
+----
+
+*Parameter:*
+
+* `id: number` - Budget-ID
+
+*Rückgabe:* `Promise<Budget | null>` - Budget oder null
+
+*Beschreibung:* Lädt ein einzelnes Budget nach ID.
+
+=== useTransactionGroup Hook
+
+*Modul:* `db/queries/transactionGroup.ts`
+
+*Beschreibung:* Custom Hook für Transaktionsgruppen-Verwaltung.
+
+==== Funktionen
+
+===== create()
+[source,typescript]
+----
+async function create({
+  name,
+  note,
+  date,
+  accountId,
+  transactions
+}: {
+  name?: string
+  note?: string
+  date: Date
+  accountId: number
+  transactions: {
+    amount: number
+    term: string
+    categoryId: number
+  }[]
+}): Promise<Transaction[] | null>
+----
+
+*Parameter:*
+
+* `name?: string` - Optional: Name der Gruppe
+* `note?: string` - Optional: Notiz
+* `date: Date` - Transaktionsdatum
+* `accountId: number` - Konto-ID
+* `transactions: Array` - Array von Transaktionen mit:
+** `amount: number` - Betrag
+** `term: string` - Bezeichnung
+** `categoryId: number` - Kategorie-ID
+
+*Rückgabe:* `Promise<Transaction[] | null>` - Erstellte Transaktionen oder null
+
+*Beschreibung:* Erstellt eine Transaktionsgruppe mit mehreren Transaktionen und aktualisiert den Kontostand.
+
+=== useAccounts Hook
+
+*Modul:* `db/queries/accounts.ts`
+
+*Beschreibung:* Custom Hook für Konto-Verwaltung.
+
+==== Funktionen
+
+===== get()
+[source,typescript]
+----
+async function get({ 
+  id 
+}: { 
+  id: number 
+}): Promise<Account | null>
+----
+
+*Parameter:*
+
+* `id: number` - Konto-ID
+
+*Rückgabe:* `Promise<Account | null>` - Konto oder null
+
+*Beschreibung:* Lädt ein einzelnes Konto nach ID.
+
+===== getMany()
+[source,typescript]
+----
+async function getMany(): Promise<Account[]>
+----
+
+*Rückgabe:* `Promise<Account[]>` - Liste aller Konten
+
+*Beschreibung:* Lädt alle Konten des Benutzers.
+
+===== create()
+[source,typescript]
+----
+async function create({
+  name,
+  color,
+  emoji,
+  balance,
+  currencyId
+}: {
+  name: string
+  color: CustomColorKeys
+  emoji: string
+  balance: number
+  currencyId?: number
+}): Promise<Account | null>
+----
+
+*Parameter:*
+
+* `name: string` - Kontoname
+* `color: CustomColorKeys` - Farbe für UI
+* `emoji: string` - Emoji-Symbol
+* `balance: number` - Anfangskontostand
+* `currencyId?: number` - Optional: Währungs-ID (Default: 1)
+
+*Rückgabe:* `Promise<Account | null>` - Erstelltes Konto oder null
+
+*Beschreibung:* Erstellt ein neues Konto.
+
+== Utility-Module
+
+=== AI-Modul (utils/ai.ts)
+
+*Beschreibung:* Integration mit Google Gemini API für KI-gestützte Belegkategorisierung.
+
+==== useAi Hook
+
+===== categorizePicture()
+[source,typescript]
+----
+async function categorizePicture(
+  photo: CameraCapturedPicture,
+  categories: any
+): Promise<void>
+----
+
+*Parameter:*
+
+* `photo: CameraCapturedPicture` - Foto vom Beleg
+* `categories: any` - Verfügbare Kategorien
+
+*Beschreibung:* Sendet ein Belegfoto an die Gemini API und extrahiert Transaktionsinformationen. Das Ergebnis wird im AsyncStorage gespeichert.
+
+*Rückgabeformat:* Array von Objekten mit:
+
+* `specific: string` - Originalbeschreibung
+* `term: string` - Generalisierte Bezeichnung
+* `amount: number` - Betrag (negativ = Ausgabe, positiv = Einnahme)
+* `categoryId: number` - Zugeordnete Kategorie-ID
+
+===== getPrompt()
+[source,typescript]
+----
+async function getPrompt(categories: any): Promise<string>
+----
+
+*Parameter:*
+
+* `categories: any` - Kategoriestruktur
+
+*Rückgabe:* `Promise<string>` - Formatierter Prompt für die AI
+
+*Beschreibung:* Generiert einen detaillierten Prompt für die Gemini API basierend auf der aktuellen Sprache und Kategoriestruktur.
+
+=== Helper-Modul (utils/helper.ts)
+
+*Beschreibung:* Hilfsfunktionen für Berechnungen und Konvertierungen.
+
+==== Funktionen
+
+===== calculateTotalAmount()
+[source,typescript]
+----
+function calculateTotalAmount(
+  transactions: Transaction[]
+): string
+----
+
+*Parameter:*
+
+* `transactions: Transaction[]` - Array von Transaktionen
+
+*Rückgabe:* `string` - Gesamtbetrag (formatiert mit 2 Dezimalstellen)
+
+*Beschreibung:* Berechnet die Summe aller Transaktionsbeträge.
+
+===== dateFromString()
+[source,typescript]
+----
+async function dateFromString(
+  value?: string
+): Promise<Date>
+----
+
+*Parameter:*
+
+* `value?: string` - Optional: Datums-String
+
+*Rückgabe:* `Promise<Date>` - Date-Objekt
+
+*Beschreibung:* Konvertiert einen String in ein Date-Objekt. Gibt aktuelles Datum zurück, wenn kein Wert übergeben wird.
+
+=== Storage-Modul (utils/storage.ts)
+
+*Beschreibung:* Wrapper für AsyncStorage mit typsicheren Funktionen.
+
+==== storage Object
+
+===== setString()
+[source,typescript]
+----
+async function setString(
+  key: string, 
+  value: string
+): Promise<void>
+----
+
+*Parameter:*
+
+* `key: string` - Storage-Schlüssel
+* `value: string` - Zu speichernder String
+
+*Beschreibung:* Speichert einen String im AsyncStorage.
+
+===== getString()
+[source,typescript]
+----
+async function getString(
+  key: string
+): Promise<string | null>
+----
+
+*Parameter:*
+
+* `key: string` - Storage-Schlüssel
+
+*Rückgabe:* `Promise<string | null>` - Gespeicherter String oder null
+
+*Beschreibung:* Lädt einen String aus dem AsyncStorage.
+
+===== setObject()
+[source,typescript]
+----
+async function setObject<T>(
+  key: string, 
+  value: T
+): Promise<void>
+----
+
+*Parameter:*
+
+* `key: string` - Storage-Schlüssel
+* `value: T` - Zu speicherndes Objekt
+
+*Beschreibung:* Speichert ein Objekt als JSON im AsyncStorage.
+
+===== getObject()
+[source,typescript]
+----
+async function getObject<T>(
+  key: string
+): Promise<T | null>
+----
+
+*Parameter:*
+
+* `key: string` - Storage-Schlüssel
+
+*Rückgabe:* `Promise<T | null>` - Gespeichertes Objekt oder null
+
+*Beschreibung:* Lädt und parsed ein Objekt aus dem AsyncStorage.
+
+===== remove()
+[source,typescript]
+----
+async function remove(key: string): Promise<void>
+----
+
+*Parameter:*
+
+* `key: string` - Storage-Schlüssel
+
+*Beschreibung:* Entfernt einen Eintrag aus dem AsyncStorage.
+
+===== clear()
+[source,typescript]
+----
+async function clear(): Promise<void>
+----
+
+*Beschreibung:* Löscht den gesamten AsyncStorage.
+
+==== userPreferences Object
+
+===== get()
+[source,typescript]
+----
+async function get(): Promise<UserPreferences | null>
+----
+
+*Rückgabe:* `Promise<UserPreferences | null>` - Benutzereinstellungen
+
+*Beschreibung:* Lädt die Benutzereinstellungen.
+
+===== set()
+[source,typescript]
+----
+async function set(
+  preferences: UserPreferences
+): Promise<void>
+----
+
+*Parameter:*
+
+* `preferences: UserPreferences` - Vollständige Einstellungen
+
+*Beschreibung:* Speichert die Benutzereinstellungen.
+
+===== update()
+[source,typescript]
+----
+async function update(
+  updates: Partial<UserPreferences>
+): Promise<void>
+----
+
+*Parameter:*
+
+* `updates: Partial<UserPreferences>` - Teilweise Aktualisierungen
+
+*Beschreibung:* Aktualisiert einzelne Benutzereinstellungen.
+
+*UserPreferences Interface:*
+[source,typescript]
+----
+interface UserPreferences {
+  theme: "light" | "dark" | "system"
+  language: string
+  defaultCurrency: string
+  notificationsEnabled: boolean
+  biometricEnabled: boolean
+}
+----
+
+== UI-Komponenten
+
+[plantuml, components-structure, svg]
+....
+@startuml
+skinparam backgroundColor #FEFEFE
+
+package "Components" {
+  package "Buttons" {
+    [Button]
+    [CircularButton]
+    [FunctionalButton]
+    [InteractionButton]
+    [DuoSwitch]
+    [BackButton]
+  }
+  
+  package "Input" {
+    [Field]
+    [TextField]
+    [DateField]
+    [CategoryTouchable]
+    [FieldTitle]
+  }
+  
+  package "Display" {
+    [Emoji]
+    [EmojiWithBackground]
+    [AmountBadge]
+    [NavigationPath]
+  }
+  
+  package "Modal" {
+    [BaseModal]
+    [AccountModal]
+    [AlertModal]
+    [EmojiModal]
+    [ColorModal]
+    [TransactionListModal]
+  }
+  
+  package "Containers" {
+    [TransactionContainer]
+    [TransactionGroupContainer]
+    [TransactionGroupList]
+    [BudgetContainer]
+    [CategoryContainer]
+    [CategoryList]
+    [NavigationContainer]
+  }
+  
+  package "Bubbles" {
+    [Treemap]
+    [TreemapBox]
+  }
+}
+
+@enduml
+....
+
+=== Button-Komponenten
+
+==== Button
+*Datei:* `components/buttons/Button.tsx`
+
+*Props:*
+[source,typescript]
+----
+type ButtonProps = {
+  title: string
+  icon?: keyof typeof Ionicons.glyphMap
+  emojiWithBackground?: {
+    emoji: string
+    color: CustomColorKeys
+  }
+  arrowRight?: boolean
+  textLeft?: boolean
+  functional?: "submit" | "cancel"
+  onPress: () => void
+}
+----
+
+*Beschreibung:* Universelle Button-Komponente mit Icon-, Emoji- und Text-Unterstützung.
+
+==== CircularButton
+*Datei:* `components/buttons/CircularButton.tsx`
+
+*Props:*
+[source,typescript]
+----
+type CircularButtonProps = {
+  icon: keyof typeof Ionicons.glyphMap
+  onPress: () => void
+}
+----
+
+*Beschreibung:* Kreisförmiger Button für Aktionen (z.B. Hinzufügen).
+
+==== DuoSwitch
+*Datei:* `components/buttons/DuoSwitch.tsx`
+
+*Props:*
+[source,typescript]
+----
+type DuoSwitchProps<T extends string> = {
+  value: boolean
+  onChange: (val: T) => void
+  options: T[]
+}
+----
+
+*Beschreibung:* Toggle-Switch für zwei Optionen.
+
+==== FunctionalButton
+*Datei:* `components/buttons/FunctionalButton.tsx`
+
+*Props:*
+[source,typescript]
+----
+type FunctionalButtonProps = {
+  title: string
+  onPress: () => void
+}
+----
+
+*Beschreibung:* Einfacher funktionaler Button.
+
+==== InteractionButton
+*Datei:* `components/buttons/InteractionButton.tsx`
+
+*Props:*
+[source,typescript]
+----
+type InteractionButtonProps = {
+  type: "edit" | "delete"
+  onPress?: () => void
+}
+----
+
+*Beschreibung:* Button für Edit/Delete-Aktionen mit entsprechenden Icons.
+
+==== BackButton
+*Datei:* `components/buttons/BackButton.tsx`
+
+*Props:*
+[source,typescript]
+----
+type BackButtonProps = {
+  onPress?: () => void
+}
+----
+
+*Beschreibung:* Zurück-Button für Navigation.
+
+=== Input-Komponenten
+
+==== Field
+*Datei:* `components/input/Field.tsx`
+
+*Props:*
+[source,typescript]
+----
+type FieldProps = {
+  value?: string
+  onChangeValue?: (value: string) => void
+  placeholder?: string
+  disabled?: boolean
+  balance?: boolean
+}
+----
+
+*Beschreibung:* Basis-Eingabefeld mit optionaler Währungsanzeige.
+
+==== TextField
+*Datei:* `components/input/TextField.tsx`
+
+*Props:*
+[source,typescript]
+----
+type TextFieldProps = {
+  title: string
+  value?: string
+  onChangeValue?: (value: string) => void
+  placeholder?: string
+}
+----
+
+*Beschreibung:* Eingabefeld mit Label.
+
+==== DateField
+*Datei:* `components/input/DateField.tsx`
+
+*Props:*
+[source,typescript]
+----
+type DateFieldProps = {
+  title: string
+  value: Date
+  onChange: (date: Date) => void
+}
+----
+
+*Beschreibung:* Datumsauswahl-Komponente.
+
+==== CategoryTouchable
+*Datei:* `components/input/CategoryTouchable.tsx`
+
+*Props:*
+[source,typescript]
+----
+type CategoryTouchableProps = {
+  color?: CustomColorKeys
+  emoji?: string
+  title: string
+  onPress: () => Promise<void>
+  showDelete?: boolean
+}
+----
+
+*Beschreibung:* Auswählbare Kategorie-Kachel.
+
+==== FieldTitle
+*Datei:* `components/input/FieldTitle.tsx`
+
+*Props:*
+[source,typescript]
+----
+type FieldTitleProps = {
+  title: string
+}
+----
+
+*Beschreibung:* Label für Eingabefelder.
+
+=== Display-Komponenten
+
+==== Emoji
+*Datei:* `components/display/Emoji.tsx`
+
+*Props:*
+[source,typescript]
+----
+interface EmojiProps {
+  size: string
+  emoji: string
+}
+----
+
+*Beschreibung:* Einfache Emoji-Darstellung.
+
+==== EmojiWithBackground
+*Datei:* `components/display/EmojiWithBackground.tsx`
+
+*Props:*
+[source,typescript]
+----
+type EmojiWithBackgroundProps = {
+  emoji: string
+  color: CustomColorKeys
+  size?: "sm" | "md" | "lg"
+}
+----
+
+*Beschreibung:* Emoji mit farbigem Hintergrund.
+
+==== AmountBadge
+*Datei:* `components/display/AmountBadge.tsx`
+
+*Props:*
+[source,typescript]
+----
+type AmountBadgeProps = {
+  amount: string
+  type: "income" | "expense"
+}
+----
+
+*Beschreibung:* Badge zur Darstellung von Beträgen.
+
+==== NavigationPath
+*Datei:* `components/display/NavigationPath.tsx`
+
+*Props:*
+[source,typescript]
+----
+type NavigationPathProps = {
+  path: string[]
+}
+----
+
+*Beschreibung:* Breadcrumb-Navigation.
+
+=== Modal-Komponenten
+
+==== BaseModal
+*Datei:* `components/modal/BaseModal.tsx`
+
+*Props:*
+[source,typescript]
+----
+type BaseModalProps = {
+  visible: boolean
+  title?: string
+  onClose: () => void
+  children: React.ReactNode
+}
+----
+
+*Beschreibung:* Basis-Modal für andere Modals.
+
+==== AccountModal
+*Datei:* `components/modal/AccountModal.tsx`
+
+*Props:*
+[source,typescript]
+----
+type AccountModalProps = {
+  visible: boolean
+  onClose: () => void
+  onSave: (account: Account) => void
+  initialAccount?: Account
+}
+----
+
+*Beschreibung:* Modal zum Erstellen/Bearbeiten von Konten.
+
+==== AlertModal
+*Datei:* `components/modal/AlertModal.tsx`
+
+*Props:*
+[source,typescript]
+----
+type AlertModalProps = {
+  visible: boolean
+  type: "error" | "confirm"
+  title?: string
+  message: string
+  onConfirm: () => void
+  onCancel?: () => void
+}
+----
+
+*Beschreibung:* Bestätigungs-/Fehler-Dialog.
+
+==== EmojiModal
+*Datei:* `components/modal/EmojiModal.tsx`
+
+*Props:*
+[source,typescript]
+----
+type EmojiModalProps = {
+  visible: boolean
+  onClose: () => void
+  onSelect: (emoji: string) => void
+}
+----
+
+*Beschreibung:* Emoji-Auswahl-Dialog.
+
+==== ColorModal
+*Datei:* `components/modal/ColorModal.tsx`
+
+*Props:*
+[source,typescript]
+----
+type ColorModalProps = {
+  visible: boolean
+  onClose: () => void
+  onSelect: (color: CustomColorKeys) => void
+}
+----
+
+*Beschreibung:* Farbauswahl-Dialog.
+
+==== TransactionListModal
+*Datei:* `components/modal/TransactionListModal.tsx`
+
+*Props:*
+[source,typescript]
+----
+type TransactionListModalProps = {
+  visible: boolean
+  onClose: () => void
+  transactions: Transaction[]
+  categoryName: string
+}
+----
+
+*Beschreibung:* Modal zur Anzeige von Transaktionslisten.
+
+=== Container-Komponenten
+
+==== TransactionContainer
+*Datei:* `components/containers/TransactionContainer.tsx`
+
+*Props:*
+[source,typescript]
+----
+type TransactionContainerProps = {
+  name: string
+  specific?: string
+  amount: string
+  category: {
+    name: string
+    color: CustomColorKeys
+    emoji: string
+  } | null
+  onEdit?: () => Promise<void>
+  onDelete?: () => Promise<void>
+}
+----
+
+*Beschreibung:* Container für einzelne Transaktionsdarstellung.
+
+==== TransactionGroupContainer
+*Datei:* `components/containers/TransactionGroupContainer.tsx`
+
+*Props:*
+[source,typescript]
+----
+type TransactionGroupContainerProps = {
+  id?: number
+  name?: string
+  date: Date
+  amount: string
+  rounded?: "none" | "top" | "bottom" | "full"
+  onDelete?: (id: number) => void
+  onPress?: (id: number) => void
+}
+----
+
+*Beschreibung:* Container für Transaktionsgruppen mit Swipe-Gesten.
+
+*Ref:*
+[source,typescript]
+----
+type TransactionGroupContainerRef = {
+  close: () => void
+}
+----
+
+==== TransactionGroupList
+*Datei:* `components/containers/TransactionGroupList.tsx`
+
+*Props:*
+[source,typescript]
+----
+type TransactionGroupListProps = {
+  groups: TransactionGroupContainerProps[]
+  onDelete?: (id: number) => void
+  onPress?: (id: number) => void
+}
+----
+
+*Beschreibung:* Liste von Transaktionsgruppen.
+
+==== BudgetContainer
+*Datei:* `components/containers/BudgetContainer.tsx`
+
+*Props:*
+[source,typescript]
+----
+type BudgetContainerProps = {
+  name: string
+  emoji: string
+  color: CustomColorKeys
+  spent: number
+  budget: number
+  period: string
+  onPress?: () => void
+}
+----
+
+*Beschreibung:* Container für Budget-Anzeige mit Fortschrittsbalken.
+
+==== CategoryContainer
+*Datei:* `components/containers/CategoryContainer.tsx`
+
+*Props:*
+[source,typescript]
+----
+type CategoryContainerProps = {
+  name: string
+  emoji: string
+  color: CustomColorKeys
+  amount?: string
+  hasChildren?: boolean
+  onPress?: () => void
+  onLongPress?: () => void
+}
+----
+
+*Beschreibung:* Container für Kategorie-Anzeige.
+
+==== CategoryList
+*Datei:* `components/containers/CategoryList.tsx`
+
+*Props:*
+[source,typescript]
+----
+type CategoryListProps = {
+  categories: CategoryContainerProps[]
+}
+----
+
+*Beschreibung:* Liste von Kategorien.
+
+==== NavigationContainer
+*Datei:* `components/containers/NavigationContainer.tsx`
+
+*Props:*
+[source,typescript]
+----
+type NavigationContainerProps = {
+  title: string
+  icon: keyof typeof Ionicons.glyphMap
+  onPress: () => void
+}
+----
+
+*Beschreibung:* Container für Navigationsoptionen in Einstellungen.
+
+=== Visualisierungs-Komponenten
+
+==== Treemap
+*Datei:* `components/bubbles/Treemap.tsx`
+
+*Props:*
+[source,typescript]
+----
+type TreemapProps = {
+  data: BoxData[]
+  onPress?: (id: number) => void
+  onLongPress?: (id: number) => void
+}
+----
+
+*Beschreibung:* Treemap-Visualisierung für Ausgaben-Verteilung.
+
+==== TreemapBox
+*Datei:* `components/bubbles/TreemapBox.tsx`
+
+*Props:*
+[source,typescript]
+----
+interface TreemapBoxProps {
+  item: BoxData
+  x: number
+  y: number
+  width: number
+  height: number
+  index: number
+  onPress?: (id: number) => void
+  onLongPress?: (id: number) => void
+}
+----
+
+*BoxData Interface:*
+[source,typescript]
+----
+export interface BoxData {
+  id: number
+  name: string
+  emoji: string
+  value: number
+  displayAmount?: number
+  color: string
+  hasChildren?: boolean
+}
+----
+
+*Beschreibung:* Einzelne Box in der Treemap-Visualisierung.
+
+== Übersichtsdiagramm: Datenfluss
+
+[plantuml, data-flow, svg]
+....
+@startuml
+skinparam backgroundColor #FEFEFE
+
+actor User as user
+participant "Screen" as screen
+participant "Hook" as hook
+participant "Database" as db
+participant "Storage" as storage
+participant "AI API" as ai
+
+user -> screen: Interaktion
+screen -> hook: Funktionsaufruf
+hook -> db: Query ausführen
+db --> hook: Daten zurückgeben
+hook --> screen: State aktualisieren
+screen --> user: UI anzeigen
+
+user -> screen: Beleg scannen
+screen -> ai: Foto senden
+ai --> screen: Kategorien zurückgeben
+screen -> storage: Zwischenspeichern
+screen -> hook: Transaktionen erstellen
+hook -> db: Daten speichern
+
+@enduml
+....
+
+== Seed-Daten
+
+=== seedCategories (db/seed/categories.ts)
+
+*Funktion:*
+[source,typescript]
+----
+async function seedCategories(
+  db: ExpoSQLiteDatabase<any>
+): Promise<boolean>
+----
+
+*Parameter:*
+
+* `db: ExpoSQLiteDatabase<any>` - Datenbank-Instanz
+
+*Rückgabe:* `Promise<boolean>` - true wenn Seed durchgeführt, false wenn bereits vorhanden
+
+*Beschreibung:* Fügt vordefinierte Kategorien in die Datenbank ein:
+
+* Einnahmen (Werkstudentenjob, Stipendium, etc.)
+* Essen & Trinken (Restaurant, Supermarkt, etc.)
+* Freizeit (Sport, Konzerte, etc.)
+* Wohnen (Miete, Nebenkosten, etc.)
+* Reisen (Flüge, Hotels, etc.)
+* Abos & Mitgliedschaften
+* Versicherungen
+* Universität (Semesterbeitrag, Bücher, etc.)
+* Geschenke & Spenden
+* Kleidung & Accessoires
+* Technik & Elektronik
+* Drogerie & Gesundheit
+
+=== seedAccounts (db/seed/accounts.ts)
+
+*Funktion:*
+[source,typescript]
+----
+async function seedAccounts(
+  db: ExpoSQLiteDatabase<any>
+): Promise<boolean>
+----
+
+*Parameter:*
+
+* `db: ExpoSQLiteDatabase<any>` - Datenbank-Instanz
+
+*Rückgabe:* `Promise<boolean>` - true wenn Seed durchgeführt, false wenn bereits vorhanden
+
+*Beschreibung:* Erstellt ein Standard-Konto "Sparkasse" mit 0€ Kontostand.
+
+== Konstanten
+
+=== DB_NAME (db/db_name.ts)
+
+[source,typescript]
+----
+export const DB_NAME = "spendex.db"
+----
+
+*Beschreibung:* Name der SQLite-Datenbankdatei.
+
+=== STORAGE_KEYS (utils/storage.ts)
+
+[source,typescript]
+----
+export const STORAGE_KEYS = {
+  USER_PREFERENCES: "userPreferences",
+  THEME: "theme",
+  LANGUAGE: "language",
+  CURRENCY: "defaultCurrency",
+  FIRST_LAUNCH: "isFirstLaunch",
+} as const
+----
+
+*Beschreibung:* Konstanten für AsyncStorage-Schlüssel.
+
+== Typen und Interfaces
+
+=== CustomColorKeys
+
+*Datei:* `assets/colors.ts`
+
+*Beschreibung:* Enum-ähnlicher Type für verfügbare Farben in der App (red, blue, green, yellow, purple, orange, pink, teal, gray, brown, indigo, cyan).
+
+=== Transaction Type
+
+*Datei:* `components/screens/transactionGroupForm.tsx`
+
+[source,typescript]
+----
+type Transaction = {
+  id?: number
+  specific: string
+  term: string
+  amount: number
+  categoryId: number
+}
+----
+
+*Beschreibung:* Formular-Type für Transaktionen beim Erstellen/Bearbeiten.
+
+=== Account Type (Modal)
+
+*Datei:* `components/modal/AccountModal.tsx`
+
+[source,typescript]
+----
+export type Account = {
+  id?: number
+  name: string
+  emoji: string
+  color: CustomColorKeys
+  balance: number
+}
+----
+
+*Beschreibung:* Type für Konto-Daten im AccountModal.
+
+== Anhang
+
+=== Verwendete Technologien
+
+* **Framework:** React Native mit Expo
+* **Programmiersprache:** TypeScript
+* **Datenbank:** SQLite mit Drizzle ORM
+* **State Management:** React Hooks
+* **Storage:** AsyncStorage
+* **AI/ML:** Google Gemini API
+* **Navigation:** Expo Router
+* **Styling:** NativeWind (Tailwind CSS für React Native)
+* **Animationen:** Reanimated
+
+=== Projektstruktur
+
+```
+src/
+├── api/              # API-Konfiguration (Gemini)
+├── app/              # Screen-Komponenten (Expo Router)
+├── assets/           # Farben, Emojis, Bilder
+├── components/       # Wiederverwendbare UI-Komponenten
+│   ├── bubbles/      # Visualisierungen
+│   ├── buttons/      # Button-Komponenten
+│   ├── containers/   # Container-Komponenten
+│   ├── display/      # Anzeige-Komponenten
+│   ├── input/        # Eingabe-Komponenten
+│   ├── modal/        # Modal-Dialoge
+│   ├── screens/      # Komplexe Screen-Komponenten
+│   ├── tabs/         # Tab-Bar Komponenten
+│   └── widgets/      # Dashboard-Widgets
+├── db/               # Datenbank-Layer
+│   ├── migrations/   # Datenbank-Migrationen
+│   ├── queries/      # Query-Hooks
+│   ├── schemas/      # Tabellen-Schemas
+│   └── seed/         # Seed-Daten
+├── language/         # Internationalisierung
+└── utils/            # Hilfsfunktionen
+```
+
+=== Lizenz
+
+Siehe LICENSE-Datei im Projektverzeichnis.

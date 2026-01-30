@@ -5,6 +5,7 @@ import CategoryTouchable from "@/components/input/CategoryTouchable"
 import DateField from "@/components/input/DateField"
 import FieldTitle from "@/components/input/FieldTitle"
 import TextField from "@/components/input/TextField"
+import AlertModal from "@/components/modal/AlertModal"
 import ColorModal from "@/components/modal/ColorModal"
 import EmojiModal from "@/components/modal/EmojiModal"
 import ScreenTitle from "@/components/tabs/ScreenTitle"
@@ -14,7 +15,7 @@ import { useTypedTranslation } from "@/language/useTypedTranslation"
 import { storage } from "@/utils/storage"
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
 import React, { useCallback, useState } from "react"
-import { Alert, Text, View } from "react-native"
+import { Text, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import { SafeAreaView } from "react-native-safe-area-context"
 
@@ -170,6 +171,12 @@ export default function BudgetFormScreen() {
   const [colorModalOpen, setColorModalOpen] = useState(false)
   const [emojiModalOpen, setEmojiModalOpen] = useState(false)
 
+  const [alertVisible, setAlertVisible] = useState(false)
+  const [alertType, setAlertType] = useState<"error" | "confirm">("error")
+  const [alertTitle, setAlertTitle] = useState("")
+  const [alertMessage, setAlertMessage] = useState("")
+  const [deleteConfirmed, setDeleteConfirmed] = useState(false)
+
   async function handleNameChange(value: string) {
     setBudgetName(value)
   }
@@ -247,34 +254,50 @@ export default function BudgetFormScreen() {
   }
 
   async function handleDelete() {
-    Alert.alert(
-      "Delete Budget",
-      "Are you sure you want to delete this budget? This action cannot be undone.",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            if (!budgetId || budgetId === -1) return
+    if (!deleteConfirmed) {
+      // Zeige Bestätigungsdialog
+      setAlertType("confirm")
+      setAlertTitle("Delete Budget")
+      setAlertMessage(
+        "Are you sure you want to delete this budget? This action cannot be undone."
+      )
+      setDeleteConfirmed(true)
+      setAlertVisible(true)
+    } else {
+      // Führe Löschung aus
+      if (!budgetId || budgetId === -1) return
 
-            const success = await removeBudget(budgetId)
-            if (success) {
-              router.back()
-            } else {
-              Alert.alert("Error", "Failed to delete budget. Please try again.")
-            }
-          },
-        },
-      ]
-    )
+      const success = await removeBudget(budgetId)
+      if (success) {
+        router.back()
+      } else {
+        setAlertType("error")
+        setAlertTitle("Error")
+        setAlertMessage("Failed to delete budget. Please try again.")
+        setDeleteConfirmed(false)
+        setAlertVisible(true)
+      }
+    }
   }
 
   return (
     <>
+      <AlertModal
+        visible={alertVisible}
+        type={alertType}
+        title={alertTitle}
+        message={alertMessage}
+        onConfirm={() => {
+          setAlertVisible(false)
+          if (deleteConfirmed) {
+            handleDelete()
+          }
+        }}
+        onCancel={() => {
+          setAlertVisible(false)
+          setDeleteConfirmed(false)
+        }}
+      />
       <ColorModal
         visible={colorModalOpen}
         selected={budgetColor}
